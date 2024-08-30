@@ -1,0 +1,29 @@
+body{
+	background: url("background.png");
+    margin: 0;
+    height: 100vh;
+    display: flex;
+	/* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+	/* overflow-y: auto; */
+}
+#hh{
+	color:aquamarine;
+}
+.container {
+    display: flex;
+    justify-content: space-between; 
+    width: 100%;
+	/* min-height: 100vh; */
+}
+
+#level, #profile, #matches {
+    color: blue;
+    font-size: 40px;
+}
+
+#level {
+	color: blue;
+	
+}
