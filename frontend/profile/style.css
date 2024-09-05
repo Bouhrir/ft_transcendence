@@ -1,34 +1,47 @@
-@font-face {
-    font-family: "CelestiFrom-rvrqp";
-    src: url('/Users/obouhrir/Downloads/FFF-Tusj/FFF_Tusj.ttf'); /* Locate the .ttf file within your directory*/
-  }
 
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-header{
-    text-align: left;
-    background-color: #f1f1f1;
-    width: 720px;
-    height: 58px;
-    top: 12px;
-    left: 32px;
-    border: 1px;
-}
 body{
     background: url('background.png');
     background-size: cover;
+    background-attachment: fixed;
 }
+header{
+    padding: 0 1.5%;
+    display : flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    width: 40%;
+    border-radius: 15px;
+    margin-top: 12px;
+    margin-left: 32px;
+    background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    /* width: calc(100% - 32px); */
+    /* height: calc(100% - 12px); */
+}
+.head{
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+}
+
+
+
 .container{
-    border: 1px solid white;
     display : flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 70px);
     padding: 0 100px;
     gap: 5rem;
 }
@@ -36,38 +49,31 @@ body{
 .profile , .level, .matches{
    
     font-family: "Magnus Cederholm License";
+    color  : white;
     font-size: 97px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.2) ,rgba(247, 243, 244, 0.1));
+    background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(10px);
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
 }
 .profile{
     flex-grow: 2;
-    height: 442px;
-}
-.level{
-    height: 210px;
-    width: 275px;
+    height: 40%;
+    width: 60%;
     font-size: 24px;
     font-weight: 400;
     line-height: 30.19px;
-    backdrop-filter: blur(15px);
-    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
 }
-.matches{
-    height: 210px;
-    width: 275px;
+.level, .matches{
+    
+    height: 25%;
+    width: 30%;
     font-size: 24px;
     font-weight: 400;
     line-height: 30.19px;
-    backdrop-filter: blur(15px);
-    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
 }
 
-.protest-guerrilla-regular {
-    font-family: "Protest Guerrilla", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
+
