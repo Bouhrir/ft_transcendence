@@ -16,7 +16,7 @@ const routes = {
 
 const handLocation = async () =>{
     const path = window.location.pathname;
-    const page = routes[path] || routes[404];
+    const page = routes[path] || routes[404 ];
     const html = await (await fetch(page)).then((data) => data.text());
     document.getElementById("main-nav").innerHTML = html;
 }

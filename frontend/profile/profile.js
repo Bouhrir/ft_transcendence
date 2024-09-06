@@ -15,7 +15,25 @@ function navigateTo(page) {
         case 'settings':
             loadSettings();
             break;
+        default:
+            loadProfile();
+            break;
     }
+    history.pushState({ page: page }, '', page);
+}
+function loadProfile() {
+   const profile = document.querySelector('.container');
+   profile.innerHTML= `
+    <div class="level" 	id="level"> 
+		<p>HIGHEST PRICE</p>
+		<img src="gris.svg" alt="profile picture" width=50% height=50%>
+		<p>SILVER</p>
+    </div>
+    <div class="profile" id="profile"> OBOUHRIR </div>
+    <div class="matches" id="matches"> MATCHES </div>
+    </div>
+   `;
+
 }
 
 function loadDashboard() {
@@ -56,4 +74,10 @@ function loadSettings() {
             <p>Here you can change your account settings.</p>
         </div>
     `;
+}
+
+window.onpopstate = function(event) {
+    if (event.state && event.state.page) {
+        navigateTo(event.state.page);
+    }
 }
