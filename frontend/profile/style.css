@@ -12,6 +12,13 @@ body{
     background-size: cover;
     background-attachment: fixed;
 }
+.profile-icon{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
 header{
     padding: 0 1.5%;
     display : flex;
