@@ -13,11 +13,14 @@
 	<header>
 		<img src="./logo.svg">
 		<nav class="head">
-			<a href="index.html">dashboard</a>
-			<a href="profile.html">messanger</a>
-			<a href="matches.html">game</a>
-			<a href="matches.html">settings</a>
+			<a href="#" onclick="navigateTo('dashboard')">dashboard</a>
+			<a href="#" onclick="navigateTo('messenger')">messenger</a>
+			<a href="#" onclick="navigateTo('game')">game</a>
+			<a href="#" onclick="navigateTo('settings')">settings</a>
 		</nav>
+		<div class="profile-icon">
+			<img src="profile.svg" alt="profile picture">
+		</div>
 	</header>
 	<div class="container">
 	<!-- <iframe src="https://www.google.com/maps"  height="200" width="300" title="Iframe Example"></iframe> -->
@@ -29,7 +32,6 @@
 		<div class="profile" id="profile"> obouhrir </div>
 		<div class="matches" id="matches"> matches </div>
 	</div>
-	<div class ="last">hello</div>
 	<script src="profile.js"></script>
 </body>
 </html>
