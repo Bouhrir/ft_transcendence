@@ -37,10 +37,10 @@ function loadProfile() {
         <p class="level-status" style="font-size:20px;font-family:monospace;"> LV 9</p>
     </div>
     <div class="matches" id="matches">
-        <div class="txt">
+    <div class="txt">
             <p>MATCHES</p>
-            <p>W \ L</p>
-            <p>10 - 3</p>
+            <p style="font-family:monospace;">W \\ L</p>
+            <p style="font-family:monospace;">10 - 3</p>
         </div>
     </div>
     </div>
