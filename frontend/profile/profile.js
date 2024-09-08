@@ -1,7 +1,7 @@
 
 function navigateTo(page) {
     // Clear the current content
-    document.querySelector('.container').innerHTML = '';
+    document.querySelector('.container').innerHTML = ``;
     switch (page) {
         case 'dashboard':
             loadDashboard();
@@ -15,22 +15,34 @@ function navigateTo(page) {
         case 'settings':
             loadSettings();
             break;
-        default:
+        case 'profile':
             loadProfile();
-            break;
+            break; 
     }
     history.pushState({ page: page }, '', page);
 }
 function loadProfile() {
+
    const profile = document.querySelector('.container');
    profile.innerHTML= `
     <div class="level" 	id="level"> 
 		<p>HIGHEST PRICE</p>
-		<img src="gris.svg" alt="profile picture" width=50% height=50%>
+		<img src="gris.svg" alt="profile picture" width=50%>
 		<p>SILVER</p>
     </div>
-    <div class="profile" id="profile"> OBOUHRIR </div>
-    <div class="matches" id="matches"> MATCHES </div>
+    <div class="profile" id="profile">
+        <img class="profile-img" src="profile.svg" alt="profile picture">
+        <p>OUSSAMA BOUHRIR</p>
+        <p class="online-status" style="font-size:20px;font-family:monospace;">OBOUHRIR</p>
+        <p class="level-status" style="font-size:20px;font-family:monospace;"> LV 9</p>
+    </div>
+    <div class="matches" id="matches">
+        <div class="txt">
+            <p>MATCHES</p>
+            <p>W \ L</p>
+            <p>10 - 3</p>
+        </div>
+    </div>
     </div>
    `;
 

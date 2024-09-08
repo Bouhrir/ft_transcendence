@@ -14,6 +14,7 @@ body{
 }
 .logo{
     cursor: pointer;
+    width: 4rem;
 }
 .profile-icon{
     display: flex;
@@ -36,11 +37,6 @@ header{
     background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
     box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
 }
-.profile-icon{
-    border-radius: 50%;
-    margin-right: 10px;
-    width: 1%;
-}
 a {
     text-decoration: none;
     color : white
@@ -53,6 +49,7 @@ a {
     width: 80%;
     color: white;
     font-family: "celesti";
+    font-size: 1rem;
 }
 
 
@@ -63,7 +60,7 @@ a {
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    height: 60rem;
+    height: calc(100vh - 70px);
     padding: 0 100px;
     gap: 11rem;
     color: white
@@ -79,24 +76,83 @@ a {
     background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
     backdrop-filter: blur(10px);
     box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    font-family: "celesti";
 }
-.profile{  
-    font-size: 24px;
-    height: 68%;
-    width: 54%;
-    line-height: 30.19px;
+
+.txt{
+    display : flex;
+    align-items:center;
+    flex-direction: column;
+    padding-top :6rem;
+    
+}
+
+.profile-img{
+    border-radius: 15px;
+    width: 30%;
+    height: 70%;
+}
+.profile{ 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 4rem;
+    height: 46%;
+    width: 69%;
+    margin-bottom: 16rem;
+    padding-top: 7rem;
+    /* block-size: 54px; */
 }
 .level{
     display: flex;
     align-items: center;
-    justify-self: center;
     flex-direction: column;
+    justify-content: space-around;
+
 }
 .level, .matches{
     
-    height: 43%;
-    width: 30%;
-    font-size: 24px;
+    height: 32%;
+    width: 24%;
+    font-size: 2.6rem;
+    margin-bottom: 16rem;
+
 }
 
+.matches{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 0.5rem;
+    /* justify-content: space-around; */
+}
 
+.online-status::before{
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background-color: rgb(4, 255, 4);
+}
+
+@media (max-width: 1500px){
+    .logo{
+        width: 2rem;
+    }
+    .head{
+        font-size: 0.2rem;
+    }
+    .profile , .level, .matches , .stats{
+        height: 60%;
+        width: 90%;
+        font-size:1rem;
+    }
+
+    .level, .matches{
+        height: 40%;
+        width: 80%;
+        font-size:0.5rem;
+    }
+}
