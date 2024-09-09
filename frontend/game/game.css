@@ -1,0 +1,79 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: "celesti";
+    src: url("../profile/celesti-from-font/CelestiFrom-rvrqp.otf");
+}
+
+
+.ping-pong{
+    font-family: "celesti";
+    display : flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    color:white;
+    background-image: url("../profile/background.png");
+    background-size: cover;
+    gap :3rem;
+}
+.subping{
+    position: relative;
+    width:60%;
+    height:60%;
+}
+#table{
+    width: 100%;
+    height: 100%;
+    border : 5px solid rgb(255, 255, 255);
+    border-radius: 20px;
+    /* filter: blur(10px); */
+    backdrop-filter: blur(20px);
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    /* cursor: pointer; */
+
+}
+.paddle{
+    position: absolute;
+    top:50%;
+    height: 100px;
+    width: 20px;
+    background-color: white;
+    /* border: 10px solid white; */
+    transform: translateY(-50%);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: top 0.2s;
+    /* animation: fadeIn 2s; */
+
+
+}
+
+#paddle1{
+    left: 0;
+}
+
+#paddle2 {
+    right: 0;
+}
+
+#ball {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
