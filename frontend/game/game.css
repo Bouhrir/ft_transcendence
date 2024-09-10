@@ -39,6 +39,14 @@
     /* cursor: pointer; */
 
 }
+@keyframes smoothly{
+    from{
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    to{
+        background-color: rgba(8, 8, 8, 0.5);
+    }
+}
 .paddle{
     position: absolute;
     top:50%;
@@ -49,10 +57,9 @@
     transform: translateY(-50%);
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    transition: top 0.2s;
-    /* animation: fadeIn 2s; */
-
-
+    transition: top 0.1s;
+    animation-name: smoothly;
+     animation-duration: 99999999999999999s;
 }
 
 #paddle1{
@@ -73,7 +80,17 @@
     background-color: white;
 }
 
-@keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+.player{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top : 45%;
+}
+
+#player1{
+    left: 0;
+}
+#player2{
+    right: 0;
+    transform: translateX(-100%);
 }
