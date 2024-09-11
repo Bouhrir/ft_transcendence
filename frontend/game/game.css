@@ -39,58 +39,70 @@
     /* cursor: pointer; */
 
 }
-@keyframes smoothly{
+/* @keyframes smoothly{
     from{
         background-color: rgba(255, 255, 255, 0.5);
     }
     to{
         background-color: rgba(8, 8, 8, 0.5);
     }
-}
+} */
 .paddle{
     position: absolute;
     top:50%;
-    height: 100px;
-    width: 20px;
+    height: 13%;
+    width: 2%;
     background-color: white;
     /* border: 10px solid white; */
     transform: translateY(-50%);
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     transition: top 0.1s;
-    animation-name: smoothly;
-     animation-duration: 99999999999999999s;
 }
 
 #paddle1{
-    left: 0;
+    left: 1%;
 }
 
 #paddle2 {
-    right: 0;
+    right: 1%;
 }
 
 #ball {
     position: absolute; 
     top: 50%;
     left: 50%;
-    height: 30px;
-    width: 30px;
+    height: 4%;
+    width: 2%;
     border-radius: 50%;
     background-color: white;
 }
 
-.player{
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    top : 45%;
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#player1{
-    left: 0;
+.player-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-#player2{
-    right: 0;
-    transform: translateX(-100%);
+
+.profile-pic {
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+}
+
+.score-display {
+	/* margin : 0 1rem 0 1rem; */
+    font-size: 50px;
+    font-family: 'Bungee';
+}
+.player-name {
+	margin-top : 1rem;
+	font-size: 30px;
 }

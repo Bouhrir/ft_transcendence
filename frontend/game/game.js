@@ -17,7 +17,17 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('keyup', function(e) {
     keypress[e.key] = false;
 });
-
+let score1 = 0;
+let score2 = 0;
+function updateScore(player) {
+	if (player === 1) {
+		score1++;
+		document.getElementById('score1').textContent = score1;
+	} else if (player === 2) {
+		score2++;
+		document.getElementById('score2').textContent = score2;
+	}
+}
 
 function movePaddle(e) {
     let SPEED = 2;
@@ -41,28 +51,7 @@ function movePaddle(e) {
             paddle2Y += SPEED;
         }
     }
-    // switch(e.key) {
-    //     case 'w':
-    //         if(paddle1Y - 9 >= 0){
-    //             paddle1Y -= SPEED;
-    //         }
-    //         break;
-    //     case 's':
-    //         if(paddle1Y + 9 <= 100){
-    //             paddle1Y += SPEED;
-    //         }   
-    //         break;
-    //     case 'ArrowUp':
-    //         if(paddle2Y - 9 >= 0){
-    //             paddle2Y -= SPEED;
-    //         }
-    //         break;
-    //     case 'ArrowDown':
-    //         if(paddle2Y + 9 <= 100){
-    //             paddle2Y += SPEED;
-    //         }
-    //         break;
-    // }
+
     paddle1.style.top = `${paddle1Y}%`;
     paddle2.style.top = `${paddle2Y}%`;
 }
@@ -86,22 +75,51 @@ function moveBall() {
         ballSpeedY *= -1;
     }
     if (ballRect.left <= subpingRect.left || ballRect.right >= subpingRect.right) {
-        ballSpeedX *= -1;
         ball.style.left = '50%';
         ball.style.top = '50%';
         paddle1.style.top = '50%';
         paddle2.style.top = '50%';
-        ballSpeedX = 2;
-        ballSpeedY = 2;
+        ballSpeedX = 4;
+        ballSpeedY = 4;
     }
-
+	//players score
+	if (ballRect.left <= subpingRect.left) {
+		updateScore(2);
+	}
+	if (ballRect.right >= subpingRect.right) {
+		updateScore(1);
+	}
     ball.style.left = `${ball.offsetLeft + ballSpeedX}px`;
     ball.style.top = `${ball.offsetTop + ballSpeedY}px`;
     movePaddle();
     requestAnimationFrame(moveBall);
 }
 // document.addEventListener('keydown', movePaddle);
-moveBall();
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        startCountdown();
+    }
+});
+
+function startCountdown() {
+    let value = 3;
+    const countdown = document.getElementById('countdown');
+    countdown.style.fontSize = '50px'; // Style as needed
+	countdown.style.position = 'absolute'; // Position the countdown
+	countdown.style.top = '23%';
+	countdown.style.fontFamily = 'Bungee'
+    const countdownInterval = setInterval(() => {
+        countdown.textContent = value;
+        if (value <= 0) {
+            clearInterval(countdownInterval);
+            countdown.style.display = 'none'; // Hide countdown
+            moveBall(); // Function to start the game
+        }
+        value--;
+    }, 1000);
+}
+startCountdown();
+
 // setInterval(moveBall, 10);
 
 
