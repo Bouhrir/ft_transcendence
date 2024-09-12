@@ -3,8 +3,8 @@ let paddle1 = document.getElementById('paddle1');
 let paddle2 = document.getElementById('paddle2');
 
 
-let ballSpeedX = 4;
-let ballSpeedY = 4;
+let ballSpeedX = 8;
+let ballSpeedY = 8;
 
 let paddle1Y = 50;
 let paddle2Y = 50;
@@ -27,8 +27,27 @@ function updateScore(player) {
 		score2++;
 		document.getElementById('score2').textContent = score2;
 	}
+	checkwinner();
 }
-
+function reset(){
+	score1 = 0;
+	score2 = 0;
+	document.getElementById('score1').textContent = score1;
+	document.getElementById('score2').textContent = score2;
+	ballSpeedX = 8;
+	ballSpeedY = 8;
+	paddle1Y = 50;
+	paddle2Y = 50;
+}
+function checkwinner() {
+	if (score1 === 2) {
+		alert('Player 1 wins');
+		reset();
+	} else if (score2 === 2) {
+		alert('Player 2 wins');
+		reset();
+	}
+}
 function movePaddle(e) {
     let SPEED = 2;
     if (keypress['w']) {
@@ -55,7 +74,7 @@ function movePaddle(e) {
     paddle1.style.top = `${paddle1Y}%`;
     paddle2.style.top = `${paddle2Y}%`;
 }
-function moveBall() {
+function startGame() {
     let ballRect = ball.getBoundingClientRect();
     let paddle1Rect = paddle1.getBoundingClientRect();
     let paddle2Rect = paddle2.getBoundingClientRect();
@@ -79,8 +98,8 @@ function moveBall() {
         ball.style.top = '50%';
         paddle1.style.top = '50%';
         paddle2.style.top = '50%';
-        ballSpeedX = 4;
-        ballSpeedY = 4;
+        ballSpeedX = 8;
+        ballSpeedY = 8;
     }
 	//players score
 	if (ballRect.left <= subpingRect.left) {
@@ -92,34 +111,33 @@ function moveBall() {
     ball.style.left = `${ball.offsetLeft + ballSpeedX}px`;
     ball.style.top = `${ball.offsetTop + ballSpeedY}px`;
     movePaddle();
-    requestAnimationFrame(moveBall);
+    requestAnimationFrame(startGame);
 }
-// document.addEventListener('keydown', movePaddle);
-document.addEventListener('keydown', function(event) {
-    if (event.code === 'Space') {
-        startCountdown();
-    }
-});
+
+
+let value = 3;
+const countdown = document.getElementById('countdown');
+countdown.style.fontSize = '50px'; // Style as needed
+countdown.style.position = 'absolute'; // Position the countdown
+countdown.style.top = '23%';
+countdown.style.fontFamily = 'Bungee'
 
 function startCountdown() {
-    let value = 3;
-    const countdown = document.getElementById('countdown');
-    countdown.style.fontSize = '50px'; // Style as needed
-	countdown.style.position = 'absolute'; // Position the countdown
-	countdown.style.top = '23%';
-	countdown.style.fontFamily = 'Bungee'
-    const countdownInterval = setInterval(() => {
-        countdown.textContent = value;
+	const countdownInterval = setInterval(() => {
+		countdown.textContent = value;
         if (value <= 0) {
-            clearInterval(countdownInterval);
+			clearInterval(countdownInterval);
             countdown.style.display = 'none'; // Hide countdown
-            moveBall(); // Function to start the game
+            startGame(); // Function to start the game
         }
         value--;
     }, 1000);
 }
-startCountdown();
+document.addEventListener('keydown', function(e) {
+	if (e.key === ' ') {
+		startCountdown();
+	}
+});
 
-// setInterval(moveBall, 10);
 
 
