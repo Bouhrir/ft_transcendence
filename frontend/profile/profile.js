@@ -71,11 +71,33 @@ function loadMessenger() {
 function loadGame() {
     const game = document.querySelector('.container');
     game.innerHTML = `
-        <div class="game">
-            <h1>Welcome to the game!</h1>
-            <p>Here you can play games.</p>
+        <div class="ping-pong">
+	    	<h1>PING PONG</h1>
+	    	<div id="countdown"></div>
+	    	<div class="scoreboard">
+	    		<div class="player-profile" id="player1-profile">
+	    			<img src="../game/miroka.svg" alt="Player 1" class="profile-pic">
+	    			<p class="player-name">miroka</p>
+	    		</div>
+	    		<div class="score-display">
+	    			<span id="score1">0</span> : <span id="score2">0</span>
+	    		</div>
+	    		<div class="player-profile" id="player2-profile">
+	    			<img src="../game/droke.svg" alt="Player 2" class="profile-pic">
+	    			<p class="player-name">droke</p>
+	    		</div>
+	    	</div>
+            <div class="subping">
+                <div id="paddle1" class="paddle"></div>
+                <div id="paddle2" class="paddle"></div>
+                <div id="ball"></div>
+            </div>
+            <p style="font-size:30px">Press space to start</p>
         </div>
-    `;
+        `;
+        const script = document.createElement('script');
+        script.src = '../game/game.js';
+        document.body.appendChild(script);
 }
 
 function loadSettings() {

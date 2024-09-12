@@ -136,7 +136,9 @@ a {
     border-radius: 50%;
     background-color: rgb(4, 255, 4);
 }
-
+a{
+    cursor: pointer;
+}
 @media (max-width: 1500px){
     .logo{
         width: 2rem;

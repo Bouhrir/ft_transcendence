@@ -133,10 +133,12 @@ function startCountdown() {
         value--;
     }, 1000);
 }
+let check = false;
 document.addEventListener('keydown', function(e) {
-	if (e.key === ' ') {
-		startCountdown();
-	}
+	if (e.key === ' ' && !check) {
+        startCountdown();
+        check = true;
+    }
 });
 
 
