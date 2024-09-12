@@ -39,12 +39,12 @@ function reset(){
 	paddle1Y = 50;
 	paddle2Y = 50;
 }
-function checkwinner() {
-	if (score1 === 2) {
-		alert('Player 1 wins');
+function  checkwinner() {
+	if (score1 === 5) {
+		alert('miroka wins');
 		reset();
-	} else if (score2 === 2) {
-		alert('Player 2 wins');
+	} else if (score2 === 5) {
+		alert('droke wins');
 		reset();
 	}
 }
