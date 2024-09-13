@@ -41,14 +41,31 @@ function reset(){
 }
 function  checkwinner() {
 	if (score1 === 5) {
-		alert('miroka wins');
+		const div = document.createElement('div');
+		div.textContent = 'miroka wins';
+		div.style.position = 'absolute';
+		div.style.height = '100vh';
+		div.style.width = '100vw';
+		div.style.top = '50%';
+		div.style.left = '50%';
+		div.style.transform = 'translate(-50%, -50%)';
+		div.style.fontSize = '200px';
+		div.style.backdropFilter = 'blur(10px)';
+		div.style.fontFamily = 'celesti';
+		div.style.color = 'green';
+		div.textContent = 'miroka wins';
+		document.body.appendChild(div);
+
 		reset();
 	} else if (score2 === 5) {
-		alert('droke wins');
+		document.createElement('div').textContent = 'droke wins';
+		
 		reset();
 	}
 }
+
 function movePaddle(e) {
+
     let SPEED = 2;
     if (keypress['w']) {
         if (paddle1Y - 9 >= 0) {
@@ -70,7 +87,6 @@ function movePaddle(e) {
             paddle2Y += SPEED;
         }
     }
-
     paddle1.style.top = `${paddle1Y}%`;
     paddle2.style.top = `${paddle2Y}%`;
 }
@@ -117,10 +133,13 @@ function startGame() {
 
 let value = 3;
 const countdown = document.getElementById('countdown');
-countdown.style.fontSize = '50px'; // Style as needed
+countdown.style.fontSize = '200px'; // Style as needed
 countdown.style.position = 'absolute'; // Position the countdown
-countdown.style.top = '23%';
+countdown.style.color = 'red'
+countdown.style.top = '0%'; // Center the countdown
+countdown.style.left = '50%'; // Center the countdown
 countdown.style.fontFamily = 'Bungee'
+countdown.style.transform = 'translateX(-43%)'; // Center the countdown
 
 function startCountdown() {
 	const countdownInterval = setInterval(() => {
@@ -133,13 +152,12 @@ function startCountdown() {
         value--;
     }, 1000);
 }
+
 let check = false;
+
 document.addEventListener('keydown', function(e) {
 	if (e.key === ' ' && !check) {
         startCountdown();
         check = true;
     }
 });
-
-
-

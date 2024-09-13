@@ -11,30 +11,29 @@
     <title>ping pong</title>
 </head>
 <body>
-	<div class="ping-pong">
-		<h1>PING PONG</h1>
-		<div id="countdown"></div>
-		<div class="scoreboard">
-			<div class="player-profile" id="player1-profile">
-				<img src="miroka.svg" alt="Player 1" class="profile-pic">
-				<p class="player-name">miroka</p>
-			</div>
-			<div class="score-display">
-				<span id="score1">0</span> : <span id="score2">0</span>
-			</div>
-			<div class="player-profile" id="player2-profile">
-				<img src="droke.svg" alt="Player 2" class="profile-pic">
-				<p class="player-name">droke</p>
-			</div>
+<div class="ping-pong">
+	<h1>PING PONG</h1>
+	<div class="scoreboard">
+		<div class="player-profile" id="player1-profile">
+			<img src="miroka.svg" alt="Player 1" class="profile-pic">
+			<p class="player-name">miroka</p>
 		</div>
-        <div class="subping">
-            <canvas id="table"></canvas>
-            <div id="paddle1" class="paddle"></div>
-            <div id="paddle2" class="paddle"></div>
-            <div id="ball"></div>
-        </div>
-        <p style="font-size:30px">Press space to start</p>
+		<div class="score-display">
+			<span id="score1">0</span> : <span id="score2">0</span>
+		</div>
+		<div class="player-profile" id="player2-profile">
+			<img src="droke.svg" alt="Player 2" class="profile-pic">
+			<p class="player-name">droke</p>
+		</div>
+	</div>
+    <div class="subping">
+		<div id="countdown"></div>
+        <div id="paddle1" class="paddle"></div>
+        <div id="paddle2" class="paddle"></div>
+        <div id="ball"></div>
     </div>
+    <p style="font-size:30px">Press space to start</p>
+</div>
     <script src="./game.js"></script>
 </body>
 </html>

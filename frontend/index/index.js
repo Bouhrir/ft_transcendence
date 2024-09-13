@@ -22,30 +22,15 @@ function navigateTo(page) {
     history.pushState({ page: page }, '', page);
 }
 function loadProfile() {
-
-   const profile = document.querySelector('.container');
-   profile.innerHTML= `
-    <div class="level" 	id="level"> 
-		<p>HIGHEST PRICE</p>
-		<img src="gris.svg" alt="profile picture" width=50%>
-		<p>SILVER</p>
-    </div>
-    <div class="profile" id="profile">
-        <img class="profile-img" src="profile.svg" alt="profile picture">
-        <p>OUSSAMA BOUHRIR</p>
-        <p class="online-status" style="font-size:20px;font-family:monospace;">OBOUHRIR</p>
-        <p class="level-status" style="font-size:20px;font-family:monospace;"> LV 9</p>
-    </div>
-    <div class="matches" id="matches">
-    <div class="txt">
-            <p>MATCHES</p>
-            <p style="font-family:monospace;">W \\ L</p>
-            <p style="font-family:monospace;">10 - 3</p>
-        </div>
-    </div>
-    </div>
-   `;
-
+    fetch('../profile/profile.html') // Path to your profile.html file
+        .then(response => response.text()) // Extract the text from the response
+        .then(html => {
+            const profile = document.querySelector('.container');
+            profile.innerHTML = html; // Set the innerHTML with the fetched content
+        })
+        .catch(error => {
+            console.error('Error loading the profile:', error);
+        });
 }
 
 function loadDashboard() {
@@ -73,7 +58,6 @@ function loadGame() {
     game.innerHTML = `
         <div class="ping-pong">
 	    	<h1>PING PONG</h1>
-	    	<div id="countdown"></div>
 	    	<div class="scoreboard">
 	    		<div class="player-profile" id="player1-profile">
 	    			<img src="../game/miroka.svg" alt="Player 1" class="profile-pic">
@@ -88,6 +72,7 @@ function loadGame() {
 	    		</div>
 	    	</div>
             <div class="subping">
+	    	<div id="countdown"></div>
                 <div id="paddle1" class="paddle"></div>
                 <div id="paddle2" class="paddle"></div>
                 <div id="ball"></div>
