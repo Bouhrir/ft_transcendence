@@ -39,27 +39,50 @@ function reset(){
 	paddle1Y = 50;
 	paddle2Y = 50;
 }
+
+let vrai = false;
+
 function  checkwinner() {
 	if (score1 === 5) {
 		const div = document.createElement('div');
 		div.textContent = 'miroka wins';
 		div.style.position = 'absolute';
+		div.style.display = 'flex';
+        div.style.justifyContent = 'center';
+        div.style.alignItems = 'center';
+		div.style.textAlign = 'center';
 		div.style.height = '100vh';
 		div.style.width = '100vw';
-		div.style.top = '50%';
-		div.style.left = '50%';
-		div.style.transform = 'translate(-50%, -50%)';
+		div.style.top = '0';
+		div.style.left = '0';
 		div.style.fontSize = '200px';
-		div.style.backdropFilter = 'blur(10px)';
+		div.style.backdropFilter = 'blur(20px)';
 		div.style.fontFamily = 'celesti';
-		div.style.color = 'green';
-		div.textContent = 'miroka wins';
-		document.body.appendChild(div);
+		div.style.color = 'rgb(255, 102, 0, 1)';
+		div.textContent = 'MIROKA WINS';
 
+		document.body.appendChild(div);
+		vrai = true;
 		reset();
 	} else if (score2 === 5) {
-		document.createElement('div').textContent = 'droke wins';
+		const div = document.createElement('div');
+		div.textContent = 'miroka wins';
+		div.style.position = 'absolute';
+		div.style.display = 'flex';
+        div.style.justifyContent = 'center';
+        div.style.alignItems = 'center';
+		div.style.textAlign = 'center';
+		div.style.height = '100vh';
+		div.style.width = '100vw';
+		div.style.top = '0';
+		div.style.left = '0';
+		div.style.fontSize = '200px';
+		div.style.backdropFilter = 'blur(20px)';
+		div.style.fontFamily = 'celesti';
+		div.style.color = 'rgb(255, 102, 0, 1)';
+		div.textContent = 'DROKE WINS';
 		
+		vrai = true;
 		reset();
 	}
 }
@@ -127,6 +150,10 @@ function startGame() {
     ball.style.left = `${ball.offsetLeft + ballSpeedX}px`;
     ball.style.top = `${ball.offsetTop + ballSpeedY}px`;
     movePaddle();
+	if (vrai){
+		vrai = false;
+		return;
+	}
     requestAnimationFrame(startGame);
 }
 
@@ -154,10 +181,9 @@ function startCountdown() {
 }
 
 let check = false;
-
 document.addEventListener('keydown', function(e) {
 	if (e.key === ' ' && !check) {
         startCountdown();
-        check = true;
+		check = true;
     }
 });

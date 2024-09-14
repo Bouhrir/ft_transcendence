@@ -1,4 +1,6 @@
-
+document.addEventListener('DOMContentLoaded', function() {
+	navigateTo('game');
+});
 function navigateTo(page) {
     // Clear the current content
     document.querySelector('.container').innerHTML = ``;
