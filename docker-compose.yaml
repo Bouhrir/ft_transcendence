@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  nginx:
+    build: ./frontend
+    container_name: nginx
+    volumes:
+      - ./frontend/front:/var/www/html
+    restart: on-failure
+    ports:
+      - "8001:8001"
+    depends_on:
+      - backend
+    networks:
+      - frontend
+
+  backend:
+    build: ./backend
+    container_name: backend
+    volumes:
+      - ./backend/project:/project
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    networks:
+      - frontend
+    
+networks:
+  frontend:
+    driver: bridge

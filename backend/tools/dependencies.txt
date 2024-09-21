@@ -1,0 +1,6 @@
+django==3.2.7
+djangorestframework
+djangorestframework-simplejwt
+gunicorn
+daphne
+Twisted[http2,tls]
