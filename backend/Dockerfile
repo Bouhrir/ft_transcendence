@@ -12,7 +12,7 @@ COPY tools/dependencies.txt .
 RUN pip install -r ./dependencies.txt
 
 # Copy project
-COPY ./project /
+COPY ./project /project
 COPY tools/script.sh /
 RUN chmod +x /script.sh
 

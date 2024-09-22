@@ -25,7 +25,7 @@ document.getElementById('signup').addEventListener('submit', async function(even
         });
 
         if (response.status !== 201) {
-            alert("Error: " + (await response.text())); // You can also log the actual error message
+            alert("Error: Username already exists"); // You can also log the actual error message
         } else {
             alert("Account created");
         }

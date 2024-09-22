@@ -8,7 +8,8 @@
     box-sizing: border-box;
 }
 body{
-    background: url('../start/background.png');
+    /* background: url('../svg/background.png'); */
+    background-image: linear-gradient(to right, #ffac06,#ff105f);
     background-size: cover;
     background-attachment: fixed;
 }

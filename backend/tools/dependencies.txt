@@ -1,6 +1,7 @@
 django==3.2.7
 djangorestframework
 djangorestframework-simplejwt
+django-cors-headers
 gunicorn
 daphne
 Twisted[http2,tls]
