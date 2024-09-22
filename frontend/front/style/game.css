@@ -6,7 +6,7 @@
 
 @font-face {
     font-family: "celesti";
-    src: url("../profile/celesti-from-font/CelestiFrom-rvrqp.otf");
+    src: url("../font/celesti-from-font/CelestiFrom-rvrqp.otf");
 }
 
 
@@ -16,10 +16,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: calc(100vh - 70px);
+    height: 100vh;
     width: 100%;
     color:white;
-    /* background-image: url("../profile/background.png"); */
+    background-image: url("../svg/background.png");
     background-size: cover;
     gap :3rem;
 }
