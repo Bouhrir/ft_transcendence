@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView , TokenObtainPairView
 
 urlpatterns = [
     path('sign-in/', views.signin),
@@ -10,7 +10,7 @@ urlpatterns = [
     path('deluser/', views.deluser, name='delete-users'),
     
     # Token obtain and refresh endpoints
-    path('token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/', TokenObtainPairView.as_view(), name='token_create'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 

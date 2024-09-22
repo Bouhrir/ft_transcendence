@@ -1,3 +1,71 @@
+@font-face {
+    font-family: "celesti";
+    src: url("../font/celesti-from-font/CelestiFrom-rvrqp.otf");
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background: url('../start/background.png');
+    background-size: cover;
+    background-attachment: fixed;
+}
+.logo{
+    cursor: pointer;
+    width: 4rem;
+}
+.profile-icon{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+header{
+    padding: 0 1.5%;
+    display : flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    width: 50%;
+    border-radius: 15px;
+    margin-top: 12px;
+    margin-left: 32px;
+    background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+}
+a {
+    text-decoration: none;
+    color : white
+}
+.head{
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    color: white;
+    font-family: "celesti";
+    font-size: 1rem;
+}
+
+
+
+.container{
+    display : flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: calc(100vh - 70px);
+    padding: 0 100px;
+    gap: 11rem;
+    color: white
+}
+
 
 .profile , .level, .matches , .stats{
     color  : white;
@@ -71,3 +139,4 @@
 a{
     cursor: pointer;
 }
+

@@ -1,0 +1,59 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.signup-form {
+    position: absolute;
+    color: white;
+    border-radius: 15px;
+    background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(10px);
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    font-family: "celesti";
+    left: 40%;
+    width: 20%;
+    height: 40%;
+}
+
+#signup {
+    padding-top:8% ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+}
+
+#username, #email, #password, #confirm_password {
+    font-family: "Bungee";
+    width: 50%; 
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.287);
+    backdrop-filter: blur(10px);
+    border: none;
+}
+
+#username:focus, #email:focus, #password:focus, #confirm_password:focus {
+    outline: none;
+    border: 2px solid rgb(216, 97, 22);background-image: linear-gradient(to right, #ff541059, #412f0c48);
+}
+
+#signup button {
+    font-family: "celesti";
+    width: 20%;
+    padding: 10px;
+    font-size: 100%;
+    background-image: linear-gradient(to right, #ff105f, #ffac06);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}

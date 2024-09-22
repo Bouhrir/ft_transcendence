@@ -2,12 +2,8 @@ from rest_framework.response  import Response
 from rest_framework.decorators  import api_view
 from django.contrib.auth.models import User
 from rest_framework import status
-from .serializers import MyTokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
 def welcome(request):
     return render(request,'hello.html')
 
