@@ -44,6 +44,7 @@ document.getElementById('signup').addEventListener('submit', async function(even
         } else {
             console.log(response);
 			window.location.href = '../start/game.html';
+            NavigateTo('/game');
         }
 
     } catch (error) {

@@ -26,6 +26,15 @@ document.getElementById('signin').addEventListener('submit', function(event) {
             password: password
         })
     }).then(resp => resp.json())
-    // Launch the game
-    window.location.href = '../start/game.html';
+    .then(data => {
+        if (data.access) {
+            localStorage.setItem('token', data.access);
+            window.location.href = '../start/game.html';
+        } else {
+            console.erre('Error:', data);
+        }
+    }).catsh(error => {
+        console.error('Error:', error);
+        alert("An error occurred");
+    });
 });
