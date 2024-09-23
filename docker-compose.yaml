@@ -2,6 +2,8 @@ version: '3.9'
 
 services:
   nginx:
+    depends_on:
+      - backend
     build: ./frontend
     container_name: nginx
     volumes:
@@ -9,8 +11,6 @@ services:
     restart: on-failure
     ports:
       - "8001:8001"
-    depends_on:
-      - backend
     networks:
       - frontend
 

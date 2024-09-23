@@ -40,7 +40,9 @@ document.getElementById('signup').addEventListener('submit', async function(even
 
         if (response.status !== 201) {
             alert("Error: Username already exists"); // You can also log the actual error message
+            console.log(response);
         } else {
+            console.log(response);
 			window.location.href = '../start/game.html';
         }
 

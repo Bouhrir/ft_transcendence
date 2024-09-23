@@ -31,7 +31,7 @@ body {
 
 #username, #email, #password, #confirm_password {
     font-family: "Bungee";
-    width: 50%; 
+    width: 80%; 
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
