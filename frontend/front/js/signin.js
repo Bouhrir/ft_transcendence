@@ -1,12 +1,12 @@
 let div = document.createElement('div');
-div.className = 'signup-form';
+div.className = 'signin-form';
 div.innerHTML = `
-	<form id="signup">
+	<form id="signin">
 		<h2>Signin</h2>
 		<input type="text" id="username" placeholder="Username" required>
 		<input type="password" id="password" placeholder="Password" required>
-		<button type="submit">Signup</button>
-        <p>Don't have an account? </p><a>Signup</a>
+		<button type="submit">Sign-in</button>
+        <p>Don't have an account?, <a>Sign up</a> </p>
 	</form>`;
 document.body.appendChild(div);
 
@@ -16,7 +16,7 @@ document.getElementById('signin').addEventListener('submit', function(event) {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     
-    fetch('https://0.0.0.0:8000/token/', {
+        resp = fetch('https://0.0.0.0:8000/token/', {
         method: "POST",
         headers:{
             "content-type": "application/json",
@@ -27,8 +27,9 @@ document.getElementById('signin').addEventListener('submit', function(event) {
         })
     }).then(resp => resp.json())
     .then(data => {
-        if (data.access) {
+        if (data.refresh && data.access) {
             localStorage.setItem('token', data.access);
+            localStorage.setItem('token', data.refresh);
             window.location.href = '../start/game.html';
         } else {
             console.erre('Error:', data);

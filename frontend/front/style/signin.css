@@ -1,0 +1,35 @@
+.signin-form {
+    position: absolute;
+    color: white;
+    border-radius: 15px;
+    background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(10px);
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    font-family: "celesti";
+    padding-top: 1%;
+    left: 40%;
+    width: 20%;
+    height: 40%;
+}
+
+#signin {
+    padding-top:8% ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+}
+#signin button {
+    font-family: "celesti";
+    width: 20%;
+    padding: 10px;
+    font-size: 100%;
+    background-image: linear-gradient(to right, #ff105f, #ffac06);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}

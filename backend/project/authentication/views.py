@@ -34,11 +34,6 @@ def deluser(request):
         return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
-    
-
-from django.core.mail import send_mail
-from django.conf import settings
-import secrets
 
 @api_view(['POST'])
 def signup(request):
@@ -54,21 +49,7 @@ def signup(request):
 
     user = User.objects.create_user(username=username, email=email, password=password)
 
-    # Generate a unique token for 2FA
-    token = secrets.token_hex(20)
-
-    # Store the token in the session
-    request.session['2fa_token'] = token
-
-    # Send the token via email
-    send_mail(
-        'Your 2FA token',
-        f'Your 2FA token is {token}',
-        settings.EMAIL_HOST_USER,
-        [email],
-        fail_silently=False,
-    )
-    return Response({"message": "User registered successfully. Please check your email for the 2FA token."}, status=status.HTTP_201_CREATED)
+    return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
