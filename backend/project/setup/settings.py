@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'daphne',
     'authentication',
     'game',
     'chat',
@@ -86,7 +87,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8001",  # Frontend development domain
-    "http://0.0.0.0:8000",
+    "http://localhost:8000",
 ]
 ROOT_URLCONF = 'setup.urls'
 

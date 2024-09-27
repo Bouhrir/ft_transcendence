@@ -5,8 +5,9 @@ all : $(NAME)
 $(NAME):
 	docker-compose up --build -d 
 
-stop:
+clean:
 	docker-compose down
+	docker volume prune -f
 
 fclean:
 	docker-compose down

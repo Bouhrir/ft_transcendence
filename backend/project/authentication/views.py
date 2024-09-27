@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from django.shortcuts import render
 from django.contrib.auth import login , authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -64,6 +65,11 @@ def signin(request):
 
     if user is not None:
         login(request, user)
-        return Response({"message": "User logged in successfully"}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "message": "User logged in successfully",
+            "refresh": str(refresh),
+            "access":str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)

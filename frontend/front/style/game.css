@@ -18,8 +18,8 @@
     flex-direction: column;
     height: 100vh;
     width: 100%;
-    color:white;
     background-image: url("../svg/background.png");
+    color:white;
     background-size: cover;
     gap :3rem;
 }

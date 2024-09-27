@@ -3,6 +3,5 @@
 python manage.py makemigrations
 python manage.py migrate
 
-# exec daphne -u /tmp/daphne.sock setup.asgi:application
-exec python manage.py runserver 0.0.0.0:8000
+daphne -b 0.0.0.0 -p 8000 setup.asgi:application
 # exec gunicorn setup.wsgi:application --bind 0.0.0.0:8000
