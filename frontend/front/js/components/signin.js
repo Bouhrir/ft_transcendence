@@ -1,5 +1,9 @@
 class SigninComponent extends HTMLElement {
     connectedCallback() {
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.remove();
+        }
         this.innerHTML = `
         <div class="signin-form">
             <form id="signin">
@@ -8,7 +12,7 @@ class SigninComponent extends HTMLElement {
                 <input type="password" id="password" placeholder="Password" required>
                 <button class="IN" type="submit">Sign In</button>
                 <p>Don't have an account? <a href="#signup">Sign up</a></p>
-                <a class="IN" href="#forgot-password">Forgot password?</a>
+                <a href="#forgot-password">Forgot password?</a>
             </form>
         </div>`;
         const signin = document.getElementById('signin');
@@ -18,23 +22,22 @@ class SigninComponent extends HTMLElement {
             const password = document.getElementById('password').value;
 
             // Perform fetch to backend (Django server)
-            const response = await fetch('http://127.0.0.1:8000/auth/token/', {
+            const response = await fetch('http://127.0.0.1:8000/auth/sign-in/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username:username
-                    , password:password
+                    username:username,
+                    password:password
                 })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem('accessToken', data.access);   // Short-lived token
-                localStorage.setItem('refreshToken', data.refresh); // Long-lived token
+                document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
                 window.location.hash = '#dashboard';
             } else {
                 alert('signin failed');

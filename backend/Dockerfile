@@ -4,10 +4,10 @@ RUN apt-get update -y && apt-get install gcc -y
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-# Install dependencies
-RUN pip install --upgrade pip
+
 
 # Install dependencies
+RUN pip install --upgrade pip
 COPY tools/dependencies.txt .
 RUN pip install -r ./dependencies.txt
 

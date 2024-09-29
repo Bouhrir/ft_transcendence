@@ -1,18 +1,17 @@
-
-class NavbarComponent extends HTMLElement {
-    connectedCallback() {
-        this.innerHTML = `
-            <header>
-		        <nav class="head">
-		        	<img class="logo" src="../svg/logo.svg">
-		        	<a href="#dashbord" >dashboard</a>
-		        	<a href="#messenger" >messenger</a>
-		        	<a href="#game" >game</a>
-		        	<a href="#setting" >settings</a>
-		        </nav>
-	        </header>
-        `;
-    }
+function createNavbar() {
+	const navbar = document.createElement('div');
+	navbar.className = 'navbar';
+    navbar.innerHTML = `
+		<header>
+			<nav class="head">
+				<img class="logo" src="../svg/logo.svg">
+				<a href="#dashboard" >dashboard</a>
+				<a href="#messenger" >messenger</a>
+				<a href="#game" >game</a>
+				<a href="#settings" >settings</a>
+			</nav>
+		</header>
+    `;
+	if (!document.querySelector('.navbar'))
+		document.body.prepend(navbar);
 }
-
-customElements.define('navbar-component', NavbarComponent);

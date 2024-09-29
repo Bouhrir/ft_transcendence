@@ -1,5 +1,10 @@
+
 class SignupComponent extends HTMLElement {
     connectedCallback() {
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.remove();
+        }
         this.innerHTML = `
         <div class="signup-form">
             <form id="signup">

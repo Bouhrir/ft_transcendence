@@ -7,35 +7,12 @@
     padding: 0;
     box-sizing: border-box;
 }
-body{
-    background: url('../svg/background.png');
+body {
+    background-image: url('../svg/background.png');
     background-size: cover;
     background-attachment: fixed;
 }
-body{
-    background-image: linear-gradient(320deg, #000000, #aa1212, #000000, #a30c0c);
-    background-size: 800% 800%;
 
-    -webkit-animation: smooth 25s ease infinite;
-    -moz-animation: smooth 25s ease infinite;
-    animation: smooth 25s ease infinite;
-}
-
-@-webkit-keyframes smooth {
-    0%{background-position:0% 11%}
-    50%{background-position:100% 90%}
-    100%{background-position:0% 11%}
-}
-@-moz-keyframes smooth {
-    0%{background-position:0% 11%}
-    50%{background-position:100% 90%}
-    100%{background-position:0% 11%}
-}
-@keyframes smooth {
-    0%{background-position:0% 11%}
-    50%{background-position:100% 90%}
-    100%{background-position:0% 11%}
-}
 #bg-video {
     position: absolute;
     top: 0;
@@ -70,10 +47,7 @@ header{
     background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
     box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
 }
-a {
-    text-decoration: none;
-    color: white; 
-}
+
 .head{
 
     display: flex;
@@ -97,7 +71,7 @@ a {
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    height: calc(100vh - 70px);
+    height: 100vh;
     padding: 0 100px;
     gap: 11rem;
     color: white
