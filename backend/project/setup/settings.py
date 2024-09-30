@@ -33,13 +33,13 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'daphne',
     'authentication',
     'game',
     'chat',
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'remote',
+    'channels',
 ]
 
 REST_FRAMEWORK = {
@@ -107,6 +109,11 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 WSGI_APPLICATION = 'setup.wsgi.application'
 ASGI_APPLICATION = "setup.asgi.application"
 

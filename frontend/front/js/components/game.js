@@ -87,6 +87,7 @@ class GameComponent extends HTMLElement {
 					document.body.removeChild(div);
 					document.body.removeChild(button);
 					reset();
+					pingpong();
 				});
 				vrai = true;
 			}
@@ -163,16 +164,8 @@ class GameComponent extends HTMLElement {
 		}
 
 
-		let value = 3;
 		const countdown = document.getElementById('countdown');
-		countdown.style.fontSize = '200px'; // Style as needed
-		countdown.style.position = 'absolute'; // Position the countdown
-		countdown.style.color = 'red'
-		countdown.style.top = '0%'; // Center the countdown
-		countdown.style.left = '50%'; // Center the countdown
-		countdown.style.fontFamily = 'Bungee'
-		countdown.style.transform = 'translateX(-43%)'; // Center the countdown
-
+		let value = 3;
 		function startCountdown() {
 			const countdownInterval = setInterval(() => {
 				countdown.textContent = value;
@@ -184,13 +177,17 @@ class GameComponent extends HTMLElement {
 				value--;
 			}, 1000);
 		}
-		let check = false;
-		document.addEventListener('keydown', function(e) {
-			if (e.key === ' ' && !check) {
-				startCountdown();
-				check = true;
-			}
-		});
+		function pingpong(){
+			let check = false;
+			document.addEventListener('keydown', function(e) {
+				if (e.key === ' ' && !check) {
+					startCountdown();
+					check = true;
+				}
+			});
+		}
+
+		pingpong();
 				
 	}
 }

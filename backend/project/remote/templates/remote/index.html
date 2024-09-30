@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="pongGame" width="800" height="600"></canvas>
+        <script>
+            const canvas = document.getElementById('pongGame');
+            const ctx = canvas.getContext('2d');
+            let isWebSocketOpen = false;  // Track WebSocket connection state
+            let player_id;
+            
+            // Game objects
+            const paddleWidth = 10;
+            const paddleHeight = 100;
+            const ballRadius = 10;
+            let playerScore = 0;
+            let aiScore = 0;
+            let isGameRunning = false;
+            let t = 0;
+            
+            const player = {
+                x: 0,
+                y: canvas.height / 2 - paddleHeight / 2,
+                width: paddleWidth,
+                height: paddleHeight,
+                color: 'white',
+                dy: 0
+            };
+            
+            const ai = {
+                x: canvas.width - paddleWidth,
+                y: canvas.height / 2 - paddleHeight / 2,
+                width: paddleWidth,
+                height: paddleHeight,
+                color: 'white',
+                dy: 0
+            };
+            
+            const ball = {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                radius: ballRadius,
+                speed: 5,
+                dx: 5,
+                dy: 4,
+                color: 'white'
+            };
+
+            const ws = new WebSocket('ws://localhost:8000/ws/pong/');
+            ws.onopen = function() {
+                console.log("WebSocket is open now.");
+                isWebSocketOpen = true;
+            };
+
+            // Handle WebSocket errors
+            ws.onerror = function(error) {
+                console.error("WebSocket error:", error);
+            };
+
+            // Handle WebSocket close
+            ws.onclose = function() {
+                isWebSocketOpen = false;
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.action == "ball_position") {
+                    ball.x = data.ball_state.x
+                    ball.y = data.ball_state.y
+                }
+                console.log(data.ball_state)
+            }
+            // this is not exactly right because they don't start with the same thing i guess
+
+
+            // Draw functions
+            function drawPaddle(x, y, width, height, color) {
+                ctx.fillStyle = color;
+                ctx.fillRect(x, y, width, height);
+            }
+
+            function drawBall(x, y, radius, color) {
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            function drawScore() {
+                ctx.font = '32px Arial';
+                ctx.fillStyle = 'white';
+                ctx.fillText(playerScore, canvas.width / 4, 50);
+                ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
+            }
+            function movePaddle() {
+                player.y += player.dy;
+                ai.y += ai.dy;
+                // Ensure paddle stays within canvas bounds
+                if (player.y < 0) player.y = 0;
+                if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
+                if (ai.y < 0) ai.y = 0;
+                if (ai.y + ai.height > canvas.height) ai.y = canvas.height - ai.height;
+            }
+
+            function moveBall() {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                // Ball collision with top and bottom walls
+                if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+                 ball.dy *= -1;
+                }
+            
+                // Ball collision with paddles
+                if (ball.x - ball.radius < player.x + player.width && ball.y > player.y && ball.y < player.y + player.height) {
+                    ball.dx *= -1;
+                }
+                if (ball.x + ball.radius > ai.x && ball.y > ai.y && ball.y < ai.y + ai.height) {
+                    ball.dx *= -1;
+                }
+            
+                // Ball goes off the screen
+                if (ball.x - ball.radius < 0) {
+                    // send score to the server and maybe wait some time before launching the ball again so they have the same time
+                    aiScore++;
+                    isGameRunning = false;
+                    if (isWebSocketOpen) {
+                        const data = {
+                            type: 'status',
+                            option: 'reset',
+                            player_id: player_id
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
+                } else if (ball.x + ball.radius > canvas.width) {
+                    playerScore++;
+                    isGameRunning = false;
+                    if (isWebSocketOpen) {
+                        const data = {
+                            type: 'status',
+                            option: 'reset',
+                            player_id: player_id
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
+                }
+            }
+            function resetBall(dx, dy) {
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height / 2;
+                ball.dx *= dx;
+                ball.dy = dy;
+            }
+
+            function update() {
+                movePaddle();
+                // moveBall();
+            }       
+
+            // Render game objects
+            function render() {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw paddles, ball, and scores
+                drawPaddle(player.x, player.y, player.width, player.height, player.color);
+                drawPaddle(ai.x, ai.y, ai.width, ai.height, ai.color);
+                drawBall(ball.x, ball.y, ball.radius, ball.color);
+                drawScore();
+            }
+            // Game loop
+            function gameLoop() {
+                update();
+                render();
+                requestAnimationFrame(gameLoop);
+            }
+
+            // Keyboard events for player control
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp') {
+                    player.dy = -5;
+                    // if (isWebSocketOpen) {
+                    //     const data = {
+                    //         type: 'paddle',
+                    //         option: 'key_down_arrow_up',
+                    //         player_id: player_id
+                    //     };
+                    //     ws.send(JSON.stringify(data));
+                    // }
+                } else if (e.key === 'ArrowDown') {
+                    player.dy = 5;
+                    // if (isWebSocketOpen) {
+                    //     const data = {
+                    //         type: 'paddle',
+                    //         option: 'key_down_arrow_down',
+                    //         player_id: player_id
+                    //     };
+                    //     ws.send(JSON.stringify(data));
+                    // }
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    // if (isWebSocketOpen) {
+                    //     const data = {
+                    //         type: 'paddle',
+                    //         option: 'key_up',
+                    //         player_id: player_id
+                    //     };
+                    //     ws.send(JSON.stringify(data));
+                    // }
+                    player.dy = 0;
+                }
+            });
+            gameLoop();
+            // Start the game loop
+    </script>
+</body>
+</html>

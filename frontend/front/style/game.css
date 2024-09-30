@@ -80,25 +80,24 @@
 	/* margin : 0 1rem 0 1rem; */
     font-size: 50px;
     font-family: 'Bungee';
+    /* display: no; */
 }
 .player-name {
 	margin-top : 1rem;
 	font-size: 30px;
 }
 
+#countdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7rem;
+    font-family: 'Bungee';
+    color: white;
+    animation: pulseEffect 1s infinite;
+}
 
-/* .winner{
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 100%;
-	height: 100%;
-	border-radius: 15px;
-	background-image: linear-gradient(to bottom right, rgba(255, 254, 254, 0.2) ,rgba(0, 0, 0, 0.25));
-    backdrop-filter: blur(10px);
-	box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
-	font-family: "celesti";
-} */
+
 
 .win{
     position : absolute;
