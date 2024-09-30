@@ -38,6 +38,7 @@ class SigninComponent extends HTMLElement {
 
             if (response.ok) {
                 document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
+				document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
                 window.location.hash = '#dashboard';
             } else {
                 alert('signin failed');
