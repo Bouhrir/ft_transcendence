@@ -11,4 +11,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view()),
     path('token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     path('me/', views.me),
+    path('deluser/', views.deluser),
+    path('users/', views.user_list_view),
+    path('2fa/setup/', views.setup_2fa),
+    path('2fa/verify/', views.verify_2fa),
+    path('', views.welcome),
 ]

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'chat',
     'tournament',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'remote',
