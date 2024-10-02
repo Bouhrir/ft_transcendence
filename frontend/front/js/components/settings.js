@@ -16,6 +16,7 @@
                 <input placeholder="email" type="email" id="email" name="email"><br>
                 
                 <button type="button" id="2faButton" class="toggle-2fa">Enable 2FA</button><br>
+                <img id="qrCode"></img>
 
                 <input type="submit" value="Save">
             </form>
@@ -42,6 +43,7 @@
                 button.classList.add('active');
                 button.textContent = 'Enable 2FA';
                 const access = getAccessTokenFromCookies();
+                console.log('-----settings-----');
                 console.log(access);
                 try {
                     const response = await fetch('http://localhost:8000/2fa/setup/', {

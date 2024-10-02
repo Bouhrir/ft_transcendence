@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import  Token
 from rest_framework import status
 from .serializers import UserSerializer
+
 import pyotp
 import qrcode
 from io import BytesIO
@@ -16,11 +17,11 @@ def register_api(request):
     serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
-        user = serializer.save()
+        serializer.save()
+        user = User.objects.get(**serializer.data)
         token = Token.objects.create(user=user)
         return Response({
             "message": "User registered successfully",
-            "token": token.key,
         }, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -30,8 +31,7 @@ def register_api(request):
 @permission_classes([IsAuthenticated])
 def setup_2fa(request):
     user = request.user
-    profile = user.userprofile
-
+    profile = user
     if not profile.totp_secret:
         totp_secret = pyotp.random_base32()  # Generate a new TOTP secret
         profile.totp_secret = totp_secret
