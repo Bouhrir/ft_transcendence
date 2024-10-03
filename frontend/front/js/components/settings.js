@@ -55,7 +55,7 @@ class SettingComponent extends HTMLElement {
                 const access = getAccessTokenFromCookies();
                 
                 try {
-                    const response = await fetch('http://localhost:8000/2fa/setup/', {
+                    const response = await fetch('http://localhost:81/2fa/setup/', {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${access}`,
@@ -84,7 +84,7 @@ class SettingComponent extends HTMLElement {
             const access = getAccessTokenFromCookies();
 
             try {
-                const response = await fetch('http://localhost:8000/2fa/verify/', {
+                const response = await fetch('http://localhost:81/2fa/verify/', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${access}`,

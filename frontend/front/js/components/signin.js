@@ -22,7 +22,7 @@ class SigninComponent extends HTMLElement {
             const password = document.getElementById('password').value;
 
             // Perform fetch to backend (Django server)
-            const response = await fetch('http://127.0.0.1:8000/auth/sign-in/', {
+            const response = await fetch('http://localhost:81/auth/sign-in/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {

@@ -177,3 +177,14 @@
         transform: scale(1.1);
     }
 }
+
+
+canvas {
+    background-color: #222;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #fff;
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2), 
+                0px 0px 40px rgba(0, 255, 0, 0.2), 
+                0px 0px 80px rgba(255, 255, 255, 0.1);
+}
