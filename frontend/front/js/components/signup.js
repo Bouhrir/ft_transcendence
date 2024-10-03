@@ -30,7 +30,7 @@ class SignupComponent extends HTMLElement {
                 return;
             }
             // Perform fetch to backend (Django server)
-            const response = await fetch('http://127.0.0.1:8000/auth/sign-up/', {
+            const response = await fetch('http://localhost:81/auth/sign-up/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {

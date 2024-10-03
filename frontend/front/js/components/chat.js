@@ -33,7 +33,7 @@ class MessengerComponent extends HTMLElement {
             
             const message = document.getElementById('chat-input').value;
             
-            const response = await fetch('http://localhost:8000/auth/me/', {
+            const response = await fetch('http:///auth/me/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${access}`,
@@ -50,7 +50,7 @@ class MessengerComponent extends HTMLElement {
 
                 console.log(currentUserId+ ' '+ currentUserName);
 
-                const socket = new WebSocket(`ws://localhost:8000/ws/chat/${currentUserId}/${receiverId}/`);
+                const socket = new WebSocket(`ws://localhost:81/ws/chat/${currentUserId}/${receiverId}/`);
 
                 socket.onopen = function(e) {
                     console.log('Connected to WebSocket');

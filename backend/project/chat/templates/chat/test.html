@@ -71,7 +71,7 @@
         const receiverName = '{{receiver_name}}';
         
         // Replace with your actual WebSocket URL
-        const socket = new WebSocket(`ws://localhost:8000/ws/chat/${currentUserId}/${receiverId}/`);
+        const socket = new WebSocket(`ws://localhost:81/ws/chat/${currentUserId}/${receiverId}/`);
         
         socket.onopen = function(e) {
             console.log('Connected to WebSocket');

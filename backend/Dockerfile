@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED 1
 # Install dependencies
 RUN pip install --upgrade pip
 COPY tools/dependencies.txt .
-RUN pip install -r ./dependencies.txt
+RUN pip3 install -r ./dependencies.txt
 
 # Copy project
 COPY ./project /project
@@ -19,6 +19,7 @@ RUN chmod +x /script.sh
 WORKDIR /project
 RUN python -m venv .env
 RUN echo "source .env/bin/activate" >> ~/.bashrc
+RUN python3 manage.py makemigrations && python3 manage.py migrate
 EXPOSE 8000
 
-CMD ["/bin/bash", "/script.sh"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "setup.asgi:application"]

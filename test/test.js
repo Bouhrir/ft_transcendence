@@ -2,7 +2,7 @@ const setup2FA = async () => {
     const access = document.cookie.getItem('access');
 
     try {
-        const response = await fetch('http://localhost:8000/2fa/setup/', {
+        const response = await fetch('http://localhost:81/2fa/setup/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`, // Authorization header with JWT
@@ -28,7 +28,7 @@ const verify2FA = async (otp) => {
     
 
     try {
-        const response = await fetch('http://localhost:8000/2fa/verify/', {
+        const response = await fetch('http://localhost:81/2fa/verify/', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${access}`,

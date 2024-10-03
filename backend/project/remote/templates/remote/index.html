@@ -5,16 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Game</title>
     <style>
+        canvas {
+            background-color: #222;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #fff;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2), 
+                        0px 0px 40px rgba(0, 255, 0, 0.2), 
+                        0px 0px 80px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Center the canvas on the screen */
         body {
-            margin: 0;
-            background: black;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-        canvas {
-            border: 1px solid white;
+            background: linear-gradient(45deg, #333, #000);
+            margin: 0;
         }
     </style>
 </head>
@@ -34,6 +42,7 @@
             let aiScore = 0;
             let isGameRunning = false;
             let t = 0;
+            let newData = false;
             
             const player = {
                 x: 0,
@@ -63,7 +72,13 @@
                 color: 'white'
             };
 
-            const ws = new WebSocket('ws://localhost:8000/ws/pong/');
+            async function user(){
+                const URL = "http://localhost:81/getuser/";
+                
+
+            }
+
+            const ws = new WebSocket('ws://localhost:81/ws/pong/');
             ws.onopen = function() {
                 console.log("WebSocket is open now.");
                 isWebSocketOpen = true;
@@ -81,11 +96,24 @@
             
             ws.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-                if (data.action == "ball_position") {
-                    ball.x = data.ball_state.x
-                    ball.y = data.ball_state.y
+                
+                if (data.action == "new_connection") {
+                    console.log("new connection")
+                    player_id = data.player_id
                 }
-                console.log(data.ball_state)
+                else if (data.action == "game_state") {
+                    ball.x = data.game_state.ball.x
+                    ball.y = data.game_state.ball.y
+                    if (data.game_state.players.player1.id == player_id) {
+                        player.y = data.game_state.players.player1.player_y
+                        ai.y = data.game_state.players.player1.ai_y
+                    } else {
+                        player.y = data.game_state.players.player2.player_y
+                        ai.y = data.game_state.players.player2.ai_y
+                    }
+                }
+
+                // console.log(data.game_state)
             }
             // this is not exactly right because they don't start with the same thing i guess
 
@@ -94,14 +122,21 @@
             function drawPaddle(x, y, width, height, color) {
                 ctx.fillStyle = color;
                 ctx.fillRect(x, y, width, height);
+                //glowEffect(x, y, width, height, "#0F0");
             }
 
             function drawBall(x, y, radius, color) {
+                if (newData == false) {
+                    console.log("no new data");
+                    // ball.x += 2;
+                    // ball.x += 2;
+                }
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, radius, 0, Math.PI * 2);
                 ctx.fillStyle = color;
                 ctx.fill();
                 ctx.closePath();
+                newData = false
             }
 
             function drawScore() {
@@ -110,68 +145,68 @@
                 ctx.fillText(playerScore, canvas.width / 4, 50);
                 ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
             }
-            function movePaddle() {
-                player.y += player.dy;
-                ai.y += ai.dy;
-                // Ensure paddle stays within canvas bounds
-                if (player.y < 0) player.y = 0;
-                if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
-                if (ai.y < 0) ai.y = 0;
-                if (ai.y + ai.height > canvas.height) ai.y = canvas.height - ai.height;
-            }
+            // function movePaddle() {
+            //     player.y += player.dy;
+            //     ai.y += ai.dy;
+            //     // Ensure paddle stays within canvas bounds
+            //     if (player.y < 0) player.y = 0;
+            //     if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
+            //     if (ai.y < 0) ai.y = 0;
+            //     if (ai.y + ai.height > canvas.height) ai.y = canvas.height - ai.height;
+            // }
 
-            function moveBall() {
-                ball.x += ball.dx;
-                ball.y += ball.dy;
+            // function moveBall() {
+            //     ball.x += ball.dx;
+            //     ball.y += ball.dy;
 
-                // Ball collision with top and bottom walls
-                if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-                 ball.dy *= -1;
-                }
+            //     // Ball collision with top and bottom walls
+            //     if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+            //      ball.dy *= -1;
+            //     }
             
-                // Ball collision with paddles
-                if (ball.x - ball.radius < player.x + player.width && ball.y > player.y && ball.y < player.y + player.height) {
-                    ball.dx *= -1;
-                }
-                if (ball.x + ball.radius > ai.x && ball.y > ai.y && ball.y < ai.y + ai.height) {
-                    ball.dx *= -1;
-                }
+            //     // Ball collision with paddles
+            //     if (ball.x - ball.radius < player.x + player.width && ball.y > player.y && ball.y < player.y + player.height) {
+            //         ball.dx *= -1;
+            //     }
+            //     if (ball.x + ball.radius > ai.x && ball.y > ai.y && ball.y < ai.y + ai.height) {
+            //         ball.dx *= -1;
+            //     }
             
-                // Ball goes off the screen
-                if (ball.x - ball.radius < 0) {
-                    // send score to the server and maybe wait some time before launching the ball again so they have the same time
-                    aiScore++;
-                    isGameRunning = false;
-                    if (isWebSocketOpen) {
-                        const data = {
-                            type: 'status',
-                            option: 'reset',
-                            player_id: player_id
-                        };
-                        ws.send(JSON.stringify(data));
-                    }
-                } else if (ball.x + ball.radius > canvas.width) {
-                    playerScore++;
-                    isGameRunning = false;
-                    if (isWebSocketOpen) {
-                        const data = {
-                            type: 'status',
-                            option: 'reset',
-                            player_id: player_id
-                        };
-                        ws.send(JSON.stringify(data));
-                    }
-                }
-            }
-            function resetBall(dx, dy) {
-                ball.x = canvas.width / 2;
-                ball.y = canvas.height / 2;
-                ball.dx *= dx;
-                ball.dy = dy;
-            }
+            //     // Ball goes off the screen
+            //     if (ball.x - ball.radius < 0) {
+            //         // send score to the server and maybe wait some time before launching the ball again so they have the same time
+            //         aiScore++;
+            //         isGameRunning = false;
+            //         if (isWebSocketOpen) {
+            //             const data = {
+            //                 type: 'status',
+            //                 option: 'reset',
+            //                 player_id: player_id
+            //             };
+            //             ws.send(JSON.stringify(data));
+            //         }
+            //     } else if (ball.x + ball.radius > canvas.width) {
+            //         playerScore++;
+            //         isGameRunning = false;
+            //         if (isWebSocketOpen) {
+            //             const data = {
+            //                 type: 'status',
+            //                 option: 'reset',
+            //                 player_id: player_id
+            //             };
+            //             ws.send(JSON.stringify(data));
+            //         }
+            //     }
+            // }
+            // function resetBall(dx, dy) {
+            //     ball.x = canvas.width / 2;
+            //     ball.y = canvas.height / 2;
+            //     ball.dx *= dx;
+            //     ball.dy = dy;
+            // }
 
             function update() {
-                movePaddle();
+                // movePaddle();
                 // moveBall();
             }       
 
@@ -188,7 +223,7 @@
             }
             // Game loop
             function gameLoop() {
-                update();
+                // update();
                 render();
                 requestAnimationFrame(gameLoop);
             }
@@ -196,39 +231,39 @@
             // Keyboard events for player control
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowUp') {
-                    player.dy = -5;
-                    // if (isWebSocketOpen) {
-                    //     const data = {
-                    //         type: 'paddle',
-                    //         option: 'key_down_arrow_up',
-                    //         player_id: player_id
-                    //     };
-                    //     ws.send(JSON.stringify(data));
-                    // }
+                    // player.dy = -5;
+                    if (isWebSocketOpen) {
+                        const data = {
+                            type: 'paddle_movement',
+                            paddle_dy: -5,
+                            player_id: player_id
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
                 } else if (e.key === 'ArrowDown') {
-                    player.dy = 5;
-                    // if (isWebSocketOpen) {
-                    //     const data = {
-                    //         type: 'paddle',
-                    //         option: 'key_down_arrow_down',
-                    //         player_id: player_id
-                    //     };
-                    //     ws.send(JSON.stringify(data));
-                    // }
+                    // player.dy = 5;
+                    if (isWebSocketOpen) {
+                        const data = {
+                            type: 'paddle_movement',
+                            paddle_dy: 5,
+                            player_id: player_id
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
                 }
             });
 
             document.addEventListener('keyup', (e) => {
                 if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    // if (isWebSocketOpen) {
-                    //     const data = {
-                    //         type: 'paddle',
-                    //         option: 'key_up',
-                    //         player_id: player_id
-                    //     };
-                    //     ws.send(JSON.stringify(data));
-                    // }
-                    player.dy = 0;
+                    if (isWebSocketOpen) {
+                        const data = {
+                            type: 'paddle_movement',
+                            paddle_dy: 0,
+                            player_id: player_id
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
+                    // player.dy = 0;
                 }
             });
             gameLoop();
@@ -236,3 +271,26 @@
     </script>
 </body>
 </html>
+
+
+<!-- const data = event.data;  // This is a Blob (binary data)
+
+// Convert the binary data (Blob) to an ArrayBuffer
+data.arrayBuffer().then(buffer => {
+    const dataView = new DataView(buffer);
+
+    // Unpack the 4 floats: x, y, dx, dy
+    const x = dataView.getFloat32(0, true);  // Little-endian
+    const y = dataView.getFloat32(4, true);
+    const dx = dataView.getFloat32(8, true);
+    const dy = dataView.getFloat32(12, true);
+
+    // Update ball position based on the received data
+    ball.x = x;
+    ball.y = y;
+    ball.dx = dx;
+    ball.dy = dy;
+
+    // console.log(`Ball position: (${x}, ${y}), Velocity: (${dx}, ${dy})`);
+});
+newData = true; -->

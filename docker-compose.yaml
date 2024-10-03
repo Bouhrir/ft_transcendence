@@ -10,7 +10,7 @@ services:
       - ./frontend/front:/var/www/html
     restart: on-failure
     ports:
-      - "8001:8001"
+      - "81:81"
     networks:
       - frontend
 
@@ -20,8 +20,6 @@ services:
     volumes:
       - ./backend/project:/project
     restart: on-failure
-    ports:
-      - "8000:8000"
     networks:
       - frontend
     
