@@ -1,9 +1,14 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 import random
 import time
 import struct
+from jwt import decode, exceptions
+from django.conf import settings
+from rest_framework.exceptions import AuthenticationFailed
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+
 
 # from channels.generic.websocket import AsyncWebsocketConsumer
 # from rest_framework_simplejwt.tokens import UntypedToken
@@ -125,38 +130,39 @@ class PongConsumer(AsyncWebsocketConsumer):
         }
     }
     async def connect(self):
-        # if user.is_authenticated:
-        #     # You can use the user object here
-        #     print(f"Current user: {user.username}")
-        #     await self.accept()
-        # else:
-        #     # Handle unauthenticated users
-        #     await self.close()
-        if not hasattr(self.channel_layer, 'players'):
-            self.channel_layer.players = {}
-
-        if len(self.channel_layer.players) == 0:
-            self.player_id = 1
-            self.game_state["players"]["player1"]["id"] = self.player_id
-            self.game_state["players"]["player1"]["channel_name"] = self.channel_name
+        from django.contrib.auth.models import User
+        cookie_value = self.scope['cookies'].get('access')
+        print(cookie_value)
+        if cookie_value:
+            try:
+                payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
+                user_id = payload.get('user_id')
+                self.scope['user'] = await database_sync_to_async(User.objects.get)(id=user_id)
+            except (ExpiredSignatureError, DecodeError, User.DoesNotExist, TokenError):
+                self.scope['user'] = AnonymousUser()
         else:
-            self.player_id = 2
-            self.game_state["players"]["player2"]["id"] = self.player_id
-            self.game_state["players"]["player2"]["channel_name"] = self.channel_name
-            asyncio.create_task(self.game_loop())
-        self.channel_layer.players[self.channel_name] = self.player_id
+            self.scope['user'] = AnonymousUser()
+
+        if self.scope['user'].is_authenticated:
+            print("is auth", self.scope['user'])
+            await self.accept()  # Accept the WebSocket connection
+        else:
+            print("not auth")
+            await self.close()  # Close connection if not authenticated
         
-        self.room_group_name = 'pong_game'
-        await self.accept()
+        
+        # print(self.scope['user'].id)
+        # self.room_group_name = 'pong_game'
         await self.send(text_data=json.dumps({
             'action': 'new_connection',
-            'player_id': self.player_id
+            'player_id': self.scope['user'].id
         }))
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        # # await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         # asyncio.create_task(self.game_loop())
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        print("disco")
+        # await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
 # i am either gonna check before giving the other value or just give both the value then check after i will test and then decide
     async def receive(self, text_data):
@@ -171,7 +177,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.game_state["players"]["player1"]["ai_dy"] = data["paddle_dy"]
         if data["type"] == "user_id":
             player_id = data["id"]
-            print(data["id"])
+            # print(data["id"])
             # print("test")
 
 # Check for wall collisions
@@ -210,8 +216,12 @@ class PongConsumer(AsyncWebsocketConsumer):
                 #     }
                 # ),
             # await asyncio.gather(
-            self.send_game_state_to_players()
-            asyncio.sleep(1/60)
+            # self.send_game_state_to_players()
+            await self.send(text_data=json.dumps({
+                'action': 'game_state',
+                'game_state': self.game_state
+            }))
+            await asyncio.sleep(1/60)
             # )
 
     async def send_game_state_to_players(self):

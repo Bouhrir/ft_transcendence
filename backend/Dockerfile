@@ -4,6 +4,8 @@ RUN apt-get update -y && apt-get install gcc -y
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+# ENV DJANGO_SETTINGS_MODULE=setup.settings
+
 
 
 # Install dependencies

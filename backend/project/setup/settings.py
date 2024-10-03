@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5']
 
+ASGI_APPLICATION = 'setup.asgi.application'
 
 # Application definition
 
@@ -117,8 +118,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-WSGI_APPLICATION = 'setup.wsgi.application'
-ASGI_APPLICATION = 'setup.asgi.application'
+# WSGI_APPLICATION = 'setup.wsgi.application'
 
 
 # Database

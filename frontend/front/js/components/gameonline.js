@@ -3,7 +3,6 @@ class GameComponentOnline extends HTMLElement {
 		this.innerHTML = `
 		<canvas id="pongGame" width="800" height="600"></canvas>
         `
-        
         // let player_id;
 		const canvas = document.getElementById('pongGame');
             const ctx = canvas.getContext('2d');
@@ -52,8 +51,18 @@ class GameComponentOnline extends HTMLElement {
                 
 
             // }
-
-            const ws = new WebSocket('ws://localhost:81/ws/pong/');
+            // function getAccessTokenFromCookies() {
+            //     const cookies = document.cookie.split(';');
+            //     for (let i = 0; i < cookies.length; i++) {
+            //         const cookie = cookies[i].trim();
+            //         if (cookie.startsWith('access=')) {
+            //             return cookie.substring('access='.length);
+            //         }
+            //     }
+            //     return null;
+            // }
+            // const access = getAccessTokenFromCookies();
+            const ws = new WebSocket(`ws://localhost:81/ws/pong/`);
             ws.onopen = function() {
                 console.log("WebSocket is open now.");
                 isWebSocketOpen = true;
@@ -74,7 +83,8 @@ class GameComponentOnline extends HTMLElement {
                 
                 if (data.action == "new_connection") {
                     console.log("new connection")
-                    // console.log(player_id)
+                    player_id = data.player_id
+                    console.log(player_id)
                     
                 }
                 else if (data.action == "game_state") {
@@ -93,50 +103,40 @@ class GameComponentOnline extends HTMLElement {
             }
             // this is not exactly right because they don't start with the same thing i guess
 
-            function getAccessTokenFromCookies() {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.startsWith('access=')) {
-                        return cookie.substring('access='.length);
-                    }
-                }
-                return null;
-            }
-            const access = getAccessTokenFromCookies();
-            async function getId(){
-                const response = await fetch('http://localhost:81/auth/me/', {
-                    method : 'GET',
-                    headers:{
-                        'Authorization': `Bearer ${access}`, // Authorization header with JWT
-                        'Content-Type': 'application/json',
-                    }
-                });
+            
+            // async function getId(){
+            //     const response = await fetch('http://localhost:81/auth/me/', {
+            //         method : 'GET',
+            //         headers:{
+            //             'Authorization': `Bearer ${access}`, // Authorization header with JWT
+            //             'Content-Type': 'application/json',
+            //         }
+            //     });
     
-                if (response.ok){
-                    const data = await response.json();
-                    console.log('id ====> ' + data.id);
-                    console.log('username ====> ' + data.username);
-                    player_id = data.id
-                    await sendPlayerIdWhenReady();
-                }
-                else
-                    console.error('error:', response.statusText);
-            }
+            //     if (response.ok){
+            //         const data = await response.json();
+            //         console.log('id ====> ' + data.id);
+            //         console.log('username ====> ' + data.username);
+            //         player_id = data.id
+            //         // await sendPlayerIdWhenReady();
+            //     }
+            //     else
+            //         console.error('error:', response.statusText);
+            // }
             
-            async function sendPlayerIdWhenReady() {
-                while (!isWebSocketOpen || player_id === null) {
-                    await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100ms before checking again
-                }
+            // async function sendPlayerIdWhenReady() {
+            //     while (!isWebSocketOpen || player_id === null) {
+            //         await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100ms before checking again
+            //     }
             
-                // At this point, both conditions are met
-                const data_to_send = {
-                    type: 'user_id',
-                    id: player_id
-                };
-                ws.send(JSON.stringify(data_to_send));
-            }
-            getId();
+            //     // At this point, both conditions are met
+            //     const data_to_send = {
+            //         type: 'user_id',
+            //         id: player_id
+            //     };
+            //     ws.send(JSON.stringify(data_to_send));
+            // }
+            // getId();
             // Draw functions
             function drawPaddle(x, y, width, height, color) {
                 ctx.fillStyle = color;
