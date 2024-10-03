@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-nprb69my43^nmo)#id^%9_gsw7d#2=i&-*yyc16ge--f!bg@*x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5']
 
 
 # Application definition
@@ -40,25 +40,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authentication',
-    'game',
-    'chat',
-    'tournament',
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'authentication',
+    'game',
+    'chat',
     'remote',
-    'channels',
+    'tournament',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
 }
 
 SIMPLE_JWT = {
@@ -115,8 +115,9 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
+
 WSGI_APPLICATION = 'setup.wsgi.application'
-ASGI_APPLICATION = "setup.asgi.application"
+ASGI_APPLICATION = 'setup.asgi.application'
 
 
 # Database

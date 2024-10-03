@@ -24,7 +24,7 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('', include('authentication.urls')),
     path('remote/', include('remote.urls')),
-    # path('chat/', include(chat.urls)),
+    path('chat/', include('chat.urls')),
     # path('aut/', include(game.urls)),
 
 ]

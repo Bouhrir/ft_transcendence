@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import UserProfile
+import pyotp
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -17,4 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         user  = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
+
+        totp_secret = pyotp.random_base32()
+        UserProfile.objects.create(user=user, totp_secret=totp_secret)
         return user

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import  Token
 from rest_framework import status
 from .serializers import UserSerializer
-
+from .models import UserProfile
 import pyotp
 import qrcode
 from io import BytesIO
@@ -18,8 +18,7 @@ def register_api(request):
 
     if serializer.is_valid():
         serializer.save()
-        user = User.objects.get(**serializer.data)
-        token = Token.objects.create(user=user)
+        user = User.objects.get(**serializer.data) 
         return Response({
             "message": "User registered successfully",
         }, status=status.HTTP_201_CREATED)
@@ -31,7 +30,8 @@ def register_api(request):
 @permission_classes([IsAuthenticated])
 def setup_2fa(request):
     user = request.user
-    profile = user
+    profile = UserProfile.objects.get(user=user)  # Get the UserProfile instance associated with the user
+
     if not profile.totp_secret:
         totp_secret = pyotp.random_base32()  # Generate a new TOTP secret
         profile.totp_secret = totp_secret
@@ -42,7 +42,7 @@ def setup_2fa(request):
     totp = pyotp.TOTP(totp_secret)
     otp_auth_url = totp.provisioning_uri(name=user.email, issuer_name="setup")
 
-    # Generate QR code for the TOTP secret
+    # # Generate QR code for the TOTP secret
     qr = qrcode.make(otp_auth_url)
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
@@ -57,9 +57,10 @@ def setup_2fa(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def verify_2fa(request):
-    otp = request.data.get('otp')
+    otp = request.data.get('verification_code')
+    print(otp)
     user = request.user
-    profile = user.userprofile
+    profile = UserProfile.objects.get(user=user)
 
     if not profile.totp_secret:
         return Response({"error": "2FA is not enabled for this user."}, status=status.HTTP_400_BAD_REQUEST)
@@ -77,9 +78,11 @@ def verify_2fa(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def me(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    user = request.user
+    return Response({
+        "id":user.id,
+        "username":user.username
+    })
 
 
 

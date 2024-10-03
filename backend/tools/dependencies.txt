@@ -7,5 +7,5 @@ gunicorn
 daphne
 Twisted[http2,tls]
 pyotp
-qrcode
+qrcode[pil]
 channels

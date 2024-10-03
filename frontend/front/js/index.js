@@ -9,6 +9,17 @@ const routes = {
     'profile': 'profile-component'
 };
 
+function getAccessTokenFromCookies() {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('access=')) {
+            return cookie.substring('access='.length);
+        }
+    }
+    return null;
+}
+
 function navigate() {
     const path = window.location.hash.substring(1);
     const page = routes[path] || 'signin-component';
@@ -16,7 +27,15 @@ function navigate() {
     if (page !== 'signin-component' && page !== 'signup-component') {
         createNavbar();
     }
-    document.getElementById('container').innerHTML = `<${page}></${page}>`;
+    if (getAccessTokenFromCookies()) {
+        document.getElementById('container').innerHTML = `<${page}></${page}>`;
+    } else if (page !== 'signin-component' && page !== 'signup-component') {
+        // If the user is not logged in and they're not trying to access the sign-in or sign-up pages, redirect to the sign-in page
+        window.location.hash = '#signin';
+    } else {
+        // If the user is not logged in but they're trying to access the sign-in or sign-up pages, allow them to do so
+        document.getElementById('container').innerHTML = `<${page}></${page}>`;
+    }
 }
 
 window.addEventListener('hashchange', navigate);
