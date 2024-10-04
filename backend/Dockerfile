@@ -16,6 +16,7 @@ COPY ./project /project
 COPY tools/script.sh /
 RUN chmod +x /script.sh
 
+# Set work directory
 WORKDIR /project
 RUN python -m venv .env
 RUN echo "source .env/bin/activate" >> ~/.bashrc
