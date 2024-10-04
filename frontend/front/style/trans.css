@@ -7,23 +7,28 @@
     font-family: 'Baloo_bhai_2';
     src: url('../needs/fonts/Baloo_Bhai_2/BalooBhai2-VariableFont_wght.ttf') format('woff2');
 }
-
-body{
+body {
     background-image: url('../needs/img/background.svg');
-    background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
     background-attachment: fixed;
+}
+.container{
+    display : flex;
+    flex-direction: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    padding: 0 100px;
+    gap: 11rem;
+    color: white
 }
 .logop{
     display: flex;
     margin-top: 5vh;
     justify-content: center; 
     align-items: center;
-    height: 20vh;     
+    height: 20vh;
 }
 .oplogo
 {
@@ -90,7 +95,7 @@ body{
     background-color: transparent;
 }
 .signupbox {
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -117,7 +122,8 @@ body{
     align-self: center;
     height: 50vh;
     width: 19vw;
-    padding-top: 22px;
+    margin-left: 40.5%;
+    /* padding-top: 20px; */
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(9px);
     border: 0.5px solid rgba(229, 102, 39, 0.278);
@@ -125,12 +131,18 @@ body{
     transform: translateY(-50px);  /* Initially positioned above */
     animation: slideDownFadeIn 1s ease forwards;
 }
+
 @keyframes slideDownFadeIn {
-    to {
+    100% {
         opacity: 1;
         transform: translateY(0);  /* Move to original position */
     }
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);  /* Move to original position */
+    }
 }
+
 .wlctxt{
     font-family: 'Celesti From', sans-serif;
     color: white;
@@ -158,7 +170,7 @@ body{
     background-color: transparent;
     margin-bottom: 10px;
 }
-h3{
+.signinbox h3, .signupbox h3{
     font-family: 'Baloo_Bhai_2';
     color: white;
     font-weight: 1;

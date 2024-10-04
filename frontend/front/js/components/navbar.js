@@ -10,7 +10,7 @@ function createNavbar() {
 			</form>
 			<!-- <img class="logomenu" src="../../needs/img/logo.png"> -->
 			<a href="#dashboard">Dashboard</a>
-			<a href="#messanger">Messenger</a>
+			<a href="#messenger">Messenger</a>
 			<a href="#game">Game</a>
 			<a href="#settings">Settings</a>
 		</div>

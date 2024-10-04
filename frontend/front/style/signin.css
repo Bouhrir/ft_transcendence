@@ -14,6 +14,10 @@
     left: 50%;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
+.signin-form h3{
+    font-family: 'Baloo_Bhai_2';
+    font-size: 14px;
+}
 .signin-form form {
     display: flex;
     flex-direction: column;

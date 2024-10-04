@@ -29,7 +29,7 @@ class DashboardComponent extends HTMLElement {
                         </div>
                     </div>
                     <div class="start">
-                        <a class="hr" href="signup.html"><button class="join">start game<span class="flech">→</span></button></a>
+                        <a class="hr" href="#signup"><button class="join">start game<span class="flech">→</span></button></a>
                     </div>
                     <div class="racket">
                             <img src="../../needs/img/RACKET 1.png">
