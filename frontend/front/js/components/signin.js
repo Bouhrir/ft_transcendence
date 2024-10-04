@@ -8,16 +8,16 @@ class SigninComponent extends HTMLElement {
             <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
             </div>
-            <div class="signinbox">
+            <div class="signinbox" id="signin">
                 <div>
                     <h1 class="wlctxt">Welcome back</h1>
                     <h3 class="wlcmtxt">Welcome back ! Please enter your details.</h3>
                 </div>
                 <div class="email-txt">
                     <h3>EMAIL OR USERNAME</h3>
-                    <input  type="text" class="email-input" placeholder="Enter your email">
+                    <input id="username" type="text" class="email-input" placeholder="Enter your email">
                     <h3>PASSWORD</h3>
-                    <input  type="password" class="password-input" placeholder="Enter your Password">
+                    <input  id="password" type="password" class="password-input" placeholder="Enter your Password">
                     <div class="rem-for">
                         <label><input type="checkbox">remember me</label>
                         <a href="#" >forgot password?</a>
@@ -35,7 +35,7 @@ class SigninComponent extends HTMLElement {
                     <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
                 </div>
                 <div class="dont">
-                    <h2>Don’t have an account? <a href="signup">Sign up<a></h2>
+                    <h2>Don’t have an account? <a href="#signup">Sign up<a></h2>
                 </div>
             </div>`;
 
