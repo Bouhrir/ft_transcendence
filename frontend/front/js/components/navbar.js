@@ -28,9 +28,10 @@ function createNavbar() {
 					</form>
 				</div>
 				<div class="logout">
+					<a href="#signin">⇲</a>
 				</div>
 				<div class="profile">
-					<form action="index.html">
+					<form action="index">
 						<button type="submit"><img src="../../needs/img/Rectangle 24.png"></button>
 					</form>
 				</div>

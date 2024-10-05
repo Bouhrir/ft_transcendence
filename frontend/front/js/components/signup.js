@@ -6,20 +6,46 @@ class SignupComponent extends HTMLElement {
             navbar.remove();
         }
         this.innerHTML = `
-        <div class="signup-form">
-            <form id="signup">
-            	<h2>Register</h2>
-            	<input type="text" id="username" placeholder="Username" required>
-            	<input type="email" id="email" placeholder="Email" required>
-            	<input type="password" id="password" placeholder="Password" required>
-            	<input type="password" id="confirm_password" placeholder="Confirm Password" required>
-            	<button class="IN" type="submit">Sign up</button>
-                <p>back to <a href="#signin">Sign in?</a></p>
-            </form>
+        <div class="logop">
+            <img src="../../needs/img/logo.svg" class="oplogo">
+        </div>
+        <div class="signupbox" id="signup">
+            <div class="email-txt">
+                <h1 class="wlctxt">CREATE ACCOUNT</h1>
+                <div class="btn42">
+                    <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                </div>
+                <div class="line">
+                    <h2 class="or">or</h2>
+                </div>
+                <h3>FULL NAME</h3>
+                    <input id="firstname" type="text" class="email-input" placeholder="Enter your Firt Name" required>
+                <h3>LAST NAME</h3>
+                    <input id="lastname" type="text" class="email-input" placeholder="Enter your Last Name" required>
+                <h3>Usernanme</h3>
+                    <input id="username" type="text" class="email-input" placeholder="Enter your Usernanme" required>
+                <h3>EMAIL</h3>
+                    <input id="email" type="text" class="password-input" placeholder="Enter your Email" required>
+                <h3>PASSWORD</h3>
+                    <input id="password" type="password" class="password-input" placeholder="Enter your Password" required>
+                <h3>CONFIRM PASSWORD</h3>
+                    <input id="confirm_password" type="password" class="password-input" placeholder="Enter your Password" required>
+                
+                <div class="btnsign"> 
+                    <form>
+                    <button type="submit" class="loginbtn">Sign up</button>
+                    </form>
+                </div>
+                <div class="dont">
+                    <h2>Already have an account? <a href="#signin">Sign in<a></h2>
+                </div>
+            </div>
         </div>`;
         const signup = document.getElementById('signup');
         signup.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const firstname = document.getElementById('firstname').value;
+            const lastname = document.getElementById('lastname').value;
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;

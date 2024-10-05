@@ -74,7 +74,7 @@ class GameComponent extends HTMLElement {
 		function  checkwinner() {
 			if (score1 === 5 || score2 === 5) {
 				const div = document.createElement('div');
-				div.className = 'win';
+				div.className = 'win-message';
 				div.textContent = score1 === 5 ? 'miroka wins' : 'droke wins';
 				document.body.appendChild(div);
 		

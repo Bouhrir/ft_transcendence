@@ -20,6 +20,7 @@ RUN chmod +x /script.sh
 WORKDIR /project
 RUN python -m venv .env
 RUN echo "source .env/bin/activate" >> ~/.bashrc
+RUN python3 manage.py collectstatic
 RUN python3 manage.py makemigrations && python3 manage.py migrate
 EXPOSE 8000
 

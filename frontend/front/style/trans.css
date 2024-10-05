@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 @font-face {
+    font-family: "celesti";
+    src: url("../font/celesti-from-font/CelestiFrom-rvrqp.otf");
+}
+@font-face {
     font-family: 'Baloo_bhai_2';
     src: url('../needs/fonts/Baloo_Bhai_2/BalooBhai2-VariableFont_wght.ttf') format('woff2');
 }
@@ -30,10 +34,6 @@ body {
     align-items: center;
     height: 20vh;
 	animation: slideUp 0.8s ease;
-	transition: transform 0.3s ease-in-out;
-}
-.logop:hover {
-	transform: scale(1.1); /* Zoom in effect */
 }
 .oplogo
 {
@@ -100,14 +100,15 @@ body {
     background-color: transparent;
 }
 .signupbox {
-    /* display: flex; */
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 60vh;
-    width: 19vw;
+    height: 70vh;
+    width: 17vw;
     padding-top: 22px;
+    margin-left: 41.5%;
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(5%);
     border-radius: 50px; /* Apply rounded corners */
@@ -126,9 +127,9 @@ body {
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 60vh;
-    width: 19vw;
-    margin-left: 40.5%;
+    height: 55vh;
+    width: 17vw;
+    margin-left: 41.5%;
     /* padding-top: 20px; */
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(9px);
@@ -353,6 +354,7 @@ button.join:hover .flech {
 }
 .logo42:hover{
     background-color: white;
+    transition: background-color 0.5s ease-in-out;
 }
 .dont{
     color: white;
@@ -364,6 +366,7 @@ button.join:hover .flech {
     font-weight: 10;
     font-size: 16px;
 }
+
 .dont a{
     color: #ffffff;
     text-decoration: none;
@@ -812,7 +815,7 @@ button.join:hover .flech {
 .whole{
     display: flex;
     width: 98vw;
-    height: 95vh;
+    height: 80vh;
     justify-content: center;
     align-items: center;
 }
@@ -1020,3 +1023,5 @@ button.join:hover .flech {
     color: rgb(176, 175, 175);
     font-size: 2vh;
 }
+
+

@@ -25,7 +25,7 @@ class SigninComponent extends HTMLElement {
                 </div>
                 <div>
                     <form action="#dashboard">
-                    <button type="submit" class="loginbtn">Sign in</button>
+                        <button type="submit" class="loginbtn">Sign in</button>
                     </form>
                 </div>
                 <div class="line">
