@@ -5,6 +5,7 @@ class SigninComponent extends HTMLElement {
             navbar.remove();
         }
         this.innerHTML = `
+            <div id="error-message" class="error-message"></div>
             <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
             </div>
@@ -42,6 +43,7 @@ class SigninComponent extends HTMLElement {
         const signin = document.getElementById('signin');
         signin.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorMessage = document.getElementById('error-message');
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
@@ -67,7 +69,19 @@ class SigninComponent extends HTMLElement {
                 console.log(data.access);
                 window.location.hash = '#dashboard';
             } else {
-                alert('signin failed');
+                let errorMsg = '';
+
+                for (const field in data) {
+                    if (data.hasOwnProperty(field)) {
+                        if (!data.detail)
+                            errorMsg += `${field}: ${data[field].join(', ')}\n`;
+                        else if(data.detail)
+                            errorMsg = data.detail;
+                        else
+                            errorMsg = 'error';
+                    }
+                }
+                errorMessage.textContent = errorMsg;
             }
         });
     }

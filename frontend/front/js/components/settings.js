@@ -73,7 +73,7 @@ class SettingComponent extends HTMLElement {
     </div>
         `;
 
-        // await this.check2FAStatus();
+        await this.check2FAStatus();
         this.setupEventListeners();
     }
 
@@ -92,6 +92,7 @@ class SettingComponent extends HTMLElement {
 
             if (response.ok) {
                 const data = await response.json();
+
                 this.is2FAEnabled = data.is_2fa_enabled;
                 this.update2FAButton();
             } else {

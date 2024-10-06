@@ -85,6 +85,7 @@ def verify_2fa(request):
 @permission_classes([IsAuthenticated])
 def disable_2fa(request):
     user = request.user
+    print(user)
     profile = UserProfile.objects.get(user=user)
     
     if not profile.is_2fa_enabled:
@@ -118,14 +119,11 @@ def user_list_view(request):
     return render(request, 'user_list.html', {'users': users})
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def deluser(request):
-    username = request.user.username
-    user = User.objects.get(username=username)
-    return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
-    # print (username)
-
-    if not user:
+    username = request.data.get('username')
+    print(username)
+    if not username:
         return Response({"error": "Username is required"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
@@ -134,6 +132,7 @@ def deluser(request):
         return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
 # from rest_framework.response  import Response
 # from rest_framework.decorators  import api_view
 # from django.contrib.auth.models import User

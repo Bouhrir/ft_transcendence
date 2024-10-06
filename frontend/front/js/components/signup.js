@@ -6,11 +6,12 @@ class SignupComponent extends HTMLElement {
             navbar.remove();
         }
         this.innerHTML = `
+        <div id="error-message" class="error-message"></div>
         <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
         </div>
         <div class="signupbox" id="signup">
-            <div class="email-txt">
+        <div class="email-txt">
                 <h1 class="wlctxt">CREATE ACCOUNT</h1>
                 <div class="btn42">
                     <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
@@ -18,12 +19,12 @@ class SignupComponent extends HTMLElement {
                 <div class="line">
                     <h2 class="or">or</h2>
                 </div>
-                <h3>FULL NAME</h3>
+                <h3>FIRST NAME</h3>
                     <input id="firstname" type="text" class="email-input" placeholder="Enter your Firt Name" required>
                 <h3>LAST NAME</h3>
                     <input id="lastname" type="text" class="email-input" placeholder="Enter your Last Name" required>
-                <h3>Usernanme</h3>
-                    <input id="username" type="text" class="email-input" placeholder="Enter your Usernanme" required>
+                <h3>USERNAME</h3>
+                    <input id="username" type="text" class="email-input" placeholder="Enter your Username" required>
                 <h3>EMAIL</h3>
                     <input id="email" type="text" class="password-input" placeholder="Enter your Email" required>
                 <h3>PASSWORD</h3>
@@ -44,6 +45,7 @@ class SignupComponent extends HTMLElement {
         const signup = document.getElementById('signup');
         signup.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorMessage = document.getElementById('error-message');
             const firstname = document.getElementById('firstname').value;
             const lastname = document.getElementById('lastname').value;
             const username = document.getElementById('username').value;
@@ -52,7 +54,8 @@ class SignupComponent extends HTMLElement {
             const confirm_password = document.getElementById('confirm_password').value;
 
             if (password !== confirm_password) {
-                alert('Passwords do not match');
+                const errorMsg = 'Passwords do not match';
+                errorMessage.textContent = errorMsg;
                 return;
             }
             // Perform fetch to backend (Django server)
@@ -63,17 +66,31 @@ class SignupComponent extends HTMLElement {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username:username,
-                    email:email,
-                    password:password,
-                    confirm_password:confirm_password
+                    username: username,
+                    first_name: firstname,
+                    last_name: lastname,
+                    email: email,
+                    password: password,
                 })
             });
 
-            if (response === 201) {
-                window.location.hash = '#dashboard';
+            const data = await response.json();
+            if (response.ok) {
+                window.location.hash = '#signin';
             } else {
-                alert('signup failed');
+                let errorMsg = '';
+
+                for (const field in data) {
+                    if (data.hasOwnProperty(field)) {
+                        if (!data.detail)
+                            errorMsg += `${field}: ${data[field].join(', ')}\n`;
+                        else if(data.detail)
+                            errorMsg = data.detail;
+                        else
+                            errorMsg = 'error';
+                    }
+                }
+                errorMessage.textContent = errorMsg;
             }
         });
     }

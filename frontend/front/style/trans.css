@@ -106,9 +106,9 @@ body {
     align-items: center;
     align-self: center;
     height: 70vh;
-    width: 17vw;
+    width: 20vw;
     padding-top: 22px;
-    margin-left: 41.5%;
+    margin-left: 40.5%;
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(5%);
     border-radius: 50px; /* Apply rounded corners */
@@ -862,6 +862,14 @@ button.join:hover .flech {
     font-family: 'Baloo_Bhai_2';
     outline: none;
     color: white;
+}
+.error-message{
+    position: absolute;
+    color: red;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 20px;
+    top : 0%;
+    left: 87%;
 }
 .line_{
     display: flex;
