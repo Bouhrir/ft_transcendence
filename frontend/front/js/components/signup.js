@@ -70,7 +70,7 @@ class SignupComponent extends HTMLElement {
                 })
             });
 
-            if (response.status === 201) {
+            if (response === 201) {
                 window.location.hash = '#dashboard';
             } else {
                 alert('signup failed');

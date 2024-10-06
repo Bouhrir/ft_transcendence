@@ -16,7 +16,7 @@ body {
     background-size: cover;
     background-attachment: fixed;
 }
-.container{
+.container{ 
     display : flex;
     flex-direction: center;
     align-items: center;
@@ -128,8 +128,8 @@ body {
     align-items: center;
     align-self: center;
     height: 55vh;
-    width: 17vw;
-    margin-left: 41.5%;
+    width: 20vw;
+    margin-left: 40.5%;
     /* padding-top: 20px; */
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(9px);
@@ -157,6 +157,16 @@ body {
     }
 }
 
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .wlctxt{
     font-family: 'Celesti';
     color: white;
@@ -176,7 +186,7 @@ body {
     width: 100%;
     padding: 10px;
     border-radius: 15px;
-    border: 0.5px solid rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
     outline: none;
     font-family: 'Baloo_Bhai_2';
     color: white;
@@ -199,7 +209,7 @@ body {
     width: 100%;
     padding: 10px;
     border-radius: 15px;
-    border: 0.5px solid rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
     outline: none;
     font-family: 'Baloo_Bhai_2';
     color: white;
@@ -212,10 +222,12 @@ body {
     /* justify-content: center; */
     align-items: center;
     margin-left: 1%;
+    animation: slideRight 0.8s ease;
 }
 .head2{
     display: flex;
     margin-top: 2%;
+    animation: slideRight 0.8s ease;
     /* flex-direction: row; */
     /* justify-content: center; */
     /* align-items: center; */
@@ -228,6 +240,7 @@ body {
     margin-top: 3.6%;
     margin-left: 3.2%;
     align-items: center;
+    animation: slideRight 0.8s ease;
 }
 .oppage
 {
@@ -294,7 +307,7 @@ button.join:hover .flech {
 }
 .loginbtn{
     background-color: transparent;
-    border: 0.5px solid white;
+    border: 1px solid white;
     color: white;
     width: 300px;
     height: 45px;
@@ -442,6 +455,7 @@ button.join:hover .flech {
     cursor: pointer;
     padding: 0;
     opacity: 70%;
+
 }
 .notification button{
     display: flex;
@@ -483,6 +497,18 @@ button.join:hover .flech {
     width: 2vw;
     height: 3.5vh;
     margin-top: 2%;
+}
+
+@keyframes slideRight {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
 }
 .profile button{
     border: none;
@@ -556,6 +582,7 @@ button.join:hover .flech {
     align-items: center;
     width: 100vw;
     height: 80vh;
+    overflow: hidden;
     /* flex: 1 1; */
 }
 .cards{
@@ -564,6 +591,8 @@ button.join:hover .flech {
     /* margin-left: 20px; */
     /* border: #fff solid 2px; */
     flex-direction: column;
+    animation : slideUp 1s ease;
+
 }
 .rank{
     display: flex;
@@ -577,6 +606,7 @@ button.join:hover .flech {
     /* border: #fff solid 2px; */
     /* flex-wrap: wrap; */
     flex-direction: column;
+    animation : slideUp 0.8s ease;
 }
 .match-list{
     display: flex;
@@ -593,6 +623,7 @@ button.join:hover .flech {
     outline: none;
     color: white;
     flex-direction: column;
+    animation : slideUp 0.5s ease;
     /* overflow-y: scroll; */
 }
 .match-red-card{
@@ -729,7 +760,7 @@ button.join:hover .flech {
 }
 .lvl-card p{
     display:flex ;
-    font-size: 00.5vw;
+    font-size: 0.5vw;
     text-align: center;
     font-family: 'Baloo_Bhai_2', sans-serif;
     justify-content: center;
@@ -822,7 +853,7 @@ button.join:hover .flech {
 .account-settings{
     display: flex;
     margin: 0 auto;
-    border: 0.5px solid rgba(255, 255, 255, 0.316);
+    border: 1px solid rgba(255, 255, 255, 0.316);
     width: 50vw;
     height: 50vh; 
     background: linear-gradient(rgba(255, 255, 255, 0.161), rgba(255, 255, 255, 0));

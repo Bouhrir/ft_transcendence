@@ -14,7 +14,11 @@ urlpatterns = [
     path('me/', views.me),
     path('deluser/', views.deluser),
     path('users/', views.user_list_view),
+    # setup 2fa 
     path('2fa/setup/', views.setup_2fa),
     path('2fa/verify/', views.verify_2fa),
+    path('2fa/disable/', views.disable_2fa),
+    path('2fa/status/', views.get_2fa_status),
+
     path('', views.welcome),
 ]
