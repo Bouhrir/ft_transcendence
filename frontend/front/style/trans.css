@@ -233,7 +233,7 @@ body {
     margin-left: 4%;
     display: flex;
     justify-content: space-between;
-    margin-top: 3.6%;
+    margin-top: 5%;
     margin-left: 3.2%;
     align-items: center;
     animation: slideRight 0.8s ease;
@@ -393,7 +393,7 @@ button.join:hover .flech {
     display: flex;
     width: 49.8vw;
     height: 3.5vh;
-    margin-top: 6%;
+    margin-top: 8%;
     /* margin-right: 3%; */
     align-items: center;
     font-family: 'Celesti';
@@ -429,7 +429,7 @@ button.join:hover .flech {
     border-radius: 12px;
     font-family: 'Baloo_Bhai_2';
     font-size: 16px;
-    margin-top: 6.38%;
+    margin-top: 11%;
     outline: none;
     /* z-index: 1; */
     /* padding-left: 10px; */
@@ -577,7 +577,7 @@ button.join:hover .flech {
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 80vh;
+    height: 83vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
