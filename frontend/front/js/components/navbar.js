@@ -5,13 +5,13 @@ function createNavbar() {
 	<header class="head">
 		<div class="head1">
 		<div class="menu">
-			<form action="index.html">
+			<form action="#settings">
 				<button type="submit"><img src="../../needs/img/logo.svg"></button>
 			</form>
 			<!-- <img class="logomenu" src="../../needs/img/logo.png"> -->
 			<a href="#dashboard">Dashboard</a>
 			<a href="#messenger">Messenger</a>
-			<a href="#game">Game</a>
+			<a href="#gamebar">Game</a>
 			<a href="#settings">Settings</a>
 		</div>
 		</div>

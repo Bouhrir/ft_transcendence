@@ -81,20 +81,18 @@ def verify_2fa(request):
     else:
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def disable_2fa(request):
     user = request.user
-    print(user)
     profile = UserProfile.objects.get(user=user)
-    
+
     if not profile.is_2fa_enabled:
         return Response({"error": "2FA is not enabled for this user."}, status=status.HTTP_400_BAD_REQUEST)
-    
-    profile.totp_secret = None
-    profile.is_2fa_enabled = False
-    profile.save()
-    
+    else :
+        profile.totp_secret = ""
+        profile.is_2fa_enabled = False
+        profile.save()
     return Response({"message": "2FA has been disabled successfully."}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -119,10 +117,10 @@ def user_list_view(request):
     return render(request, 'user_list.html', {'users': users})
 
 @api_view(['DELETE'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def deluser(request):
-    username = request.data.get('username')
-    print(username)
+    username = request.user
+    
     if not username:
         return Response({"error": "Username is required"}, status=status.HTTP_400_BAD_REQUEST)
 

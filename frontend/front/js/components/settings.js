@@ -112,14 +112,16 @@ class SettingComponent extends HTMLElement {
         document.getElementById('2faButton').addEventListener('click', this.handle2FAToggle.bind(this));
         document.getElementById('verifyButton').addEventListener('click', this.handleVerification.bind(this));
         document.getElementById('save').addEventListener('click', this.handleSave.bind(this));
-        // document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
+        document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
     }
-
+    
     async handle2FAToggle() {
         const access = this.getAccessTokenFromCookies();
         const qrModal = document.getElementById('qrModal');
         const qrCodeInModal = document.getElementById('qrCodeInModal');
         const verificationSection = document.getElementById('verificationSection');
+        const closeModal = document.getElementById('closeModal'); // Add this line
+
         console.log(this.is2FAEnabled);
         if (!this.is2FAEnabled) {
             try {
@@ -137,6 +139,10 @@ class SettingComponent extends HTMLElement {
                     qrCodeInModal.src = data.qr_code_image;
                     qrModal.style.display = 'block';
                     verificationSection.style.display = 'block';
+                    closeModal.addEventListener('click', () => {
+                        qrModal.style.display = 'none';
+                    });
+
                     this.totpSecret = data.totp_secret;
                 } else {
                     console.error('Failed to set up 2FA:', response.statusText);
@@ -147,7 +153,7 @@ class SettingComponent extends HTMLElement {
         } else {
             try {
                 const response = await fetch('http://localhost:81/2fa/disable/', {
-                    method: 'POST',
+                    method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${access}`,
                         'Content-Type': 'application/json',
@@ -231,38 +237,24 @@ class SettingComponent extends HTMLElement {
     }
 
     async deleteuser(){
-        const access = this.getAccessTokenFromCookies();
-        // let username = '';
-        try{
-            // const response = await fetch('http://localhost:81/auth/me/', {
-            //     method: 'GET',
-            //     headers:{
-            //         'Authorization': `Bearer ${access}`,
-            //         'Content-Type': 'application/json',
-            //     }
-            // });
-            // if (response.ok){
-            //     const data = await response.json();
-            //     username = data.username;
-            // }
-            // else
-            //     console.log('user not found', error);
-            
-            const deluser = await fetch('http://localhost:81/auth/deluser/', {
-                method : 'DELETE',
-                // mode: 'cors',
-                header:{
-                    'Authorization': `Bearer ${access}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (deluser.ok){
-                alert('userdeleted');
-            }
-        }
-        catch(error){
-            console.error('can`t delete user: ', error);
-        }
+        // const access = this.getAccessTokenFromCookies();
+        // try{
+        //     const deluser = await fetch('http://localhost:81/auth/deluser/', {
+        //         method : 'DELETE',
+        //         header:{
+        //             'Authorization': `Bearer ${access}`,
+        //             'Content-Type': 'application/json',
+        //         }
+        //     });
+        //     if (deluser.ok){
+        //         alert('userdeleted');
+        //     }
+        document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+        document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+        // }
+        // catch(error){
+        //     console.error('can`t delete user: ', error);
+        // }
     }
 
     getAccessTokenFromCookies() {

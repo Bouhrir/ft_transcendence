@@ -4,6 +4,7 @@ const routes = {
     'signup': 'signup-component',
     'dashboard': 'dashboard-component',
     'messenger': 'messenger-component',
+    'gamebar':'game-bar',
     'game': 'game-component',
     'game-online': 'game-component-online',
     'settings': 'settings-component',

@@ -69,6 +69,7 @@ class SigninComponent extends HTMLElement {
                 console.log(data.access);
                 window.location.hash = '#dashboard';
             } else {
+                console.log (data);
                 let errorMsg = '';
 
                 for (const field in data) {
@@ -76,9 +77,7 @@ class SigninComponent extends HTMLElement {
                         if (!data.detail)
                             errorMsg += `${field}: ${data[field].join(', ')}\n`;
                         else if(data.detail)
-                            errorMsg = data.detail;
-                        else
-                            errorMsg = 'error';
+                            errorMsg = 'error: invalid username or password';
                     }
                 }
                 errorMessage.textContent = errorMsg;

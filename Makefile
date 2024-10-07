@@ -3,7 +3,7 @@ NAME = ft_transcendence
 all : $(NAME)
 
 $(NAME):
-	docker-compose up --build -d
+	docker-compose up --build
 
 clean:
 	docker-compose down
