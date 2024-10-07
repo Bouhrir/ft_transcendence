@@ -11,19 +11,19 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from remote.routing import websocket_urlpatterns
 # from chat.routing import websocket_urlpatterns1
-
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "setup.settings")
 
-# application = get_asgi_application()
+from remote.routing import websocket_urlpatterns as remote_websocket_urlpatterns
+from chat.routing import websocket_urlpatterns as chat_websocket_urlpatterns
+from tournament.routing import websocket_urlpatterns as tournament_websocket_urlpatterns
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': AuthMiddlewareStack(
         URLRouter(
-            websocket_urlpatterns
+            chat_websocket_urlpatterns + remote_websocket_urlpatterns + tournament_websocket_urlpatterns
         )
     ),
 })

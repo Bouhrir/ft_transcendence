@@ -4,6 +4,12 @@ import asyncio
 import random
 import time
 import struct
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from rest_framework_simplejwt.exceptions import TokenError
+from jwt import decode, ExpiredSignatureError, DecodeError
+from channels.db import database_sync_to_async
+from channels.auth import AuthMiddlewareStack
 
 # from channels.generic.websocket import AsyncWebsocketConsumer
 # from rest_framework_simplejwt.tokens import UntypedToken
@@ -125,38 +131,38 @@ class PongConsumer(AsyncWebsocketConsumer):
         }
     }
     async def connect(self):
-        # if user.is_authenticated:
-        #     # You can use the user object here
-        #     print(f"Current user: {user.username}")
-        #     await self.accept()
-        # else:
-        #     # Handle unauthenticated users
-        #     await self.close()
-        if not hasattr(self.channel_layer, 'players'):
-            self.channel_layer.players = {}
-
-        if len(self.channel_layer.players) == 0:
-            self.player_id = 1
-            self.game_state["players"]["player1"]["id"] = self.player_id
-            self.game_state["players"]["player1"]["channel_name"] = self.channel_name
-        else:
-            self.player_id = 2
-            self.game_state["players"]["player2"]["id"] = self.player_id
-            self.game_state["players"]["player2"]["channel_name"] = self.channel_name
-            asyncio.create_task(self.game_loop())
-        self.channel_layer.players[self.channel_name] = self.player_id
-        
-        self.room_group_name = 'pong_game'
         await self.accept()
-        await self.send(text_data=json.dumps({
-            'action': 'new_connection',
-            'player_id': self.player_id
-        }))
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        # from django.contrib.auth.models import User
+        # cookie_value = self.scope['cookies'].get('access')
+        # # print(cookie_value)
+        # if cookie_value:
+        #     try:
+        #         payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
+        #         user_id = payload.get('user_id')
+        #         self.scope['user'] = await database_sync_to_async(User.objects.get)(id=user_id)
+        #     except (ExpiredSignatureError, DecodeError, User.DoesNotExist, TokenError):
+        #         self.scope['user'] = AnonymousUser()
+        # else:
+        #     self.scope['user'] = AnonymousUser()
+
+        # if self.scope['user'].is_authenticated:
+        #     print(self.scope['user'])
+        #     await self.accept() # Accept the WebSocket connection
+        # else:
+        #     await self.close()  # Close connection if not authenticated
+        #     return
+        # self.room_name = self.scope['url_route']['kwargs']['room_name']
+        # print(self.room_name)
+        # await self.send(text_data=json.dumps({
+        #     'action': 'new_connection',
+        #     'player_id': self.scope['user'].id
+        # }))
+        # await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         # asyncio.create_task(self.game_loop())
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        print("disconnect")
+        # await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
 # i am either gonna check before giving the other value or just give both the value then check after i will test and then decide
     async def receive(self, text_data):
