@@ -66,7 +66,7 @@ body {
     display: flex;
     justify-content: center;
     border-style: solid;
-    border-color: white;
+    border-color: #ffffff;
     font-size: 20px;    
     color: white;
     border-radius: 50px;
@@ -105,7 +105,7 @@ body {
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 70vh;
+    height: 65vh;
     width: 20vw;
     padding-top: 22px;
     margin-left: 40.5%;
@@ -122,12 +122,12 @@ body {
 
 .signinbox {
 	display: flex;
-    /* margin-top: 1%; */
+    margin-top: 2%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 55vh;
+    height: 50vh;
     width: 20vw;
     margin-left: 40.5%;
     /* padding-top: 20px; */
@@ -222,7 +222,7 @@ body {
 }
 .head2{
     display: flex;
-    margin-top: 2%;
+    margin-top: 2.7rem;
     animation: slideRight 0.8s ease;
     /* flex-direction: row; */
     /* justify-content: center; */
@@ -233,8 +233,8 @@ body {
     margin-left: 4%;
     display: flex;
     justify-content: space-between;
-    margin-top: 5%;
-    margin-left: 3.2%;
+    margin-top: 6.3rem;
+    margin-left: 3.8rem;
     align-items: center;
     animation: slideRight 0.8s ease;
 }
@@ -1104,4 +1104,42 @@ button.join:hover .flech {
     font-size: 4.5rem;
     color: white;
     text-decoration: none;
+}
+
+/* tournament */
+.tournament
+{
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    gap : 5%;
+    align-items: center;
+    animation: slideUp 0.8s ease;
+}
+
+.lines{
+    display : flex;
+}
+
+.avatar-player{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 65%;
+    align-items: center;
+
+}
+
+.avatar-player img{
+    border-radius: 20px;
+}
+
+#winner-avatar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 10%;
+    /* width: 10%;   */
+
 }
