@@ -1,16 +1,21 @@
 class MessengerComponent extends HTMLElement {
     connectedCallback(){
+        
         this.innerHTML = `
-        <section>
-            <div id="chat-container">
-                <div id="chat-messages"></div>
-                    <form id="chat-form">
-                        <input type="text" id="chat-input" placeholder="Type a message..." required>
-                        <button type="submit">Send</button>
-                    </form>
-                </div>
-        </section>
+        <div id="chat-container">
+            <div id="message-display">
+            <!-- Messages will appear here -->
+            </div>
+            <div id="chat-input">
+                <input type="text"  id="message" placeholder="Type a message..." />
+                <button id="send" type="submit">test</button>
+            </div>
+        </div>
         `;
+
+
+        document.getElementById('send').addEventListener('click', async function(e) {
+            e.preventDefault();
 
         function getAccessTokenFromCookies() {
             const cookies = document.cookie.split(';');
@@ -22,71 +27,79 @@ class MessengerComponent extends HTMLElement {
             }
             return null;
         }
-
-        
         const access = getAccessTokenFromCookies();
-
-        // Define receiverId and receiverName based on your application logic
-        
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const message = document.getElementById('chat-input').value;
-            
-            const response = await fetch('http:///auth/me/', {
+        let data;
+        const response = await fetch('http://localhost:81/auth/me/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
                 },
             });
-            if (response.ok){
-                const data = await response.json();
-                
-                const currentUserId = data.id;
-                const currentUserName = data.username;
-                const receiverId = 22;
-                const receiverName = 'haha';
+        if (response.ok){
+            data = await response.json();;
+        }
+        const currentUserId = data.id;
+        const currentUserName = data.username;
 
-                console.log(currentUserId+ ' '+ currentUserName);
 
-                const socket = new WebSocket(`ws://localhost:81/ws/chat/${currentUserId}/${receiverId}/`);
+        const receiverId = 1;
+        const receiverName = 'username';
 
-                socket.onopen = function(e) {
-                    console.log('Connected to WebSocket');
-                    displaySystemMessage(`Connected as ${currentUserName}. Chatting with ${receiverName}.`);
-                };
+        const roomName = 'gamechat';
 
-                socket.onmessage = function(event) {
-                    const data = JSON.parse(event.data);
-                    displayMessage(message, data.snd_id === currentUserId);
-                };
 
-                socket.onclose = function(event) {
-                    if (event.wasClean) {
-                        console.log(`Closed cleanly, code=${event.code}, reason=${event.reason}`);
-                    }
-                };
+        const socket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+        socket.onopen = function(e) {
+            console.log('WebSocket is open now.');
+            sendMessage();
+        };
+        socket.onmessage =function(event){
+            const data = JSON.parse(event.data);
+            console.log(data);
+            if (data.snd_id === receiverId && data.rec_id === currentUserId) {
+                // Display the message
+                const messageDisplay = document.getElementById('message-display');
+                messageDisplay.innerHTML += `<p>${data.msg}</p>`;
+                 //const newMessage = document.createElement('p');
+               // newMessage.textContent = data.message;
+                //messageDisplay.appendChild(newMessage);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
             }
-        });
-        function displayMessage(message, isSent) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${isSent ? currentUserName : receiverName}: ${message}`;
-            messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
-            document.getElementById('chat-messages').appendChild(messageElement);
-            messageElement.scrollIntoView({ behavior: 'smooth' });
         }
         
-        function displaySystemMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messageElement.className = 'message system';
-            document.getElementById('chat-messages').appendChild(messageElement);
-            messageElement.scrollIntoView({ behavior: 'smooth' });
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            console.log(message, currentUserId, receiverId);
+
+            if (message.trim() !== "") {
+                // Send the message through the WebSocket if it is open
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({
+                        'msg': message,
+                        'snd_id': currentUserId,
+                        'rec_id': receiverId,
+                    }));
+                    document.getElementById('message').value = '';
+                } else {
+                    console.log('WebSocket is not open.');
+                }
+            }
         }
         
+    });
     
-    }
+}
+
+        
+
+        // Define receiverId and receiverName based on your application logic
 }
 
 customElements.define('messenger-component', MessengerComponent);

@@ -10,13 +10,23 @@ class SomeConsumer(JsonWebsocketConsumer):
     connections = []
     
     def connect(self):
+        self.room_group_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_group_name
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
         self.accept()
         self.connections.append(self)
         # user = self.scope['user']  # Assuming user is authenticated and in the session
         # if user.is_authenticated:
         #     self.connections.add(user.id)  # Add user id to the set of connections
         
-    def disconnect(self, close_code):
+    def disconnect(self):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name,
+        )
         self.connections.remove(self)
         # user = self.scope['user']
         # if user.is_authenticated:
@@ -24,28 +34,26 @@ class SomeConsumer(JsonWebsocketConsumer):
         
         
     def receive(self, data):
-        print("test/n")
+        # print("test/n")
         data_json = json.loads(data)
         
         message = data_json['msg']
-        sender_id = data.json['snd_id']
-        receiver_id = data.json['rec_id']
+        sender_id = data_json['snd_id']
+        receiver_id = data_json['rec_id']
         
         try:
             sender = User.objects.get(id=sender_id)
-        except User.DoesNotExist():
+        except User.DoesNotExist:
             return None
         try:
             receiver = User.objects.get(id=receiver_id)
-        except User.DoesNotExist():
+        except User.DoesNotExist:
             return None
         
         self.save_message(sender, receiver, message)
         #receive method is called when the connection receives a message
         
-        receiver_chan_nam = self.get_receive_chanel_name(receiver)
-        if receiver_chan_nam:
-            async_to_sync(self.channel_layer.send)(receiver_chan_nam, {
+        async_to_sync(self.channel_layer.group_send)(self.room_group_name, {
                 'type': "chat.message",
                 'data': {
                     'msg': message,
@@ -53,17 +61,12 @@ class SomeConsumer(JsonWebsocketConsumer):
                     'rec_id': receiver_id
                 }
             })
-            self.send(text_data=json.dumps({
-                'msg': message,
-                'snd_id': sender_id,
-                'rec_id': receiver_id
-            }))
     
-    def get_receive_chanel_name(self, receiver):
-        for connection in self.connections:
-            if connection.scope['user'] == receiver:
-                return connection.channel_name
-        return None
+    # def get_receive_chanel_name(self, receiver):
+    #     for connection in self.connections:
+    #         if connection.scope['user'] == receiver:
+    #             return connection.channel_name
+    #     return None
         
     def chat_message(self, event):
         event['data']
