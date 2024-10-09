@@ -1132,7 +1132,7 @@ button.join:hover .flech {
     align-items: center;
     height: 100%;
     width:100%;
-    gap: 6%;
+    gap: 2%;
     animation: slideUp 0.5s ease;
 }
 
@@ -1147,19 +1147,30 @@ button.join:hover .flech {
 
 
 .avatar-winner{
+    width: 30%;
+    height: 20rem;
     position: absolute;
     top :30%;
     left :50%;
-    text-align: center;
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     transform: translate(-50%,-50%);
 
 }
-
-.avatar-winner img{
+.avatar-winner p{
+    font-size: 5rem;
+    color: white;
+    font-family: 'celesti';
+    animation: slideUp 0.8s ease;
+}
+.av-win{
     border: 2px solid white;
-    animation: slideUp 1s ease;
+    width: 18%;
+    height: 43%;
     border-radius: 20px;
-    width: 40%;
+    animation: slideUp 1s ease;
 }
 .av-img{
     border: 2px solid white;
@@ -1171,12 +1182,7 @@ button.join:hover .flech {
     background-size: cover;
     background-position: center;
 }
-.avatar-winner p{
-    font-size: 5rem;
-    color: white;
-    font-family: 'celesti';
-    animation: slideUp 0.8s ease;
-}
+
 
 .controls {
     display: flex;

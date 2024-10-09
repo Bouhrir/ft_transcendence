@@ -14,14 +14,17 @@ class TournamentComponent extends HTMLElement {
         this.innerHTML = `
             <div class="avatar-winner">
                 <p>W I N N ER</p>
-                <img src="../../needs/img/Rectangle 26.png" data-player-slot="W">
+                <div class="av-win"></div>
             </div>
             <div class="tournament">
                 <div class="lines">
                     <div class="avatar-player">
                         <div class="av-img"></div>
-                        <p class="tourn-score">0</p>
-                        <p class="tourn-score">0</p>
+                        <span class="tourn-score">0</span>
+                            <svg width="2" height="58" viewBox="0 0 2 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.01739 -0.000154686L2 113" stroke="white" stroke-width="2"/>
+                            </svg>
+                        <span class="tourn-score">0</span>
                         <div class="av-img"></div>
                     </div>
                     <div>
@@ -60,8 +63,11 @@ class TournamentComponent extends HTMLElement {
                     </div>
                     <div class="avatar-player" >
                         <div class="av-img"></div>
-                        <p class="tourn-score">0</p>
-                        <p class="tourn-score">0</p>
+                        <span class="tourn-score">0</span>
+                        <svg width="2" height="58" viewBox="0 0 2 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.01739 -0.000154686L2 113" stroke="white" stroke-width="2"/>
+                        </svg>
+                        <span class="tourn-score">0</span>
                         <div class="av-img"></div>
                     </div>
                 </div>
