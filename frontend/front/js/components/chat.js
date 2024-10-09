@@ -19,11 +19,11 @@ class MessengerComponent extends HTMLElement {
             };
 
             ws.onmessage = function(e) {
-                console.log("please")
+                // console.log("please")
                 const data = JSON.parse(e.data);
                 window.gameRoom = data.room
                 window.location.href = "#game"
-                console.log("received data: ", data.room)
+                // console.log("received data: ", data.room)
             };
         // }
         // joinTournament()

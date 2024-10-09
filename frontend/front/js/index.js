@@ -30,6 +30,7 @@ function navigate() {
     if (getAccessTokenFromCookies()) {
         document.getElementById('container').innerHTML = `<${page}></${page}>`;
     } else if (page !== 'signin-component' && page !== 'signup-component') {
+        console.log("not found")
         // If the user is not logged in and they're not trying to access the sign-in or sign-up pages, redirect to the sign-in page
         window.location.hash = '#signin';
     } else {

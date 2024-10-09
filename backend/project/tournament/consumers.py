@@ -37,14 +37,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			return
 		self.player_id = self.scope["user"].id  # Identify player
 		await self.match_games()
-		# TournamentConsumer.players.append(self.player_id)
-		# if len(TournamentConsumer.players) == 4:
-		# 	await self.launch_semis()
-		# await self.channel_layer.group_add(
-		# 	"room",
-		# 	self.channel_name  # Use the channel name to join the group
-		# )
-
+		
 	async def disconnect(self, close_code):
 		print("disconnect")
 
@@ -62,7 +55,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			print(f"adding{self.player_id}")
 			self.semis_game2.append(self.player_id)
 			await self.channel_layer.group_add("semis_game2", self.channel_name)
-		if len(self.semis_game1) == 2 and len(self.semis_game2) == 2:
+		if len(self.semis_game1) == 2:# and len(self.semis_game2) == 2:
 			await self.launch_semis()
 
 
@@ -72,8 +65,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		# game2 = self.players[:2]
 
 		print("launching semis")
-		room_name1 = f"room_{uuid.uuid4()}"
-		room_name2 = f"room_{uuid.uuid4()}"
+		room_name1 = f"room_{uuid.uuid4().hex}"
+		room_name2 = f"room_{uuid.uuid4().hex}"
 
 		await self.channel_layer.group_send(
 			"semis_game1",
