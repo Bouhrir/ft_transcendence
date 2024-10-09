@@ -1,3 +1,4 @@
+
 class TournamentComponent extends HTMLElement {
     constructor() {
         super();

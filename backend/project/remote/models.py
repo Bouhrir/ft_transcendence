@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 # from django.contrib.auth.models import User
 
 # class GameRoom(models.Model):
@@ -9,3 +11,4 @@ from django.db import models
 
 #     def __str__(self):
 #         return f"Room: {self.id} - {self.player1} vs {self.player2 or 'Waiting for player'}"
+

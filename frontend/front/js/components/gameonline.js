@@ -1,8 +1,124 @@
 class GameComponentOnline extends HTMLElement {
 	connectedCallback(){
-		this.innerHTML = `
+		this.innerHTML =`
 		<canvas id="pongGame" width="800" height="600"></canvas>
-        `
+        `;
+        // <a href="#signin">click</a>
+        // document.addEventListener('keyup', (e) => {
+            
+        // });
+        // window.location.href = '#signin';
+        // function getQueryParams() {
+        //     const params = {};
+        //     window.location.search.substring(1).split("&").forEach(function(part) {
+        //         const [key, value] = part.split("=");
+        //         params[decodeURIComponent(key)] = decodeURIComponent(value);
+        //     });
+        //     return params;
+        // }
+        // const queryParams = getQueryParams();
+        // const roomName = queryParams.room_name;
+
+        // if (roomName) {
+            // }
+        // console.log('Joining room:', window.gameRoom);
+        // console.log('Joining room:', window.gameRoom);
+        // const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
+        // ws.onopen = function() {
+        //     console.log("remote WebSocket is open now.");
+        //     // isWebSocketOpen = true;
+        // };
+
+        // // Handle WebSocket errors
+        // ws.onerror = function(error) {
+        //     console.error("WebSocket error:", error);
+        // };
+
+        // // Handle WebSocket close
+        // ws.onclose = function() {
+        //     // isWebSocketOpen = false;
+        // };
+        // function getAccessTokenFromCookies() {
+        //     const cookies = document.cookie.split(';');
+        //     for (let i = 0; i < cookies.length; i++) {
+        //         const cookie = cookies[i].trim();
+        //         if (cookie.startsWith('access=')) {
+        //             return cookie.substring('access='.length);
+        //         }
+        //     }
+        //     return null;
+        // }
+        // const access = getAccessTokenFromCookies();
+
+        // function sendInvitation(inviterId, inviteeId) {
+        //     fetch('/remote/send-invitation/', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/x-www-form-urlencoded',
+        //             'Authorization': `Bearer ${access}`
+
+        //         },
+        //         body: `inviter_id=${inviterId}&invitee_id=${inviteeId}`
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => console.log(data))
+        //     .catch(error => console.error('Error:', error));
+        // }
+
+        // // sendInvitation(18, 25)
+
+        // function acceptInvitation(username) {
+        //     fetch('/remote/accept-invitation/', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${access}`
+        //         },
+        //         body: JSON.stringify({ inviter_username: username })
+        //     })
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error('Network response was not ok: ' + response.statusText);
+        //         }
+        //         return response.json();
+        //     })
+        //     .then(data => {
+        //         console.log('Invitation accepted. Room Name:', data.room_name);
+        //         // Redirect or join the room using the room_name
+        //         // window.location.href = `/game?room_name=${data.room_name}`; // Navigate to the game page
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
+        // }
+        // // acceptInvitation("amdouyah")
+        
+        // function deleteInvitation(username) {
+        //     fetch('/remote/delete-invitations/', {
+        //         method: 'DELETE',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${access}`
+        //         },
+        //         body: JSON.stringify({ inviter_username: username })
+        //     })
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error('Network response was not ok: ' + response.statusText);
+        //         }
+        //         return response.json();
+        //     })
+        //     .then(data => {
+        //         console.log('invitation have been deleted successfuly');
+        //         // Redirect or join the room using the room_name
+        //         // window.location.href = `/game?room_name=${data.room_name}`; // Navigate to the game page
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
+        // }
+        // deleteInvitation("amdouyah")
+        
         // let player_id;
 		const canvas = document.getElementById('pongGame');
             const ctx = canvas.getContext('2d');
@@ -45,26 +161,13 @@ class GameComponentOnline extends HTMLElement {
                 dy: 4,
                 color: 'white'
             };
-
-            // async function user(){
-            //     const URL = "http://localhost:81/getuser/";
-                
-
-            // }
-            // function getAccessTokenFromCookies() {
-            //     const cookies = document.cookie.split(';');
-            //     for (let i = 0; i < cookies.length; i++) {
-            //         const cookie = cookies[i].trim();
-            //         if (cookie.startsWith('access=')) {
-            //             return cookie.substring('access='.length);
-            //         }
-            //     }
-            //     return null;
-            // }
-            // const access = getAccessTokenFromCookies();
-            const ws = new WebSocket(`ws://localhost:81/ws/pong/`);
+            const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
             ws.onopen = function() {
-                console.log("WebSocket is open now.");
+                console.log("remote WebSocket is open now.");
+                // const data = {
+                //     type: 'new_connection',
+                // };
+                // ws.send(JSON.stringify(data));
                 isWebSocketOpen = true;
             };
 
@@ -84,8 +187,7 @@ class GameComponentOnline extends HTMLElement {
                 if (data.action == "new_connection") {
                     console.log("new connection")
                     player_id = data.player_id
-                    console.log(player_id)
-                    
+                    console.log(player_id)               
                 }
                 else if (data.action == "game_state") {
                     ball.x = data.game_state.ball.x
@@ -93,51 +195,20 @@ class GameComponentOnline extends HTMLElement {
                     if (data.game_state.players.player1.id == player_id) {
                         player.y = data.game_state.players.player1.player_y
                         ai.y = data.game_state.players.player1.ai_y
+                        playerScore = data.game_state.players.player1.player_score
+                        aiScore = data.game_state.players.player1.ai_score
+                        console.log(playerScore)
+                        console.log(aiScore)
                     } else {
                         player.y = data.game_state.players.player2.player_y
                         ai.y = data.game_state.players.player2.ai_y
+                        aiScore = data.game_state.players.player1.player_score
+                        playerScore = data.game_state.players.player1.ai_score
                     }
+                    
                 }
-
-                // console.log(data.game_state)
             }
-            // this is not exactly right because they don't start with the same thing i guess
 
-            
-            // async function getId(){
-            //     const response = await fetch('http://localhost:81/auth/me/', {
-            //         method : 'GET',
-            //         headers:{
-            //             'Authorization': `Bearer ${access}`, // Authorization header with JWT
-            //             'Content-Type': 'application/json',
-            //         }
-            //     });
-    
-            //     if (response.ok){
-            //         const data = await response.json();
-            //         console.log('id ====> ' + data.id);
-            //         console.log('username ====> ' + data.username);
-            //         player_id = data.id
-            //         // await sendPlayerIdWhenReady();
-            //     }
-            //     else
-            //         console.error('error:', response.statusText);
-            // }
-            
-            // async function sendPlayerIdWhenReady() {
-            //     while (!isWebSocketOpen || player_id === null) {
-            //         await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100ms before checking again
-            //     }
-            
-            //     // At this point, both conditions are met
-            //     const data_to_send = {
-            //         type: 'user_id',
-            //         id: player_id
-            //     };
-            //     ws.send(JSON.stringify(data_to_send));
-            // }
-            // getId();
-            // Draw functions
             function drawPaddle(x, y, width, height, color) {
                 ctx.fillStyle = color;
                 ctx.fillRect(x, y, width, height);
@@ -177,11 +248,13 @@ class GameComponentOnline extends HTMLElement {
 
             // Keyboard events for player control
             document.addEventListener('keydown', (e) => {
+                console.log("sending data: ", isWebSocketOpen);
                 if (e.key === 'ArrowUp') {
                     // player.dy = -5;
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
+                            room_name: window.gameRoom,
                             paddle_dy: -5,
                             player_id: player_id
                         };
@@ -192,6 +265,7 @@ class GameComponentOnline extends HTMLElement {
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
+                            room_name: window.gameRoom,
                             paddle_dy: 5,
                             player_id: player_id
                         };
@@ -205,6 +279,7 @@ class GameComponentOnline extends HTMLElement {
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
+                            room_name: window.gameRoom,
                             paddle_dy: 0,
                             player_id: player_id
                         };

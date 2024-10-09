@@ -1,12 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
-#defines the data structure of your app (database tables)
-# class User(models.Model):
-#     name = models.CharField(max_length=200)
-    
-#     def __str__(self):
-#         return self.name
 
 class Message(models.Model):
     user_send = models.ForeignKey(User, related_name='sent_message' ,on_delete=models.CASCADE)
@@ -16,9 +9,12 @@ class Message(models.Model):
     
     def __str__(self):
         return f'{self.user_send} to {self.user_receive}'
-    
-    
-    
-#python3 manage.py makemigrations
-#python3 manage.py migrate 
-#we do this every time we add somethings in models
+
+class Invitation(models.Model):
+    inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_sent')
+    invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_received')
+    room_name = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, default='pending')  # e.g., pending, accepted
+
+    def __str__(self):
+        return f"Invitation from {self.inviter} to {self.invitee} for {self.room_name} (Status: {self.status})"
