@@ -127,27 +127,62 @@
 /* 2FA Button Styling */
 .toggle-2fa {
     padding: 10px 20px;
-    background-color: #f44336;
-    color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    width: 50%;
-    margin-left: 25%;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 55%;
+    margin-left: -7%; 
+    /* transition: background-color 0.3s ease, transform 0.2s ease; */
 }
 
-.toggle-2fa.active {
-    background-color: #4CAF50;
+/* Modal */
+.modal {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    color:white;
+    font-family : 'Baloo_Bhai_2';
 }
 
-.toggle-2fa:hover {
-    transform: scale(1.05);
-    background-color: #e53935;
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-/* Hover and Active States */
-.toggle-2fa.active:hover {
-    background-color: #0c92aa;
+.close:hover,
+.close:focus {
+    color: rgb(231, 13, 13);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#verificationSection   {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: slideRight 0.8s ease;
+}
+
+#verificationCode ,#verifyButton {
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+}
+#verifyButton{
+    font-size: small;
+    margin-top: 10px;
+    cursor: pointer;
 }

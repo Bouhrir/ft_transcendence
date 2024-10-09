@@ -25,16 +25,27 @@ def register_api(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Set up 2FA by generating a TOTP secret and returning a QR code
+# setup 2fa for the user
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_2fa_status(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+    print(profile.is_2fa_enabled)
+    return Response({
+        'is_2fa_enabled': profile.is_2fa_enabled
+    })
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def setup_2fa(request):
     user = request.user
-    profile = UserProfile.objects.get(user=user)  # Get the UserProfile instance associated with the user
+    profile = UserProfile.objects.get(user=user)
 
-    if not profile.totp_secret:
-        totp_secret = pyotp.random_base32()  # Generate a new TOTP secret
+    if not profile.is_2fa_enabled:
+        totp_secret = pyotp.random_base32()
         profile.totp_secret = totp_secret
+        profile.is_2fa_enabled = True
         profile.save()
     else:
         totp_secret = profile.totp_secret
@@ -42,7 +53,7 @@ def setup_2fa(request):
     totp = pyotp.TOTP(totp_secret)
     otp_auth_url = totp.provisioning_uri(name=user.email, issuer_name="setup")
 
-    # # Generate QR code for the TOTP secret
+    # Generate QR code for the TOTP secret
     qr = qrcode.make(otp_auth_url)
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
@@ -53,27 +64,36 @@ def setup_2fa(request):
         'totp_secret': totp_secret,
     })
 
-# Verify the OTP entered by the user
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def verify_2fa(request):
     otp = request.data.get('verification_code')
-    print(otp)
     user = request.user
     profile = UserProfile.objects.get(user=user)
 
-    if not profile.totp_secret:
+    if not profile.is_2fa_enabled:
         return Response({"error": "2FA is not enabled for this user."}, status=status.HTTP_400_BAD_REQUEST)
 
     totp = pyotp.TOTP(profile.totp_secret)
 
     if totp.verify(otp):
-        # OTP verified successfully
         return Response({"message": "2FA verified successfully"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def disable_2fa(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
 
+    if not profile.is_2fa_enabled:
+        return Response({"error": "2FA is not enabled for this user."}, status=status.HTTP_400_BAD_REQUEST)
+    else :
+        profile.totp_secret = ""
+        profile.is_2fa_enabled = False
+        profile.save()
+    return Response({"message": "2FA has been disabled successfully."}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -81,7 +101,10 @@ def me(request):
     user = request.user
     return Response({
         "id":user.id,
-        "username":user.username
+        "username":user.username,
+        "email":user.email,
+        "first_name":user.first_name,
+        "last_name":user.last_name,
     })
 
 
@@ -94,9 +117,10 @@ def user_list_view(request):
     return render(request, 'user_list.html', {'users': users})
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def deluser(request):
-    username = request.data.get('username')
-
+    username = request.user
+    
     if not username:
         return Response({"error": "Username is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -106,6 +130,7 @@ def deluser(request):
         return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
 # from rest_framework.response  import Response
 # from rest_framework.decorators  import api_view
 # from django.contrib.auth.models import User

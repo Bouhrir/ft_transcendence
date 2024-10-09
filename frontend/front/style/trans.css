@@ -1,0 +1,1246 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+@font-face {
+    font-family: "celesti";
+    src: url("../font/celesti-from-font/CelestiFrom-rvrqp.otf");
+}
+@font-face {
+    font-family: 'Baloo_bhai_2';
+    src: url('../needs/fonts/Baloo_Bhai_2/BalooBhai2-VariableFont_wght.ttf') format('woff2');
+}
+body {
+    background-image: url('../needs/img/background.svg');
+    background-size: cover;
+    background-attachment: fixed;
+}
+.container{ 
+    display : flex;
+    flex-direction: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding: 0 100px;
+    gap: 11rem;
+    color: white
+}
+.logop{
+    display: flex;
+    margin-top: 5vh;
+    justify-content: center; 
+    align-items: center;
+    height: 20vh;
+	animation: slideUp 0.8s ease;
+}
+.oplogo
+{
+    height: 13vh;
+    margin-bottom: 0%;
+}
+.hr{
+    text-decoration: none;
+}
+.optext{
+    font-family: Celesti From;
+    color: white;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    font-size: 4vw;
+    margin-top: 250px;
+}
+.logo{
+    /* margin: 10px; */
+    width: 3%;
+    /* size: 20px; */
+}
+.op{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.openbut{
+    display: flex;
+    justify-content: center;
+    border-style: solid;
+    border-color: #ffffff;
+    font-size: 20px;    
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+}
+.openbut:hover{
+    cursor: pointer;
+    background-color: white;
+    color: black;
+}
+.join{
+    display: flex;
+    justify-content: flex-end;
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+}
+.signupbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 65vh;
+    width: 20vw;
+    padding-top: 22px;
+    margin-left: 40.5%;
+    background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
+    backdrop-filter: blur(5%);
+    border-radius: 50px; /* Apply rounded corners */
+    border: 0.5px solid  rgba(255, 255, 255, 0.239); /* Add a border */
+    position: relative; /* Positioning for the pseudo-element */
+    transform: translateY(-50px);  /* Initially positioned above */
+	animation: slideDownFadeIn 0.8s ease forwards;
+	transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+.signinbox {
+	display: flex;
+    margin-top: 2%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 50vh;
+    width: 20vw;
+    margin-left: 40.5%;
+    /* padding-top: 20px; */
+    background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
+    backdrop-filter: blur(9px);
+    border: 0.5px solid rgba(229, 102, 39, 0.278);
+    border-radius: 50px;
+    animation: slideDownFadeIn 0.8s ease forwards;
+	transition: box-shadow 0.3s ease-in-out;
+}
+.signinbox:hover, .signupbox:hover {
+	box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
+}
+
+@keyframes slideDownFadeIn {
+    100% {
+        opacity: 1;
+        transform: translateY(0);  /* Move to original position */
+    }
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);  /* Move to original position */
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.wlctxt{
+    font-family: 'Celesti';
+    color: white;
+    text-align: center;
+}
+.wlcmtxt{
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    text-align: center;
+    font-weight: 100;
+    margin-top: none;
+    margin-bottom: 20px;
+    /* font-size: ; */
+}
+.password-input
+{
+    width: 100%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+.signinbox h3, .signupbox h3{
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-weight: 1;
+    font-size: 14px;
+}
+
+.email-txt {
+    width: 90%;
+}
+
+.email-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+.head1{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    margin-left: 1%; 
+    animation: slideRight 0.8s ease;
+}
+.head2{
+    display: flex;
+    margin-top: 2.7rem;
+    animation: slideRight 0.8s ease;
+    /* flex-direction: row; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    /* margin-right: 1%; */
+}
+.head3{
+    margin-left: 4%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6.3rem;
+    margin-left: 3.8rem;
+    align-items: center;
+    animation: slideRight 0.8s ease;
+}
+.oppage
+{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+.head-op{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-top: 10px;
+}
+.head{
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    /* margin-top: 10px; */
+    margin-left: 7.3%;
+    height: 10vh;
+    /* flex: 1 1; */
+}
+.join:hover{
+    background-color: white;
+    cursor: pointer;
+    color: black;
+}
+.flech1{
+    padding-left: 50px;
+    padding-right: 0px;
+    transition: transform 0.3s ease;
+}
+button.openbut:hover .flech1 {
+    transform: translateX(5px);
+}
+.flech{
+    padding-left: 10px;
+    padding-right: 0px;
+    transition: transform 0.3s ease;
+}
+button.join:hover .flech {
+    transform: translateX(5px);
+}
+.rem-for
+{
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-family: 'Baloo_Bhai_2';
+    margin-bottom: 10px;
+}
+.rem-for label input{
+    accent-color: #fff;
+    margin-right: 6px;
+}
+.rem-for a{
+    color: white;
+    text-decoration: none;
+}
+.rem-for a:hover{
+    text-decoration: underline;
+}
+.loginbtn{
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    width: 300px;
+    height: 45px;
+    border-radius: 15px;
+    font-family: 'Baloo_Bhai_2';
+    font-style: normal;
+    font-size: large;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.loginbtn:hover{
+    background-color: white;
+	transition: background-color 0.5s ease-in-out;
+    color:black;
+    cursor: pointer;
+}
+.or{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: medium;
+    font-family: 'Baloo_Bhai_2';
+    margin-top: 20px;
+    margin-bottom: 20px;
+    /* column-gap: 1.6rem; */
+}
+.or::before , .or::after{
+    content: "";
+    height: 0.1px;
+    width:  150px;
+    background-color: white;
+    display: block;
+}
+.btn42{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo42{
+    display: flex;
+    border: 0.5px solid white;
+    justify-content: center;
+    align-items: center;
+    background-color:transparent;
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.logo42:hover img{
+    filter: invert(100%);
+}
+.logo42:hover{
+    background-color: white;
+    transition: background-color 0.5s ease-in-out;
+}
+.dont{
+    color: white;
+    text-align: center;
+    font-family: 'Baloo_Bhai_2';
+    font-size: small;
+}
+.dont h2{
+    font-weight: 10;
+    font-size: 16px;
+}
+
+.dont a{
+    color: #ffffff;
+    text-decoration: none;
+}
+.dont a:hover{
+    color: #fff;
+    text-decoration: underline;
+}
+.btnsign{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+.menu{
+    display: flex;
+    width: 49.8vw;
+    height: 3.5vh;
+    margin-top: 8%;
+    /* margin-right: 3%; */
+    align-items: center;
+    font-family: 'Celesti';
+    border: 0.5px solid rgba(255, 255, 255, 0.405);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
+    justify-content: space-around;
+    border-radius: 12px;
+    margin-left: 0.2vw;
+    margin-right: 1.2%;
+}
+.menu a{
+    color: #fff;
+    text-decoration: none;
+}
+.menu img{
+    width: 39px;;
+}
+.menu button{
+    margin-top: 2px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.searchpad input{
+    display: flex;
+    width: 21vw;
+    height: 3.5vh;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 16px;
+    margin-top: 11%;
+    outline: none;
+    /* z-index: 1; */
+    /* padding-left: 10px; */
+    padding: 12px 70px 12px 30px; 
+    color: white;
+}
+.searchpad ::placeholder{
+    color: #ffffff80;
+}
+.searchpad img{
+    height: 25px;
+    display: flex; 
+    position: absolute;
+    margin-bottom: 10%;
+    margin-left: 5px;
+    transform: translateY(-150%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 70%;
+
+}
+.notification button{
+    display: flex;
+    /* margin-top: 30%; */
+    justify-content: center;
+    align-items: center;
+    width: 2vw;
+    height: 3.5vh; 
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
+    border-radius: 12px;
+}
+.notification button:hover{
+    cursor: pointer;
+}
+.notification img{
+    width: 25px;
+}
+.logout{
+    display: flex;
+    margin-left: 2vw;
+    justify-content: center;
+    align-items: center;
+    width: 2vw;
+    height: 3.5vh; 
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
+    border-radius: 12px;
+}
+.profile{
+    display: flex;
+    margin-left: 2.5%;
+    margin-left: 2vw;
+    /* border: 0.5px solid white; */
+    width: 2vw;
+    height: 3.5vh;
+    margin-top: 2%;
+}
+
+@keyframes slideRight {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+}
+.profile button{
+    border: none;
+    border-radius: 12px;
+    background-color: transparent;
+    cursor: pointer;
+}
+.profile button:hover{
+    filter: invert(10%);
+}
+.profile img{
+    width: 100%;
+    height: 3.3vh;
+    border-radius: 7px;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+}
+.profile-card{
+    display: flex;
+    /* margin-left: 20px; */
+    /* padding-left: 20px; */
+    margin-top: 10px;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    width: 49.2vw;
+    height: 40vh; 
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'Baloo_Bhai_2';
+    outline: none;
+    /* padding-left: 10px; */
+    color: white;
+}
+.opengame-card{
+    display: flex;
+    margin-top: 10px;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    width: 49.2vw;
+    height: 40vh; 
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'Baloo_Bhai_2';
+    outline: none;
+    padding-left: 10px;
+    color: white;
+}
+.rank-profile{
+    /* display: flex; */
+    /* margin-right: 9px; */
+    /* justify-content: center; */
+    margin-top: 10px;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    /* font-family: ; */
+    width: 90%;
+    height: 19.6vh; 
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'Baloo_Bhai_2';
+    outline: none;
+    color: white;
+
+}
+.dashboard{
+    display: flex;
+    /* border: #fff solid 2px; */
+    /* height: 700px; */
+    flex-direction: row;
+    /* margin: 0 auto; */
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 83vh;
+    overflow: hidden;
+    /* flex: 1 1; */
+}
+.cards{
+    display: flex;
+    width: 49%;
+    /* margin-left: 20px; */
+    /* border: #fff solid 2px; */
+    flex-direction: column;
+    animation : slideUp 1s ease;
+
+}
+.rank{
+    display: flex;
+    /* margin-left: 6%; */
+    width: 17%;
+    height: 95vh;
+    align-items: center;
+
+    justify-content: center;
+    /* margin-right: 40px; */
+    /* border: #fff solid 2px; */
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    animation : slideUp 0.8s ease;
+}
+.match-list{
+    display: flex;
+    padding-top: 30px;
+    margin-top: 10px;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    /* font-family: ; */
+    width: 17vw;
+    height: 81vh; 
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'Baloo_Bhai_2';
+    outline: none;
+    color: white;
+    flex-direction: column;
+    animation : slideUp 0.5s ease;
+    /* overflow-y: scroll; */
+}
+.match-red-card{
+    display: flex;
+    margin-top: 5px;
+    margin-left: 20px;
+    background: linear-gradient(to left,rgba(255, 64, 64, 0.200),rgba(255, 0, 0, 0));
+    width: 16vw;
+    height: 6vh;
+    border-right: rgb(255, 0, 0) solid 4px;
+    align-items: center;
+    justify-content: center;
+}
+.match-green-card{
+    display: flex;
+    margin-top: 5px;
+    margin-left: 20px;
+    background: linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0));
+    width: 16vw;
+    height: 6vh;
+    border-right: rgb(9, 255, 0) solid 4px;
+    align-items: center;
+    justify-content: center;
+}
+.rate{
+    font-size: 1vh;
+    margin-right: 10px;
+    margin-left: 10px;
+    color: rgb(72, 255, 0);
+}
+.rate1{
+    font-size: 1vh;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: rgb(255, 0, 0);
+}
+.match-red-card img{
+    width: 15%;
+}
+.match-green-card img{
+    width: 15%;
+}
+.match-txt {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4%;
+    font-size: 0.7vw;
+}
+.match-txt h3{
+    margin-left: 20px;
+    font-size: 0.7vw;
+}
+.match-txt a{
+    margin-right: 10px;
+    text-decoration: none;
+    color: white;
+}
+.match-list a:hover{
+    text-decoration: underline;
+}
+.trophie, .profilepic, .matches {
+    display: flex;
+    font-size: 1vw;
+    flex: 1; /* Equal space for each item */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+    text-align: center;
+}
+.win{
+    color: green;
+}
+.lose{
+    color: red;
+}
+.profile-card:hover .profilepic
+ {
+    transform: scale(1.1); /* Zoom in effect */
+}
+.profilepic{
+    display: flex;
+    flex-direction: column;
+}
+.profilepic h1{
+    display:flex ;
+    font-size: 2vh;
+    text-align: center;
+    font-family: 'Celesti';
+}
+.profilepic p{
+    display:flex ;
+    font-size: 1vh;
+    text-align: center;
+    font-family: 'Baloo_Bhai_2', sans-serif;
+    justify-content: center;
+}
+.profilepic img{
+    width: 12vw;
+    border-radius: 15px;
+    border-radius: 7px;
+    justify-content: center;
+    border-right: orangered solid 7px;
+    border-bottom: orangered solid 7px;
+}
+.level-card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.lvl-card img{
+    display: flex;
+    width: 7vw;
+    border-radius: 7px;
+    align-items: center;
+    justify-content: center;
+    border-right: orangered solid 2px;
+    border-bottom: orangered solid 2px;
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+.lvl-img{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom:10px ;
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+.level{
+    position: absolute;
+    text-align: center;
+    font-family: 'Baloo_Bhai_2', sans-serif;
+    top: 1.5px;
+    color: orangered;
+}
+.lvl-card p{
+    display:flex ;
+    font-size: 0.5vw;
+    text-align: center;
+    font-family: 'Baloo_Bhai_2', sans-serif;
+    justify-content: center;
+    /* transition: transform 0.3s ease; Smooth transition for zoom effect */
+
+}
+.lvl-card:hover {
+    transform: scale(1.1); /* Zoom in effect */
+}
+/* Container for the price image */
+.price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Hide overflow to ensure zoom effect is clean */
+    position: relative; /* Position relative to handle absolute positioning if needed */
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+
+/* Image styling within the price container */
+.price img {
+    width: 8vw;
+    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+
+/* Zoom effect on hover */
+.price:hover img {
+    transform: scale(1.1); /* Zoom in effect */
+}
+
+/* Container for highest rank and other similar elements */
+.HIGHEST, .platinuim {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Hide overflow to ensure zoom effect is clean */
+    font-size: 0.8vw;
+}
+
+/* Styling for rank profile headings */
+.rank-profile h3 {
+    text-align: center;
+    font-family: 'Celesti';
+}
+.open-txt h3{
+    display: flex;
+    position: relative;
+    text-align: center;
+    font-family: 'Celesti';
+    font-size: 7vw;
+    z-index: 1;
+    top: 40px;
+    text-align: center;
+    white-space: nowrap;
+}
+.racket img {
+    position: relative;
+    right: 28vh;
+    height: 37vh;
+    top:20px;
+    z-index: 2;
+    transition: transform 0.3s ease; /* Smooth transition for scaling */
+    overflow: hidden;
+}
+
+.racket img:hover {
+    transform: scale(1.1); /* Zoom in by 20% */
+}
+
+.start a{
+    position: relative;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 40vh;
+    margin-bottom: 20%;
+    color: white;
+    top: 85%;
+    left: 100%;
+    white-space: nowrap;
+    text-decoration: none;
+    z-index: 4;
+}
+.whole{
+    display: flex;
+    width: 98vw;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+}
+.account-settings{
+    display: flex;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.316);
+    width: 50vw;
+    height: 50vh; 
+    background: linear-gradient(rgba(255, 255, 255, 0.161), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'Baloo_Bhai_2';
+    outline: none;
+    color: white;
+    animation: slideUp 0.8s ease;
+}
+.error-message{
+    position: absolute;
+    color: red;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 20px;
+    top : 0%;
+    left: 87%;
+}
+.line_{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    width: 0.1%;
+    background-color: white;
+}
+.accord{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+.delete{
+    display: flex;
+    margin-top: 100px;
+    color: rgb(161, 32, 0);
+    text-decoration: none;
+    margin-left: 20px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: large;
+    text-transform: uppercase;
+}
+
+.accord a{
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+.accord a:hover{
+    color: rgb(168, 168, 168);
+    text-decoration: none;
+    font-size: 20px;
+}
+.delete:hover{
+    cursor: pointer;
+    color: red;
+}
+.acc_ h1{
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    font-family: 'Baloo_Bhai_2';
+}
+.editprof{
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    text-decoration: none;
+    margin-left: 20px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: large;
+}
+.editprof__{
+    /* display: flex; */
+    /* justify-content: flex-start; */
+    align-items: center;
+}
+.editprof__ button{
+    display: flex;
+    width: 3vw;
+    justify-content: center;
+    align-items: flex-end;
+    border: transparent;
+    background-color: transparent;
+}
+.camera{
+    width: 30%;
+    position: relative;
+    left: 165%;
+    /* height: 50%; */
+}
+.editprof__ button:hover{
+    cursor: pointer;
+    filter: invert(20%);
+}
+.pic_p{
+    display: flex;
+    margin-left: 10px;
+    width: 8vw;
+    box-shadow: 11px 11px 11px rgba(0, 0, 0, 0.25);
+    border-radius: 100%;
+    font-family: 'Baloo_Bhai_2';
+}
+.info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: rgb(255, 255, 255);
+    font-family: 'celesti';
+    font-size: large;
+}
+.username{
+    display: flex;
+    font-size: 30px;
+    font-family: 'Baloo_Bhai_2';
+    color: rgb(179, 179, 179);
+}
+
+.edit_but{
+    display: flex;
+    justify-content: flex-end;
+    /* margin-right: 5%; */
+    /* margin-top: 18%; */
+}
+.edit_but button{
+    width: 3vw;
+    height: 3vh;
+    font-size: large;
+}
+.information_box{
+    display: flex;
+    flex-direction: column;
+}
+.acciformation{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-left: 20px;
+    border-radius: 20px;
+    width:35vw;
+    height: 45vh;
+    text-decoration: none;
+    font-family: 'Baloo_Bhai_2';
+    font-size: large;
+    /* border: #fff solid 1px; */
+}
+.acciformation h1{
+    color: #fff;
+    margin: 10px 10px 20px;
+    font-family: 'Baloo_Bhai_2';
+}
+.name_last{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+.first_name h3{
+    color: rgb(176, 175, 175);
+    font-size: 2vh;
+}
+.first_name {
+    display: flex;
+    margin-left: 10%;
+    text-align: center;
+    flex-direction: column;
+}
+.first_name p{
+    font-size: 122%;
+}
+.last_name {
+    display: flex;
+    margin-right: 10%;
+    text-align: center;
+    flex-direction: column;
+}
+.last_name h3{
+    color: rgb(176, 175, 175);
+    font-size: 2vh;
+}
+.mail_nd_pass{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+.add_mail h3{
+    color: rgb(176, 175, 175);
+    font-size: 2vh;
+}
+.add_mail {
+    display: flex;
+    margin-left: 7%;
+    text-align: center;
+    flex-direction: column;
+}
+.add_mail p{
+    font-size: 122%;
+}
+.pass {
+    display: flex;
+    margin-right: 10%;
+    text-align: center;
+    flex-direction: column;
+}
+.pass h3{
+    color: rgb(176, 175, 175);
+    font-size: 2vh;
+}
+
+/* game */
+#gameBar{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    width: 100vw;
+    height: 80vh;
+}
+#gameOffline{
+    position: relative;
+    left:15%;
+    animation: slideUp 0.5s ease;
+}
+#gameOnline{
+    position: relative;
+    right: 0;
+    animation: slideUp 0.8s ease;
+    /* left: 20%; */
+}
+
+.gameLine{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    font-family: 'celesti';
+    height: 40vh;
+    width: 20vw;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    /* padding-left: 10px; */
+}
+.gameLine:hover{
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
+    transform: scale(1.1);
+    /* transition: transform 0.2s ease-in-out; */
+}
+.gameLine a {
+    font-size: 4.5rem;
+    color: white;
+    text-decoration: none;
+}
+
+/* tournament */
+.tournament
+{
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    gap : 5%;
+    align-items: center;
+    animation: slideUp 0.8s ease;
+}
+
+.lines{
+    display : flex;
+    height: 80%;
+    width:23%;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar-player{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width:100%;
+    gap: 2%;
+    animation: slideUp 0.5s ease;
+}
+
+
+#lineMiddle{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    animation: slideUp 0.7s ease;
+    gap: 5%;
+}
+
+
+.avatar-winner{
+    width: 30%;
+    height: 20rem;
+    position: absolute;
+    top :30%;
+    left :50%;
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%,-50%);
+
+}
+.avatar-winner p{
+    font-size: 5rem;
+    color: white;
+    font-family: 'celesti';
+    animation: slideUp 0.8s ease;
+}
+.av-win{
+    border: 2px solid white;
+    width: 18%;
+    height: 43%;
+    border-radius: 20px;
+    animation: slideUp 1s ease;
+}
+.av-img{
+    border: 2px solid white;
+    animation: slideUp 1s ease;
+    border-radius: 20px;
+    width:7rem;
+    height: 7rem;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+}
+
+
+.controls {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 1%;
+}
+
+#aliasInput {
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 1s ease;
+}
+
+#joinButton {
+    cursor: pointer;
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 0.5s ease;
+}
+
+#playerList {
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+}
+
+.tourn-score{
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
+}
+
+.tourn-score-final{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
+}

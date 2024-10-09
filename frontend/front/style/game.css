@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: calc(100vh - 90px);
+    height: calc(100vh - 20vh);
     width: 100%;
     color:white;
     background-size: cover;
@@ -52,8 +52,8 @@
     position: absolute; 
     top: 50%;
     left: 50%;
-    height: 4%;
-    width: 2%;
+    height: 2rem;
+    width: 2rem;
     border-radius: 50%;
     background-color: white;
 }
@@ -99,7 +99,7 @@
 
 
 
-.win{
+.win-message {
     position : absolute;
     display : flex;
     justify-content : center;
@@ -178,7 +178,7 @@
     }
 }
 
-
+/* 
 canvas {
     background-color: #222;
     display: block;
@@ -187,4 +187,4 @@ canvas {
     box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2), 
                 0px 0px 40px rgba(0, 255, 0, 0.2), 
                 0px 0px 80px rgba(255, 255, 255, 0.1);
-}
+} */
