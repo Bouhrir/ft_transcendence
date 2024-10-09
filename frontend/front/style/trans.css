@@ -1119,27 +1119,122 @@ button.join:hover .flech {
 
 .lines{
     display : flex;
+    height: 80%;
+    width:23%;
+    justify-content: center;
+    align-items: center;
 }
 
 .avatar-player{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 65%;
     align-items: center;
+    height: 100%;
+    width:100%;
+    gap: 6%;
+    animation: slideUp 0.5s ease;
+}
+
+
+#lineMiddle{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    animation: slideUp 0.7s ease;
+    gap: 5%;
+}
+
+
+.avatar-winner{
+    position: absolute;
+    top :30%;
+    left :50%;
+    text-align: center;
+    transform: translate(-50%,-50%);
 
 }
 
-.avatar-player img{
+.avatar-winner img{
+    border: 2px solid white;
+    animation: slideUp 1s ease;
     border-radius: 20px;
+    width: 40%;
+}
+.av-img{
+    border: 2px solid white;
+    animation: slideUp 1s ease;
+    border-radius: 20px;
+    width:7rem;
+    height: 7rem;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+}
+.avatar-winner p{
+    font-size: 5rem;
+    color: white;
+    font-family: 'celesti';
+    animation: slideUp 0.8s ease;
 }
 
-#winner-avatar{
+.controls {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 1%;
+}
+
+#aliasInput {
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 1s ease;
+}
+
+#joinButton {
+    cursor: pointer;
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 0.5s ease;
+}
+
+#playerList {
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+}
+
+.tourn-score{
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
+}
+
+.tourn-score-final{
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: 10%;
-    /* width: 10%;   */
-
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
 }
