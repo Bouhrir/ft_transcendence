@@ -24,7 +24,6 @@ services:
     restart: on-failure
     networks:
       - frontend
-    
 networks:
   frontend:
     driver: bridge
