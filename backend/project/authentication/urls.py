@@ -14,6 +14,9 @@ urlpatterns = [
     path('me/', views.me),
     path('deluser/', views.deluser),
     path('users/', views.user_list_view),
+
+    path('intra/', views.LoginIntra),
+    path('callback/', views.callback),
     # setup 2fa 
     path('2fa/setup/', views.setup_2fa),
     path('2fa/verify/', views.verify_2fa),

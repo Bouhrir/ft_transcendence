@@ -33,7 +33,7 @@ class SigninComponent extends HTMLElement {
                     <h2 class="or">or</h2>
                 </div>
                 <div class="btn42">
-                    <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                    <button id="btn42" type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
                 </div>
                 <div class="dont">
                     <h2>Don’t have an account? <a href="#signup">Sign up<a></h2>
@@ -46,6 +46,7 @@ class SigninComponent extends HTMLElement {
             const errorMessage = document.getElementById('error-message');
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const oauth = document.getElementById('btn42').value;
 
             // Perform fetch to backend (Django server)
             const response = await fetch('http://localhost:81/auth/sign-in/', {
@@ -59,7 +60,6 @@ class SigninComponent extends HTMLElement {
                     password:password
                 })
             });
-
             const data = await response.json();
 
             if (response.ok) {

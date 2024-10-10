@@ -9,3 +9,6 @@ Twisted[http2,tls]
 pyotp
 qrcode[pil]
 channels
+django-oauth-toolkit
+djangorestframework-oauth
+django-allauth

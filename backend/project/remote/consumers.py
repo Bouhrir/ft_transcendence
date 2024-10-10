@@ -9,6 +9,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from jwt import decode, ExpiredSignatureError, DecodeError
 from channels.db import database_sync_to_async
 from channels.auth import AuthMiddlewareStack
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 
 # from channels.generic.websocket import AsyncWebsocketConsumer
 # from rest_framework_simplejwt.tokens import UntypedToken
