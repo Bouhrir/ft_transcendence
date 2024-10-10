@@ -9,10 +9,9 @@ from rest_framework_simplejwt.exceptions import TokenError
 from jwt import decode, ExpiredSignatureError, DecodeError
 from channels.db import database_sync_to_async
 from channels.auth import AuthMiddlewareStack
+from django.contrib.auth.models import User
+
 from channels.generic.websocket import AsyncWebsocketConsumer
-
-
-# from channels.generic.websocket import AsyncWebsocketConsumer
 # from rest_framework_simplejwt.tokens import UntypedToken
 # from rest_framework_simplejwt.exceptions import InvalidToken
 # from django.contrib.auth.models import AnonymousUser
@@ -144,7 +143,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         else:
             print("room is full")
     async def connect(self):
-        from django.contrib.auth.models import User
+        
         cookie_value = self.scope['cookies'].get('access')
         # print(cookie_value)
         if cookie_value:
