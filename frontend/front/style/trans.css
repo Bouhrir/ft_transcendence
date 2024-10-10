@@ -66,7 +66,7 @@ body {
     display: flex;
     justify-content: center;
     border-style: solid;
-    border-color: white;
+    border-color: #ffffff;
     font-size: 20px;    
     color: white;
     border-radius: 50px;
@@ -105,7 +105,7 @@ body {
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 70vh;
+    height: 65vh;
     width: 20vw;
     padding-top: 22px;
     margin-left: 40.5%;
@@ -122,12 +122,12 @@ body {
 
 .signinbox {
 	display: flex;
-    /* margin-top: 1%; */
+    margin-top: 2%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     align-self: center;
-    height: 55vh;
+    height: 50vh;
     width: 20vw;
     margin-left: 40.5%;
     /* padding-top: 20px; */
@@ -222,7 +222,7 @@ body {
 }
 .head2{
     display: flex;
-    margin-top: 2%;
+    margin-top: 2.7rem;
     animation: slideRight 0.8s ease;
     /* flex-direction: row; */
     /* justify-content: center; */
@@ -233,8 +233,8 @@ body {
     margin-left: 4%;
     display: flex;
     justify-content: space-between;
-    margin-top: 3.6%;
-    margin-left: 3.2%;
+    margin-top: 6.3rem;
+    margin-left: 3.8rem;
     align-items: center;
     animation: slideRight 0.8s ease;
 }
@@ -393,7 +393,7 @@ button.join:hover .flech {
     display: flex;
     width: 49.8vw;
     height: 3.5vh;
-    margin-top: 6%;
+    margin-top: 8%;
     /* margin-right: 3%; */
     align-items: center;
     font-family: 'Celesti';
@@ -429,7 +429,7 @@ button.join:hover .flech {
     border-radius: 12px;
     font-family: 'Baloo_Bhai_2';
     font-size: 16px;
-    margin-top: 6.38%;
+    margin-top: 11%;
     outline: none;
     /* z-index: 1; */
     /* padding-left: 10px; */
@@ -577,7 +577,7 @@ button.join:hover .flech {
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 80vh;
+    height: 83vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
@@ -973,8 +973,8 @@ button.join:hover .flech {
 .edit_but{
     display: flex;
     justify-content: flex-end;
-    /* margin-right: 5%; */
-    /* margin-top: 18%; */
+    margin-right: -5%;
+    margin-top: 3%;
 }
 .edit_but button{
     width: 3vw;
@@ -1035,6 +1035,7 @@ button.join:hover .flech {
     display: flex;
     justify-content: space-between;
     margin-top: 5%;
+    margin-left: 3%;
 }
 .add_mail h3{
     color: rgb(176, 175, 175);
@@ -1104,4 +1105,143 @@ button.join:hover .flech {
     font-size: 4.5rem;
     color: white;
     text-decoration: none;
+}
+
+/* tournament */
+.tournament
+{
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    gap : 5%;
+    align-items: center;
+    animation: slideUp 0.8s ease;
+}
+
+.lines{
+    display : flex;
+    height: 80%;
+    width:23%;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar-player{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width:100%;
+    gap: 2%;
+    animation: slideUp 0.5s ease;
+}
+
+
+#lineMiddle{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    animation: slideUp 0.7s ease;
+    gap: 5%;
+}
+
+
+.avatar-winner{
+    width: 30%;
+    height: 20rem;
+    position: absolute;
+    top :30%;
+    left :50%;
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%,-50%);
+
+}
+.avatar-winner p{
+    font-size: 5rem;
+    color: white;
+    font-family: 'celesti';
+    animation: slideUp 0.8s ease;
+}
+.av-win{
+    border: 2px solid white;
+    width: 18%;
+    height: 43%;
+    border-radius: 20px;
+    animation: slideUp 1s ease;
+}
+.av-img{
+    border: 2px solid white;
+    animation: slideUp 1s ease;
+    border-radius: 20px;
+    width:7rem;
+    height: 7rem;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+}
+
+
+.controls {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 1%;
+}
+
+#aliasInput {
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 1s ease;
+}
+
+#joinButton {
+    cursor: pointer;
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+    animation : slideRight 0.5s ease;
+}
+
+#playerList {
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+}
+
+.tourn-score{
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
+}
+
+.tourn-score-final{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family:'Baloo_Bhai_2';
+    color:white;
+    font-size: 4rem;
 }

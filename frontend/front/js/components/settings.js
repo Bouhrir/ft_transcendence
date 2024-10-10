@@ -2,6 +2,7 @@ class SettingComponent extends HTMLElement {
     constructor() {
         super();
         this.is2FAEnabled = false;
+        this.userData = null;
     }
 
     async connectedCallback() {
@@ -39,25 +40,25 @@ class SettingComponent extends HTMLElement {
                             <div class="name_last">
                                 <div class="first_name">
                                     <h3>First name</h3>
-                                    <input type="text" id="firstName" value="Abdelillah">
+                                    <input type="text" class="sett_save" id="firstName" value="">
                                 </div>
                                 <div class="last_name">
                                     <h3>Last name</h3>
-                                    <input type="text" id="lastName" value="Mahdioui">
+                                    <input type="text" class="sett_save" id="lastName" value="">
                                 </div>
                             </div>
                             <div class="mail_nd_pass">
                                 <div class="add_mail">
                                     <h3>Address mail</h3>
-                                    <input type="email" id="email" value="mahdiouiabdou@gmail.com">
+                                    <input type="email" class="sett_save" id="email" value="">
                                 </div>
                                 <div class="pass">
                                     <h3>Password</h3>
-                                    <p>***</p>
+                                    <input type="text" class="sett_save" id="Password" value="****">
                                 </div>
                             </div>
                             <div class="edit_but">
-                                <a class="hr" href="#dashboard"><button id="save" class="join">Save<span class="flech">→</span></button></a>
+                                <a class="hr"><button id="save" class="join">Save<span class="flech">→</span></button></a>
                             </div>
                         </div>
                     </div>
@@ -74,9 +75,38 @@ class SettingComponent extends HTMLElement {
         `;
 
         await this.check2FAStatus();
+        await this.fetchUserData();
+        this.setValues()
         this.setupEventListeners();
     }
+    setValues() {
+        if (this.userData) {
+            document.getElementById('firstName').value = this.userData.first_name || '';
+            document.getElementById('lastName').value = this.userData.last_name || '';
+            document.getElementById('email').value = this.userData.email || '';
+        }
+    }
+    async fetchUserData() {
+        const access = this.getAccessTokenFromCookies();
+        try {
+            const response = await fetch('http://localhost:81/auth/me/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${access}`,
+                    'Content-Type': 'application/json',
+                }
+            });
 
+            if (response.ok) {
+                this.userData = await response.json();
+                console.log(this.userData.first_name);
+            } else {
+                console.error('Failed to fetch user data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    }
     async check2FAStatus() {
         const access = this.getAccessTokenFromCookies();
         try {
@@ -209,10 +239,11 @@ class SettingComponent extends HTMLElement {
         const firstName = document.getElementById('firstName').value;
         const lastName = document.getElementById('lastName').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('Password').value;
         const access = this.getAccessTokenFromCookies();
 
         try {
-            const response = await fetch('http://localhost:81/update_profile/', {
+            const response = await fetch('http://localhost:81/auth/update_profile/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${access}`,
@@ -221,10 +252,10 @@ class SettingComponent extends HTMLElement {
                 body: JSON.stringify({
                     first_name: firstName,
                     last_name: lastName,
-                    email: email
+                    email: email,
+                    // password:password
                 })
             });
-
             if (response.ok) {
                 alert('Profile updated successfully!');
             } else {

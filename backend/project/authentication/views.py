@@ -11,6 +11,8 @@ import pyotp
 import qrcode
 from io import BytesIO
 import base64
+from django.contrib.auth.hashers import check_password
+
 
 @api_view(['POST'])
 def register_api(request):
@@ -94,6 +96,31 @@ def disable_2fa(request):
         profile.is_2fa_enabled = False
         profile.save()
     return Response({"message": "2FA has been disabled successfully."}, status=status.HTTP_200_OK)
+# modify the user profile
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user).user
+    data = request.data
+
+    if 'password' in data:
+        current_password = data['password']
+        if not check_password(current_password, profile.password):
+            return Response({"error": "Invalid current password"}, status=status.HTTP_400_BAD_REQUEST)
+    if 'first_name' in data:
+        profile.first_name = data['first_name']
+    if 'last_name' in data:
+        profile.last_name = data['last_name']
+    if 'username' in data:
+        profile.last_name = data['username']
+    if 'email' in data:
+        profile.email = data['email']
+
+    profile.save()
+
+    return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -106,8 +133,6 @@ def me(request):
         "first_name":user.first_name,
         "last_name":user.last_name,
     })
-
-
 
 def welcome(request):
     return render(request,'hello.html')

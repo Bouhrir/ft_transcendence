@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-nprb69my43^nmo)#id^%9_gsw7d#2=i&-*yyc16ge--f!bg@*x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5', '10.12.6.8']
 
+ASGI_APPLICATION = 'setup.asgi.application'
 
 # Application definition
 
@@ -40,15 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
+    'channels',
     'corsheaders',
     'authentication',
+    'remote',
     'game',
     'chat',
-    'remote',
     'tournament',
 ]
 
@@ -117,8 +118,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-WSGI_APPLICATION = 'setup.wsgi.application'
-ASGI_APPLICATION = 'setup.asgi.application'
+# WSGI_APPLICATION = 'setup.wsgi.application'
 
 
 # Database

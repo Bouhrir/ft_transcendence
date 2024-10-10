@@ -20,5 +20,8 @@ urlpatterns = [
     path('2fa/disable/', views.disable_2fa),
     path('2fa/status/', views.get_2fa_status),
 
+    #edit profile
+    path('update_profile/', views.update_profile),
+
     path('', views.welcome),
 ]
