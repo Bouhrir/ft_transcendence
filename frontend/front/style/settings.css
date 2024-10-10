@@ -167,7 +167,7 @@
     animation: slideRight 0.8s ease;
 }
 
-#verificationCode ,#verifyButton {
+#verificationCode ,#verifyButton , .sett_save{
     border-style: solid;
     border-color: white;
     color: white;

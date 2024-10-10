@@ -9,7 +9,8 @@ COPY tools/ .
 
 RUN python -m venv .env && \
 	echo "source .env/bin/activate" >> .bashrc && \
-	pip3 install -r ./dependencies.txt && \
-	chmod +x script.sh
+	pip3 install -r ./dependencies.txt
+
+RUN chmod +x script.sh
 
 CMD ["/script.sh"]

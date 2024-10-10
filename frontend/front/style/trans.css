@@ -973,8 +973,8 @@ button.join:hover .flech {
 .edit_but{
     display: flex;
     justify-content: flex-end;
-    /* margin-right: 5%; */
-    /* margin-top: 18%; */
+    margin-right: -5%;
+    margin-top: 3%;
 }
 .edit_but button{
     width: 3vw;
@@ -1035,6 +1035,7 @@ button.join:hover .flech {
     display: flex;
     justify-content: space-between;
     margin-top: 5%;
+    margin-left: 3%;
 }
 .add_mail h3{
     color: rgb(176, 175, 175);
