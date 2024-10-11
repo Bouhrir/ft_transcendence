@@ -7,3 +7,4 @@ websocket_urlpatterns = [
 ]
 #ws/some_path/ is the path where the WebSocket connections will be accepted
 #SomeConsumer is the consumer that will handle the connections
+

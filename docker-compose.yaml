@@ -17,12 +17,13 @@ services:
   backend:
     build: ./backend
     container_name: backend
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=setup.settings
     volumes:
       - ./backend/project:/project
     restart: on-failure
     networks:
       - frontend
-    
 networks:
   frontend:
     driver: bridge

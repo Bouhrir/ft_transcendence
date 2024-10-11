@@ -1,6 +1,5 @@
 class MessengerComponent extends HTMLElement {
     connectedCallback(){
-        
         this.innerHTML = `
         <div id="chat-container">
             <div id="message-display">
