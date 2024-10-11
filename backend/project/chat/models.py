@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 #         return self.name
 
 class Message(models.Model):
+
     user_send = models.ForeignKey(User, related_name='sent_message' ,on_delete=models.CASCADE)
     user_receive = models.ForeignKey(User, related_name='received_message',on_delete=models.CASCADE, default=1)   
     content = models.TextField()

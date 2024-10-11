@@ -24,4 +24,5 @@ RUN python3 manage.py collectstatic
 RUN python3 manage.py makemigrations && python3 manage.py migrate
 EXPOSE 8000
 
+# CMD ["python", "manage.py", "runserver"]
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "setup.asgi:application"]

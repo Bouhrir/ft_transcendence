@@ -43,8 +43,8 @@ class MessengerComponent extends HTMLElement {
         const currentUserName = data.username;
 
 
-        const receiverId = 1;
-        const receiverName = 'username';
+        const receiverId = data.id;
+        const receiverName = data.username;
 
         const roomName = 'gamechat';
 
@@ -52,7 +52,7 @@ class MessengerComponent extends HTMLElement {
         const socket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/chat/'
+            + '/ws/'
             + roomName
             + '/'
         );

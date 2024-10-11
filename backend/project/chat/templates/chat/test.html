@@ -3,130 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Chat</title>
+    <title>Chat Box</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
         }
         #chat-container {
-            width: 300px;
-            height: 400px;
+            width: 400px;
+            height: 500px;
             border: 1px solid #ccc;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            background-color: white;
+            justify-content: space-between;
         }
-        #chat-messages {
-            flex-grow: 1;
+        #message-display {
+            flex: 1;
             overflow-y: auto;
+            border: 1px solid #ddd;
             padding: 10px;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
         }
-        #chat-form {
-            display: flex;
-            padding: 10px;
+        #message-display p {
+            margin: 5px 0;
         }
         #chat-input {
-            flex-grow: 1;
-            margin-right: 10px;
+            display: flex;
         }
-        .message {
-            margin-bottom: 10px;
-            padding: 5px 10px;
-            border-radius: 10px;
-            max-width: 70%;
+        #chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
         }
-        .sent {
-            align-self: flex-end;
-            background-color: #dcf8c6;
+        #chat-input button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-        .received {
-            align-self: flex-start;
-            background-color: #f1f0f0;
+        #chat-input button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
+
     <div id="chat-container">
-        <div id="chat-messages"></div>
-        <form id="chat-form">
-            <input type="text" id="chat-input" placeholder="Type a message..." required>
-            <button type="submit">Send</button>
-        </form>
+        <div id="message-display">
+            <!-- Messages will appear here -->
+        </div>
+        <div id="chat-input">
+            <input type="text" id="message" placeholder="Type a message..." />
+            <button onclick="sendMessage()">test</button>
+        </div>
     </div>
 
     <script>
-        // Use the IDs provided by the Django view
-        const currentUserId = '{{current_user_id}}';
-        const receiverId = '{{receiver_id}}';
-        const currentUserName = '{{current_user_name}}';
-        const receiverName = '{{receiver_name}}';
-        
-        // Replace with your actual WebSocket URL
-        const socket = new WebSocket(`ws://localhost:81/ws/chat/${currentUserId}/${receiverId}/`);
-        
+        const currentUserId = 1;
+        const currentUserName = 'username';
+        const receiverId = 1;
+        const receiverName = 'username';
+
+        const roomName = 'gamechat';
+
+        // console.log(currentUserId+ ' '+ currentUserName);
+        const socket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/'
+            + roomName
+            + '/'
+        );
         socket.onopen = function(e) {
             console.log('Connected to WebSocket');
-            displaySystemMessage(`Connected as ${currentUserName}. Chatting with ${receiverName}.`);
-        };
-        
-        socket.onmessage = function(event) {
+        }
+        socket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        }
+        socket.onmessage =function(event){
             const data = JSON.parse(event.data);
-            displayMessage(data.msg, data.snd_id === currentUserId);
-        };
-        
-        socket.onclose = function(event) {
-            if (event.wasClean) {
-                console.log(`Closed cleanly, code=${event.code}, reason=${event.reason}`);
+            console.log(data);
+            console.log("test---------------");
+            console.log(data.rec_id);
+            console.log(data.snd_id);
+            if (data.snd_id === receiverId && data.rec_id === currentUserId) {
+                // Display the message
+                const messageDisplay = document.getElementById('message-display');
+                messageDisplay.innerHTML += `<p>${data.msg}</p>`;
+                 //const newMessage = document.createElement('p');
+               // newMessage.textContent = data.message;
+                //messageDisplay.appendChild(newMessage);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            console.log(message);
+            
+            if (message.trim() !== "") {
+                // Send the message through the WebSocket
+                socket.send(JSON.stringify({
+                    'msg': message,
+                    'snd_id': currentUserId,
+                    'rec_id': receiverId,
+                }));
+                document.getElementById('message').value = '';
+            }
+        }
+        function displaymessage(message, from){
+          const messageDisplay = document.getElementById('message-display');
+            const newMessage = document.createElement('p');
+
+            if (from === 'self') {
+                newMessage.textContent = `You: ${message}`;
+                newMessage.style.textAlign = 'right';  // Align sender messages to the right
             } else {
-                console.log('Connection died');
+                newMessage.textContent = `Other: ${message}`;
+                newMessage.style.textAlign = 'left';  // Align receiver messages to the left
             }
-            displaySystemMessage('Disconnected from chat.');
-        };
-        
-        socket.onerror = function(error) {
-            console.log(`WebSocket Error: ${error.message}`);
-            displaySystemMessage('Error in chat connection.');
-        };
-        
-        document.getElementById('chat-form').onsubmit = function(e) {
-            e.preventDefault();
-            const messageInput = document.getElementById('chat-input');
-            const message = messageInput.value.trim();
-            if (message) {
-                const data = {
-                    msg: message,
-                    snd_id: currentUserId,
-                    rec_id: receiverId
-                };
-                socket.send(JSON.stringify(data));
-                messageInput.value = '';
-            }
-        };
-        
-        function displayMessage(message, isSent) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${isSent ? currentUserName : receiverName}: ${message}`;
-            messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
-            document.getElementById('chat-messages').appendChild(messageElement);
-            messageElement.scrollIntoView({ behavior: 'smooth' });
+
+            messageDisplay.appendChild(newMessage);
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
         }
-        
-        function displaySystemMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messageElement.className = 'message system';
-            document.getElementById('chat-messages').appendChild(messageElement);
-            messageElement.scrollIntoView({ behavior: 'smooth' });
-        }
-        </script>
+    </script>
+
 </body>
 </html>
