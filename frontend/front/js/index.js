@@ -5,7 +5,7 @@ const routes = {
     'dashboard': 'dashboard-component',
     'messenger': 'messenger-component',
     'gamebar':'game-bar',
-    'game/$': 'game-component',
+    'game': 'game-component',
     'game-online': 'game-component-online',
     'tournament':'tournament-component',
     'settings': 'settings-component',
