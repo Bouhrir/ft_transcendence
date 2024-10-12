@@ -850,8 +850,7 @@ button.join:hover .flech {
     display: flex;
     margin: 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.316);
-    width: 50vw;
-    height: 50vh; 
+    width: 48vw;
     background: linear-gradient(rgba(255, 255, 255, 0.161), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
     border-radius: 10px;
@@ -862,7 +861,7 @@ button.join:hover .flech {
 }
 .error-message{
     position: absolute;
-    color: red;
+    color: white;
     font-family: 'Baloo_Bhai_2';
     font-size: 20px;
     top : 0%;
@@ -917,16 +916,13 @@ button.join:hover .flech {
 }
 .editprof{
     display: flex;
-    margin-top: 10px;
     justify-content: center;
     text-decoration: none;
-    margin-left: 20px;
     font-family: 'Baloo_Bhai_2';
     font-size: large;
+    /* margin-top: -10px; */
 }
 .editprof__{
-    /* display: flex; */
-    /* justify-content: flex-start; */
     align-items: center;
 }
 .editprof__ button{
@@ -973,35 +969,47 @@ button.join:hover .flech {
 .edit_but{
     display: flex;
     justify-content: flex-end;
-    margin-right: -5%;
+    /* margin-right: -5%; */
     margin-top: 3%;
 }
 .edit_but button{
     width: 3vw;
     height: 3vh;
     font-size: large;
+    margin-left: 100%;
+    margin-top: 33%;
 }
+
 .information_box{
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
 }
 .acciformation{
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
     margin-left: 20px;
     border-radius: 20px;
-    width:35vw;
+    width: 35vw;
     height: 45vh;
     text-decoration: none;
     font-family: 'Baloo_Bhai_2';
     font-size: large;
-    /* border: #fff solid 1px; */
+    height: 100%;
+    /* border: 1px solid; */
 }
 .acciformation h1{
     color: #fff;
     margin: 10px 10px 20px;
     font-family: 'Baloo_Bhai_2';
+}
+.acclist{
+    /* border: 1px solid white; */
+    width: 63%;
+    height: 72%;
+    margin-bottom: 7%;
 }
 .name_last{
     display: flex;
@@ -1031,9 +1039,10 @@ button.join:hover .flech {
     color: rgb(176, 175, 175);
     font-size: 2vh;
 }
-.mail_nd_pass{
+.mail{
     display: flex;
     justify-content: space-between;
+    /* flex-direction: row; */
     margin-top: 5%;
     margin-left: 3%;
 }
@@ -1049,6 +1058,13 @@ button.join:hover .flech {
 }
 .add_mail p{
     font-size: 122%;
+}
+.n_pass{
+    display: flex;
+    justify-content: space-between;
+    /* flex-direction: row; */
+    margin-top: 5%;
+    margin-left: 3%;
 }
 .pass {
     display: flex;

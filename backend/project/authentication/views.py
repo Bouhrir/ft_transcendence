@@ -47,7 +47,7 @@ def setup_2fa(request):
     if not profile.is_2fa_enabled:
         totp_secret = pyotp.random_base32()
         profile.totp_secret = totp_secret
-        profile.is_2fa_enabled = True
+        # profile.is_2fa_enabled = True
         profile.save()
     else:
         totp_secret = profile.totp_secret
@@ -73,12 +73,11 @@ def verify_2fa(request):
     user = request.user
     profile = UserProfile.objects.get(user=user)
 
-    if not profile.is_2fa_enabled:
-        return Response({"error": "2FA is not enabled for this user."}, status=status.HTTP_400_BAD_REQUEST)
-
     totp = pyotp.TOTP(profile.totp_secret)
 
     if totp.verify(otp):
+        profile.is_2fa_enabled = True
+        profile.save()
         return Response({"message": "2FA verified successfully"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
@@ -107,8 +106,9 @@ def update_profile(request):
 
     if 'password' in data:
         current_password = data['password']
-        if not check_password(current_password, profile.password):
-            return Response({"error": "Invalid current password"}, status=status.HTTP_400_BAD_REQUEST)
+        if (data['password'] != ""):
+            if not check_password(current_password, profile.password):
+                return Response({"error": "Invalid current password"}, status=status.HTTP_400_BAD_REQUEST)
     if 'first_name' in data:
         profile.first_name = data['first_name']
     if 'last_name' in data:
@@ -117,7 +117,9 @@ def update_profile(request):
         profile.last_name = data['username']
     if 'email' in data:
         profile.email = data['email']
-
+    if 'new_password' in data:
+        print(data['new_password'])
+        profile.set_password(data['new_password'])
     profile.save()
 
     return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)

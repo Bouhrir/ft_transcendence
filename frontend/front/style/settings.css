@@ -186,3 +186,19 @@
     margin-top: 10px;
     cursor: pointer;
 }
+
+.sett_mail{
+    width: 220%;
+    border-style: solid;
+    border-color: white;
+    color: white;
+    border-radius: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0.5px;
+    font-size: large;
+    font-family: 'Baloo_Bhai_2';
+    background-color: transparent;
+}

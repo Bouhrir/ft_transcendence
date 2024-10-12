@@ -7,6 +7,7 @@ class SettingComponent extends HTMLElement {
 
     async connectedCallback() {
         this.innerHTML = `
+        <div id="error-message" class="error-message"></div>
         <div>
         <div class="whole">
             <div class="account-settings">
@@ -35,30 +36,38 @@ class SettingComponent extends HTMLElement {
                                             <img class="camera" src="../../needs/img/photo-camera.png" alt="Edit Profile Picture" class="icon">
                                             <img class="pic_p" src="../../needs/img/Rectangle 24.png" alt="Edit Profile Picture" class="icon">
                                         </button>
-                                </div>
+                                    </div>
                             </div>
-                            <div class="name_last">
-                                <div class="first_name">
-                                    <h3>First name</h3>
-                                    <input type="text" class="sett_save" id="firstName" value="">
+                            <div class="acclist">
+                                <div class="name_last">
+                                    <div class="first_name">
+                                        <h3>First name</h3>
+                                        <input type="text" class="sett_save" id="firstName" value="">
+                                    </div>
+                                    <div class="last_name">
+                                        <h3>Last name</h3>
+                                        <input type="text" class="sett_save" id="lastName" value="">
+                                    </div>
                                 </div>
-                                <div class="last_name">
-                                    <h3>Last name</h3>
-                                    <input type="text" class="sett_save" id="lastName" value="">
+                                <div class="mail">
+                                    <div class="add_mail">
+                                        <h3>Address mail</h3>
+                                            <input type="email" class="sett_mail" id="email" value="">
+                                    </div>
+                                 </div>
+                                 <div class="n_pass">
+                                    <div class="add_mail">
+                                        <h3>Current Password</h3>
+                                            <input type="password" class="sett_save" id="CPassword">
+                                        </div>
+                                        <div class="pass">
+                                            <h3>New Password</h3>
+                                            <input type="password" class="sett_save" id="NPassword">
+                                        </div>
+                                 </div>
+                                <div class="edit_but">
+                                    <a class="hr"><button id="save" class="join">Save<span class="flech">→</span></button></a>
                                 </div>
-                            </div>
-                            <div class="mail_nd_pass">
-                                <div class="add_mail">
-                                    <h3>Address mail</h3>
-                                    <input type="email" class="sett_save" id="email" value="">
-                                </div>
-                                <div class="pass">
-                                    <h3>Password</h3>
-                                    <input type="text" class="sett_save" id="Password" value="****">
-                                </div>
-                            </div>
-                            <div class="edit_but">
-                                <a class="hr"><button id="save" class="join">Save<span class="flech">→</span></button></a>
                             </div>
                         </div>
                     </div>
@@ -85,6 +94,19 @@ class SettingComponent extends HTMLElement {
             document.getElementById('lastName').value = this.userData.last_name || '';
             document.getElementById('email').value = this.userData.email || '';
         }
+    }
+    displayMsg(data){
+        let Msg = '';
+        for (const field in data) {
+            if (data.hasOwnProperty(field)) {
+                if (Array.isArray(data[field])) {
+                    Msg += `${field}: ${data[field].join(', ')}\n`;
+                } else {
+                    Msg += `${field}: ${data[field]}\n`;
+                }
+            }
+        }
+        return Msg
     }
     async fetchUserData() {
         const access = this.getAccessTokenFromCookies();
@@ -122,7 +144,6 @@ class SettingComponent extends HTMLElement {
 
             if (response.ok) {
                 const data = await response.json();
-
                 this.is2FAEnabled = data.is_2fa_enabled;
                 this.update2FAButton();
             } else {
@@ -151,6 +172,7 @@ class SettingComponent extends HTMLElement {
         const qrCodeInModal = document.getElementById('qrCodeInModal');
         const verificationSection = document.getElementById('verificationSection');
         const closeModal = document.getElementById('closeModal'); // Add this line
+        const toast = document.getElementById('error-message');
 
         console.log(this.is2FAEnabled);
         if (!this.is2FAEnabled) {
@@ -163,7 +185,7 @@ class SettingComponent extends HTMLElement {
                         'Content-Type': 'application/json',
                     }
                 });
-
+                console.log('setup', this.is2FAEnabled);
                 if (response.ok) {
                     const data = await response.json();
                     qrCodeInModal.src = data.qr_code_image;
@@ -189,9 +211,10 @@ class SettingComponent extends HTMLElement {
                         'Content-Type': 'application/json',
                     }
                 });
-
+                console.log('disable', this.is2FAEnabled);
                 if (response.ok) {
-                    alert('2FA has been disabled');
+                    toast.color = 'green';
+                    toast.textContent = '2FA has been disabled';
                     this.is2FAEnabled = false;
                     this.update2FAButton();
                     verificationSection.style.display = 'none';
@@ -206,6 +229,7 @@ class SettingComponent extends HTMLElement {
 
     async handleVerification() {
         const verificationCode = document.getElementById('verificationCode').value;
+        const toast = document.getElementById('error-message');
         const access = this.getAccessTokenFromCookies();
 
         try {
@@ -219,19 +243,25 @@ class SettingComponent extends HTMLElement {
                     "verification_code": verificationCode
                 })
             });
-
+            const data = await response.json();
+            let msg = this.displayMsg(data);
+            console.log(msg);
+            console.log('verify', this.is2FAEnabled);
             if (response.ok) {
-                alert('2FA verification successful!');
+                toast.color = 'green';
+                toast.textContent = msg;
                 this.is2FAEnabled = true;
                 this.update2FAButton();
                 document.getElementById('verificationSection').style.display = 'none';
                 document.getElementById('qrModal').style.display = 'none';
             } else {
-                alert('2FA verification failed. Please try again.');
+                toast.textContent = msg;
+                this.is2FAEnabled = false;
+                toast.color = 'red';
             }
         } catch (error) {
             console.error('Error verifying 2FA:', error);
-            alert('An error occurred during 2FA verification.');
+            toast.textContent =  error;
         }
     }
 
@@ -239,7 +269,9 @@ class SettingComponent extends HTMLElement {
         const firstName = document.getElementById('firstName').value;
         const lastName = document.getElementById('lastName').value;
         const email = document.getElementById('email').value;
-        const password = document.getElementById('Password').value;
+        const current_password = document.getElementById('CPassword').value;
+        const new_password = document.getElementById('NPassword').value;
+        const toast = document.getElementById('error-message');
         const access = this.getAccessTokenFromCookies();
 
         try {
@@ -253,17 +285,23 @@ class SettingComponent extends HTMLElement {
                     first_name: firstName,
                     last_name: lastName,
                     email: email,
-                    // password:password
+                    password:current_password,
+                    new_password:new_password
                 })
             });
+            const data = await response.json();
+            let Msg = this.displayMsg(data);
+            
             if (response.ok) {
-                alert('Profile updated successfully!');
+                toast.textContent = Msg;
+                toast.color = 'green';
             } else {
-                alert('Failed to update profile. Please try again.');
+                toast.textContent =  Msg;
             }
         } catch (error) {
+
             console.error('Error updating profile:', error);
-            alert('An error occurred while updating the profile.');
+            toast.textContent = error;
         }
     }
 
