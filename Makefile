@@ -3,7 +3,8 @@ NAME = ft_transcendence
 all : $(NAME)
 
 $(NAME):
-	docker-compose up --build
+	docker-compose down
+	docker-compose up --build -d
 
 build:
 	docker-compose build --no-cache
@@ -14,5 +15,4 @@ clean:
 fclean: clean
 	docker system prune -af
 
-re: fclean all 
-
+re: fclean all

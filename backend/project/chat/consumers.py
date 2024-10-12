@@ -7,19 +7,20 @@ from django.contrib.auth.models import User
 #here we are creating a class that inherits from AsynchronousWebsocketConsumer and we are overriding the connect, disconnect and receive methods
 
 class SomeConsumer(JsonWebsocketConsumer):
-    from .models import Message 
-    
     connections = []
     
+        # self.room_group_name = 'chat_%s' % self.room_group_name
     def connect(self):
-        self.room_group_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_group_name
+        # self.room_group_name = "chattt"
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = f'chat_{self.room_name}'
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
         self.accept()
-        self.connections.append(self)
+        print("test")
+        # self.connections.append(self)
         # user = self.scope['user']  # Assuming user is authenticated and in the session
         # if user.is_authenticated:
         #     self.connections.add(user.id)  # Add user id to the set of connections
@@ -35,9 +36,9 @@ class SomeConsumer(JsonWebsocketConsumer):
         #     self.connections.discard(user.id)  # Remove user from connections
         
         
-    def receive(self, data):
+    def receive(self, text_data):
         # print("test/n")
-        data_json = json.loads(data)
+        data_json = json.loads(text_data)
         
         message = data_json['msg']
         sender_id = data_json['snd_id']
@@ -71,9 +72,9 @@ class SomeConsumer(JsonWebsocketConsumer):
         
     def chat_message(self, event):
         # event['data']
-        print('=======')
-        print(event['data'])
-        print('=======')
+        # print('=======')
+        # print(event['data'])
+        # print('=======')
         
         self.send(text_data=json.dumps(event['data']))
     
@@ -85,3 +86,30 @@ class SomeConsumer(JsonWebsocketConsumer):
 # source .venv/bin/activate  
 # pip3 install --upgrade pip  
 # python3 -m pip install -U channels["daphne"] ****or***** pip3 install -U "channels[daphne]"
+
+
+
+#  def connect(self):
+#         cookie_value = self.scope['cookies'].get('access')
+#         # print(cookie_value)
+#         if cookie_value:
+#             try:
+#                 payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
+#                 user_id = payload.get('user_id')
+#                 self.scope['user'] = database_sync_to_async(User.objects.get)(id=user_id)
+#             except (ExpiredSignatureError, DecodeError, User.DoesNotExist, TokenError):
+#                 self.scope['user'] = AnonymousUser()
+#         else:
+#             self.scope['user'] = AnonymousUser()
+
+#         if self.scope['user'].is_authenticated:
+#             # print(self.scope['user'])
+#             self.room_group_name = 'chat_%s' % self.scope['url_route']['kwargs']['room_name']
+#             async_to_sync(self.channel_layer.group_add)(
+#                 self.room_group_name,
+#                 self.channel_name
+#             )
+#             self.accept() # Accept the WebSocket connection
+#             self.connections.append(self)
+#         else:
+#             self.close()
