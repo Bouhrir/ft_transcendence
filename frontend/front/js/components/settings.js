@@ -58,11 +58,11 @@ class SettingComponent extends HTMLElement {
                                  <div class="n_pass">
                                     <div class="add_mail">
                                         <h3>Current Password</h3>
-                                            <input type="password" class="sett_save" id="CPassword">
+                                            <input type="password" class="sett_save" id="CPassword" placeholder="enter current password">
                                         </div>
                                         <div class="pass">
                                             <h3>New Password</h3>
-                                            <input type="password" class="sett_save" id="NPassword">
+                                            <input type="password" class="sett_save" id="NPassword" placeholder="enter new password">
                                         </div>
                                  </div>
                                 <div class="edit_but">
@@ -121,7 +121,7 @@ class SettingComponent extends HTMLElement {
 
             if (response.ok) {
                 this.userData = await response.json();
-                console.log(this.userData.first_name);
+                console.log(this.userData.id);
             } else {
                 console.error('Failed to fetch user data:', response.statusText);
             }

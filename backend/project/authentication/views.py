@@ -128,6 +128,20 @@ def update_profile(request):
 @permission_classes([IsAuthenticated])
 def me(request):
     user = request.user
+    print(user)
+    return Response({
+        "id":user.id,
+        "username":user.username,
+        "email":user.email,
+        "first_name":user.first_name,
+        "last_name":user.last_name,
+    }, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    id = request.data.get('id')
+    user = User.objects.get(id=id)
     return Response({
         "id":user.id,
         "username":user.username,

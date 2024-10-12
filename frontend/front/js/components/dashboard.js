@@ -1,5 +1,5 @@
 class DashboardComponent extends HTMLElement {
-    connectedCallback() {
+    async connectedCallback() {
         this.innerHTML = `
         <div class="dashboard">
         <div class="cards">
@@ -12,8 +12,8 @@ class DashboardComponent extends HTMLElement {
                         <img src="../../needs/img/Rectangle 24.png">
                     </div>
                     <div>
-                        <h1>Abdelillah Mahdioui</h1>
-                        <p>amahdiou</p>
+                        <h1 id="fullName"></h1>
+                        <p id="username"></p>
                         <p>LV9</p>
                     </div>
                 </div>
@@ -159,18 +159,46 @@ class DashboardComponent extends HTMLElement {
         </div>
     </div>
         `;
+        await this.fetchUserData();
         // this.checkAuth();
     }
 
-    // async checkAuth() {
-    //     const token = localStorage.getItem('authToken');
-    //     if (!token) {
-    //         window.location.hash = '#login';
-    //     } else {
-    //         // Optionally fetch user data to personalize dashboard
-    //         console.log('User is authenticated');
-    //     }
-    // }
+
+    async fetchUserData(){
+        const access = this.getAccessTokenFromCookies();
+        const fullName = document.getElementById('fullName');
+        const username = document.getElementById('username');
+
+        const response = await fetch('http://localhost:81/auth/me/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data.id);
+
+            fullName.textContent = data.first_name + ' ' + data.last_name;
+            username.textContent = data.username;
+
+        } else {
+            console.error('Failed to fetch user data:', response.statusText);
+        }
+    }
+
+    
+    getAccessTokenFromCookies() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('access=')) {
+                return cookie.substring('access='.length);
+            }
+        }
+        return null;
+    }
 }
 
 customElements.define('dashboard-component', DashboardComponent);

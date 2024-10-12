@@ -31,7 +31,7 @@ function createNavbar() {
 					<a href="#signin">⇲</a>
 				</div>
 				<div class="profile">
-					<form action="index">
+					<form action="#profile">
 						<button type="submit"><img src="../../needs/img/Rectangle 24.png"></button>
 					</form>
 				</div>
