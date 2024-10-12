@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('authentication.urls')),
     path('remote/', include('remote.urls')),
     path('chat/', include('chat.urls')),
+    path('tournament/', include('tournament.urls')),
     # path('aut/', include(game.urls)),
 
 ]

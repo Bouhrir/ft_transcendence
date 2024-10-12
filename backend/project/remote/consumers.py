@@ -142,6 +142,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.game_states[room_name]["players"]["player2"]["channel_name"] = self.channel_name
         else:
             print("room is full")
+            
     async def connect(self):
         
         cookie_value = self.scope['cookies'].get('access')
@@ -169,14 +170,22 @@ class PongConsumer(AsyncWebsocketConsumer):
         # print(f"Connecting to room: {self.room_name}")  # Add this to debug
         self.room_group_name = f"pong_{self.room_name}"
         if self.room_name not in self.game_states:
+            print(self.room_name)
             await self.initialize_game_state(self.room_name)
         await self.setPlayers(self.room_name)
         await self.send(text_data=json.dumps({
             'action': 'new_connection',
             'player_id': self.scope['user'].id
         }))
-        # await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         if self.game_states[self.room_name]["players"]["player1"]["id"] is not None and self.game_states[self.room_name]["players"]["player2"]["id"] is not None:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'state',
+                    'action': 'start'
+                }
+            )
             asyncio.create_task(self.game_loop())
 
     async def disconnect(self, close_code):
@@ -205,29 +214,33 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def game_loop(self):
-        # game_state = self.game_states[self.room_name]
-        # print(game_state)
-        # return 
+        await asyncio.sleep(2)
         while True:
-            # Update ball position
+        # Update ball position
             self.game_states[self.room_name]['ball']['x'] += self.game_states[self.room_name]['ball']['dx']
             self.game_states[self.room_name]['ball']['y'] += self.game_states[self.room_name]['ball']['dy']
             self.game_states[self.room_name]["players"]["player1"]["player_y"] += self.game_states[self.room_name]["players"]["player1"]["player_dy"]
             self.game_states[self.room_name]["players"]["player1"]["ai_y"] += self.game_states[self.room_name]["players"]["player1"]["ai_dy"]
             self.game_states[self.room_name]["players"]["player2"]["player_y"] += self.game_states[self.room_name]["players"]["player2"]["player_dy"]
             self.game_states[self.room_name]["players"]["player2"]["ai_y"] += self.game_states[self.room_name]["players"]["player2"]["ai_dy"]
-
             self.game_states[self.room_name]['ball'] = check_wall_collision(self.game_states[self.room_name]['ball'])
             self.game_states[self.room_name]['ball'] = check_paddle_collision(self.game_states[self.room_name]['ball'], self.game_states[self.room_name]['players']["player1"])
-
             #Ensure paddle stays within canvas bounds
             self.game_states[self.room_name]["players"]["player1"] = check_paddle_boundaries(self.game_states[self.room_name]["players"]["player1"])
             self.game_states[self.room_name]["players"]["player2"] = check_paddle_boundaries(self.game_states[self.room_name]["players"]["player2"])
-
-            
+            if self.game_states[self.room_name]["players"]["player1"]["player_score"] == 5 or self.game_states[self.room_name]["players"]["player1"]["ai_score"] == 5:
+                break
             # await asyncio.gather()
             await self.send_game_state_to_players(self.game_states[self.room_name])
             await asyncio.sleep(1/60)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'state',
+                'action': 'end'
+            }
+        )
+        
             
 
     async def send_game_state_to_players(self, game_state):
@@ -263,6 +276,11 @@ class PongConsumer(AsyncWebsocketConsumer):
             'action': "game_state",
             # 'player_id': event['player_id'],
             'game_state': event['game_state']
+        }))
+
+    async def state(self, event):
+        await self.send(text_data=json.dumps({
+            'action': event['action'],
         }))
 
     

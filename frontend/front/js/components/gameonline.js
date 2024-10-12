@@ -2,6 +2,10 @@ class GameComponentOnline extends HTMLElement {
 	connectedCallback(){
 		this.innerHTML =`
 		<canvas id="pongGame" width="800" height="600"></canvas>
+        <div class="waiting">
+            <div class="waiting-message">waiting for opponent...</div>
+            <button id="leave-button">leave</button>
+        </div>
         `;
         // <a href="#signin">click</a>
         // document.addEventListener('keyup', (e) => {
@@ -160,8 +164,11 @@ class GameComponentOnline extends HTMLElement {
                 dx: 5,
                 dy: 4,
                 color: 'white'
+            
             };
+            window.gameRoom = "123"
             const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
+            // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
             ws.onopen = function() {
                 console.log("remote WebSocket is open now.");
                 // const data = {
@@ -187,7 +194,7 @@ class GameComponentOnline extends HTMLElement {
                 if (data.action == "new_connection") {
                     console.log("new connection")
                     player_id = data.player_id
-                    console.log(player_id)               
+                    console.log(player_id)
                 }
                 else if (data.action == "game_state") {
                     ball.x = data.game_state.ball.x
@@ -197,8 +204,6 @@ class GameComponentOnline extends HTMLElement {
                         ai.y = data.game_state.players.player1.ai_y
                         playerScore = data.game_state.players.player1.player_score
                         aiScore = data.game_state.players.player1.ai_score
-                        console.log(playerScore)
-                        console.log(aiScore)
                     } else {
                         player.y = data.game_state.players.player2.player_y
                         ai.y = data.game_state.players.player2.ai_y
@@ -206,6 +211,16 @@ class GameComponentOnline extends HTMLElement {
                         playerScore = data.game_state.players.player1.ai_score
                     }
                     
+                }
+                else if (data.action == "start") {
+                    const view = document.querySelector(".waiting")
+                    view.style.display = "none"
+                }
+                else if (data.action == "end") {
+                    const view = document.querySelector(".waiting")
+                    view.style.display = "flex"
+                    const message = document.querySelector(".waiting-message")
+                    message.innerText = "game finished"
                 }
             }
 

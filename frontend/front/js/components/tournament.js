@@ -1,17 +1,13 @@
 
 class TournamentComponent extends HTMLElement {
-    constructor() {
-        super();
-        this.players = [];
-        this.maxPlayers = 4;
-    }
+    // constructor() {
+    //     super();
+    //     this.players = [];
+    //     this.maxPlayers = 4;
+    // }
 
     connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-    }
 
-    render() {
         this.innerHTML = `
             <div class="avatar-winner">
                 <p>W I N N ER</p>
@@ -79,41 +75,124 @@ class TournamentComponent extends HTMLElement {
             </div>
             <div id="playerList"></div>
         `;
-    }
+    
 
-    setupEventListeners() {
-        const joinButton = this.querySelector('#joinButton');
-        const aliasInput = this.querySelector('#aliasInput');
+        function getAccessTokenFromCookies() {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('access=')) {
+                    return cookie.substring('access='.length);
+                }
+            }
+            return null;
+        }
+  
+        const access = getAccessTokenFromCookies();
+        const joinButton = document.getElementById('joinButton');
+        const aliasInput = document.getElementById('aliasInput');
+        let isWebSocketOpen = false;
+        let player_id;
+        let alias;
+        const ws = new WebSocket('ws://localhost:81/ws/tournament/');
+        ws.onopen = function() {
+            console.log("tournament WebSocket is open now.");
+            isWebSocketOpen = true;
+        };
 
-        joinButton.addEventListener('click', () => {
-            const alias = aliasInput.value.trim();
-            if (alias && this.players.length < this.maxPlayers) {
-                this.addPlayer(alias);
-                aliasInput.value = '';
-                this.update();
+        // Handle WebSocket errors
+        ws.onerror = function(error) {
+            console.error("Chat WebSocket error:", error);
+        };
+
+        // Handle WebSocket close
+        ws.onclose = function() {
+            isWebSocketOpen = false;
+        };
+
+        ws.onmessage = function(e) {
+            // console.log("please")
+            const data = JSON.parse(e.data);
+            if (data.action == "new_connection") {
+                player_id = data.player_id
+                console.log("new connection: ", player_id)
+            }
+            // else if (data.action == "game") {
+            // }
+            else if (data.action == "redirect_game") {
+                window.gameRoom = data.room
+                window.location.href = "#game-online"
+            }
+        };
+        
+        joinButton.addEventListener('click', (e) => {
+            alias = aliasInput.value
+            console.log(alias)
+            if (isWebSocketOpen) {
+                const data = {
+                    type: 'join',
+                    player_id: player_id,
+                    alias: alias
+                };
+                ws.send(JSON.stringify(data));
             }
         });
-    }
 
-    addPlayer(alias) {
-        this.players.push(alias);
-        const slot = this.players.length - 1;
-        const avatarImg = this.querySelector(`img[data-player-slot="${slot}"]`);
-        if (avatarImg) {
-            avatarImg.title = alias;
-            avatarImg.style.border = '3px solid blue';
-        }
-    }
 
-    update() {
-        const joinButton = this.querySelector('#joinButton');
-        const playerList = this.querySelector('#playerList');
 
-        playerList.innerHTML = `<p style="font-family:'Baloo_Bhai_2';">Current player: ${this.players.join(', ')}</p>`;
 
-        if (this.players.length >= this.maxPlayers) {
-            joinButton.textContent = 'READY';
-            joinButton.disabled = true;
+        
+
+        // async function createTournament() {
+        //     try {
+        //         const response = await fetch('/tournament/create_tournament/', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${accessToken}` // Include token if needed
+        //             }
+        //         });
+        
+        //         const data = await response.json();
+        
+        //         if (response.ok) {
+        //             console.log('Tournament created:', data);
+        //         } else {
+        //             console.log('Error:', data.message);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error creating tournament:', error);
+        //     }
+        //     await progress()
+        // }
+        // // Call the function to create the tournament
+        // createTournament();
+        
+
+        // async function progress() {
+        //     try {
+        //         const response = await fetch('/tournament/progress/', {
+        //             method: 'GET',
+        //             headers: {
+        //                 'Content-Type': 'application/x-www-form-urlencoded',
+        //                 'Authorization': `Bearer ${access}`
+        //             },
+        //         });
+        
+        //         // Check if the response is ok (status in the range 200-299)
+        //         if (!response.ok) {
+        //             throw new Error('Network response was not ok: ' + response.statusText);
+        //         }
+        //         const data = await response.json(); // Parse the JSON response
+        //         return data; // Return the parsed data
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         return null; // Or handle the error as needed
+        //     }
+        // }
+        
+        function joinTournament() {
+
         }
     }
 }

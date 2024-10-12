@@ -1,0 +1,21 @@
+.waiting {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+    color: white;
+    font-size: 3rem;
+}
+
+.waiting button {
+    font-size: 2rem;
+    border-radius: 10px;
+    padding: 5px 15px 5px;
+}
