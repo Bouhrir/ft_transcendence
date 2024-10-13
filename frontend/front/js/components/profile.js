@@ -18,15 +18,24 @@ class ProfileComponent extends HTMLElement {
 						<a href="#messenger" class="join">Message<span class="flech">→</span></a>
 					</div>
                 </div>
-                <div class="LastMatches">lastmatches</div>
+                <div class="LastMatches">
+                    <div class="MatchHistory">
+                        <img src="../../needs/img/logo.png">
+                        <p class="rate">10</p>
+                        <p> - </p>
+                        <p class="rate1">5</p>
+                        <img src="../../needs/img/logo.png">
+            </div>
+                </div>
             </div>
             <div class="Matche">
-                matches
+                <h1>MATCHES</h1>
+                <h3>W  /  L</h3>
+                <p><span style="color:green;">10</span> - <span style="color:red;">0</span></p>
             </div>
         </div>
         `;
     }
 }
-
 
 customElements.define('profile-component', ProfileComponent);

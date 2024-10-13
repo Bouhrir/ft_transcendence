@@ -18,7 +18,7 @@ class DashboardComponent extends HTMLElement {
                     </div>
                 </div>
                 <div class="matches">
-                    <h2>Matches<br><strong class="win">10</strong>-<strong class="lose">5</strong></h2>
+                    <h2>Matches<br><strong class="win">10</strong> - <strong class="lose">5</strong></h2>
                 </div>
             </div>
             <div class="cards">

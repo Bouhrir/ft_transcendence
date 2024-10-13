@@ -1261,3 +1261,64 @@ button.join:hover .flech {
     color:white;
     font-size: 4rem;
 }
+
+.sign2FA{
+    display: flex;
+    margin-top: 3%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 30rem;
+    width: 20vw;
+    margin-left: 40.5%;
+    /* padding-top: 20px; */
+    background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
+    backdrop-filter: blur(9px);
+    border: 1px solid rgba(229, 102, 39, 0.278);
+    border-radius: 50px;
+    animation: slideDownFadeIn 0.8s ease forwards;
+	transition: box-shadow 0.3s ease-in-out;
+    gap: 2%;
+}
+.sign2FA:hover{
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
+}
+.sign2FA h3 {
+    font-family: 'celesti';
+    color: white;
+    font-size: 2.5rem;
+    padding-bottom: 3%;
+}
+.sign2FA input {
+    width: 60%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+.sign2FA button{
+    width: 30%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+    
+    margin-top: 4%;
+}
+.sign2FA button:hover{
+    background-color: white;
+    transition: background-color 0.5s ease-in-out;
+    color:black;
+    cursor: pointer;
+}
