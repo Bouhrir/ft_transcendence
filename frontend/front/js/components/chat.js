@@ -2,17 +2,42 @@ class MessengerComponent extends HTMLElement {
    async connectedCallback(){
         this.innerHTML = `
         <div id="chat-container">
-            <div id="message-display">
-            <!-- Messages will appear here -->
-            </div>
-            <div id="chat-input">
-                <input type="text"  id="message" placeholder="Type a message..." />
-                <button id="send" type="submit">send</button>
-            </div>
-        </div>
-        `;
+            <div class="chat">
+                <div id="left_side">
+                    <h2>Messages</h2>
+                    <div id="archive">
+                        <div class="chat-img"></div>
+                        <p>amdouuyah</p>
+                    </div>
+                </div>
+                <div id="main_part">
+                    <div id="user_area">
 
+                    </div>
+                    <div id="chat_area">
 
+                    </div>
+                    <div id="input_area">
+                        <input type="text"  id="message" placeholder="Type a message..." />
+                        <button id="send" type="submit">send</button>
+
+                    </div>
+                </div>
+                <div id="right_side">
+                    <h2>online_friends</h2>
+                </div>
+            </div>
+        </div>`;
+
+// {/* <div id="chat-container">
+//             <div id="message-display">
+//             <!-- Messages will appear here -->
+//             </div>
+//             <div id="chat-input">
+//                 <input type="text"  id="message" placeholder="Type a message..." />
+//                 <button id="send" type="submit">send</button>
+//             </div>
+//         </div> */}
         // document.getElementById('send').addEventListener('click', async function(e) {
         //     e.preventDefault();
             // console.log(e);
