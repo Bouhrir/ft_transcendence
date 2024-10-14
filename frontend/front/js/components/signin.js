@@ -37,7 +37,7 @@ class SigninComponent extends HTMLElement {
                     <h2 class="or">or</h2>
                 </div>
                 <div class="btn42">
-                    <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                    <button id="btn42" type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
                 </div>
                 <div class="dont">
                     <h2>Don’t have an account? <a href="#signup">Sign up<a></h2>
@@ -45,6 +45,21 @@ class SigninComponent extends HTMLElement {
             </div>`;
 
         const signin = document.getElementById('signin');
+        const btn42 = document.getElementById('btn42');
+        btn42.addEventListener('click', () => {
+            window.location = 'http://localhost:81/auth/intra/';
+        });
+        window.addEventListener('load', () => {
+            const url = new URL(window.location.href);
+            const key = url.hash.slice(1); // This will remove the '#' character
+            if (key === 'true') {
+                window.location.hash = '#dashboard';
+            }
+            if (key === 'false'){
+                console.log('field intra42 Login')
+                window.location.href = '#signin';
+            }
+        });
         signin.addEventListener('submit', async (e) => {
             e.preventDefault();
             const errorMessage = document.getElementById('error-message');

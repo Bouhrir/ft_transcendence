@@ -20,13 +20,15 @@ urlpatterns = [
     path('2fa/verify/', views.verify_2fa),
     path('2fa/disable/', views.disable_2fa),
     path('2fa/status/', views.get_2fa_status),
+    path('logout/', views.logout_view),
+    
+    #intra login
+    path('intra/', views.LoginIntra),
+    path('callback/', views.callback),
 
     #edit profile
     path('update_profile/', views.update_profile),
 
-    #intranet
-    # path('intra/', views.LoginIntra),
-    # path('callback/', views.callback),
 
     path('', views.welcome),
 ]

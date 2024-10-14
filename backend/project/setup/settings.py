@@ -177,3 +177,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'intra': {
+        'APP': {
+            'client_id': 'u-s4t2ud-c2d8175ca10c11077651ebdd5fec416379865ae11fbf864cb4e5cc19093221c7',
+            'secret': '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',
+            'key': '',
+            'redirect_uris': 'http://localhost:81/auth/callback/',
+        },
+        'SCOPE': ['public'],  # This is the scope for the API
+        'AUTH_PARAMS': {
+            'access_type': 'offline',
+        },
+    },
+}
+
+SITE_ID = 1  # Ensure you have this set correctly
