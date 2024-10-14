@@ -20,21 +20,25 @@ class ProfileComponent extends HTMLElement {
                 </div>
                 <div class="LastMatches">
                     <div class="MatchHistory">
-                        <img src="../../needs/img/logo.png">
-                        <p class="rate">10</p>
-                        <p> - </p>
-                        <p class="rate1">5</p>
-                        <img src="../../needs/img/logo.png">
+                        <img src="#"  width=60px height=60px>
+                        <p class="Score">
+                            <span>10</span> - <span>5</span>
+                        </p>
+                        <img src="#"  width=60px height=60px>
             </div>
                 </div>
             </div>
             <div class="Matche">
-                <h1>MATCHES</h1>
+                <h1>MATCHE</h1>
                 <h3>W  /  L</h3>
-                <p><span style="color:green;">10</span> - <span style="color:red;">0</span></p>
+                <p class="Score">
+                    <span>10</span> - <span>0</span>
+                </p>
             </div>
         </div>
         `;
+
+        
     }
 }
 

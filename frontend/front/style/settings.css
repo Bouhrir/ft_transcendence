@@ -142,6 +142,12 @@
     left: 40%;
     color:white;
     font-family : 'Baloo_Bhai_2';
+    animation: slideUp 0.8s ease;
+    transition: transform 0.3s ease-in-out;
+    /* background-color: #333; */
+}
+.modal:hover{
+    transform: scale(1.05);
 }
 
 

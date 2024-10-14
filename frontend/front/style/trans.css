@@ -645,13 +645,13 @@ button.join:hover .flech {
     justify-content: center;
 }
 .rate{
-    font-size: 1vh;
+    font-size: 2vh;
     margin-right: 10px;
     margin-left: 10px;
     color: rgb(72, 255, 0);
 }
 .rate1{
-    font-size: 1vh;
+    font-size: 2vh;
     margin-left: 10px;
     margin-right: 10px;
     color: rgb(255, 0, 0);

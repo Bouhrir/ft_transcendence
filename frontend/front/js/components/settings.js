@@ -189,6 +189,7 @@ class SettingComponent extends HTMLElement {
                 if (response.ok) {
                     const data = await response.json();
                     qrCodeInModal.src = data.qr_code_image;
+                    document.body.style.background = '#333'
                     qrModal.style.display = 'block';
                     verificationSection.style.display = 'block';
                     closeModal.addEventListener('click', () => {

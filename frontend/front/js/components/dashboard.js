@@ -9,7 +9,7 @@ class DashboardComponent extends HTMLElement {
                 </div>
                 <div class="profilepic">
                     <div>
-                        <img src="../../needs/img/Rectangle 24.png">
+                        <img src="#" style="width:320px; height: 300px;">
                     </div>
                     <div>
                         <h1 id="fullName"></h1>
@@ -41,7 +41,7 @@ class DashboardComponent extends HTMLElement {
             <div class="rank-profile">
                 <div class="lvl-card">
                     <div class="lvl-img">
-                        <p class="level">54%</p><img src="../../needs/img/Rectangle 25.png">
+                        <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
                     </div>
                     <div>
                         <p>obouhrir</p>
@@ -53,7 +53,7 @@ class DashboardComponent extends HTMLElement {
                 <div class="lvl-card">
                     <div>
                         <div class="lvl-img">
-                            <p class="level">54%</p><img src="../../needs/img/Rectangle 26.png">
+                            <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
                         </div>
                         <p>amdouyah</p>
                         <p>LV9</p>
@@ -63,7 +63,7 @@ class DashboardComponent extends HTMLElement {
             <div class="rank-profile">
                 <div class="lvl-card">
                     <div class="lvl-img">
-                        <p class="level">54%</p><img src="../../needs/img/Rectangle 26.png">
+                        <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
                     </div>
                     <div>
                         <p>amdouyah</p>
@@ -160,6 +160,7 @@ class DashboardComponent extends HTMLElement {
     </div>
         `;
         await this.fetchUserData();
+        await this.fetchFriendsData();
         // this.checkAuth();
     }
 
@@ -188,6 +189,9 @@ class DashboardComponent extends HTMLElement {
         }
     }
 
+    async fetchFriendsData(){
+        ////fetch friends data
+    }
     
     getAccessTokenFromCookies() {
         const cookies = document.cookie.split(';');

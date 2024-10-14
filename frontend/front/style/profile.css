@@ -146,11 +146,14 @@
     font-size: 1.5rem;
     font-family: 'Baloo_Bhai_2';
 }
-.Matche p{
+.Matche p, .MatchHistory p{
     font-size: 2rem;
     font-family: 'Baloo_Bhai_2';
     display: flex;
     width: 50%;
     justify-content: space-evenly;
+}
+.Score span{
+    color:rgb(72, 255, 0);
 }
 
