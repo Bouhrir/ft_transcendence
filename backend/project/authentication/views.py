@@ -128,13 +128,15 @@ def update_profile(request):
 @permission_classes([IsAuthenticated])
 def me(request):
     user = request.user
-    print(user)
+    userImg = UserProfile.objects.get(user=user).image
+    imageData = base64.b64encode(userImg.read()).decode('utf-8')
     return Response({
         "id":user.id,
         "username":user.username,
         "email":user.email,
         "first_name":user.first_name,
         "last_name":user.last_name,
+        "image":f"data:image/png;base64,{imageData}",
     }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -171,6 +173,8 @@ def deluser(request):
         return Response({"message": "User deleted successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+    
+
 
 # from rest_framework.response  import Response
 # from rest_framework.decorators  import api_view

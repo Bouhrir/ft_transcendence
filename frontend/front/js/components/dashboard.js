@@ -9,7 +9,7 @@ class DashboardComponent extends HTMLElement {
                 </div>
                 <div class="profilepic">
                     <div>
-                        <img src="#" style="width:320px; height: 300px;">
+                        <img id="ProfileImg" style="width:320px; height: 300px;">
                     </div>
                     <div>
                         <h1 id="fullName"></h1>
@@ -169,6 +169,7 @@ class DashboardComponent extends HTMLElement {
         const access = this.getAccessTokenFromCookies();
         const fullName = document.getElementById('fullName');
         const username = document.getElementById('username');
+        const imgProfile = document.getElementById('ProfileImg');
 
         const response = await fetch('http://localhost:81/auth/me/', {
             method: 'GET',
@@ -183,6 +184,8 @@ class DashboardComponent extends HTMLElement {
 
             fullName.textContent = data.first_name + ' ' + data.last_name;
             username.textContent = data.username;
+            imgProfile.src = data.image;
+            
 
         } else {
             console.error('Failed to fetch user data:', response.statusText);

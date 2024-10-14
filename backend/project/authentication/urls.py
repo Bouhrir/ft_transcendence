@@ -24,5 +24,9 @@ urlpatterns = [
     #edit profile
     path('update_profile/', views.update_profile),
 
+    #intranet
+    # path('intra/', views.LoginIntra),
+    # path('callback/', views.callback),
+
     path('', views.welcome),
 ]
