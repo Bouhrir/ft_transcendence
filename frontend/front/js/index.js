@@ -23,10 +23,12 @@ function getAccessTokenFromCookies() {
     return null;
 }
 
+
 function navigate() {
     const path = window.location.hash.substring(1);
     const page = routes[path] || 'signin-component';
     console.log(page);
+    // applyDarkModePreference();
     if (page !== 'signin-component' && page !== 'signup-component') {
         createNavbar();
     }
@@ -38,6 +40,7 @@ function navigate() {
     } else {
         document.getElementById('container').innerHTML = `<${page}></${page}>`;
     }
+
 }
 
 window.addEventListener('hashchange', navigate);

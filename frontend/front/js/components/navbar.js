@@ -5,10 +5,7 @@ function createNavbar() {
 	<header class="head">
 		<div class="head1">
 		<div class="menu">
-			<form action="#settings">
-				<button type="submit"><img src="../../needs/img/logo.svg"></button>
-			</form>
-			<!-- <img class="logomenu" src="../../needs/img/logo.png"> -->
+			<button id="darkModeToggle" type="submit"><img src="../../needs/img/logo.svg"></button>
 			<a href="#dashboard">Dashboard</a>
 			<a href="#messenger">Messenger</a>
 			<a href="#gamebar">Game</a>
@@ -24,7 +21,7 @@ function createNavbar() {
 			<div class="head3">
 				<div class="notification">
 					<form action="index.html">
-						<button type="submit"><img src="../../needs/img/Bell_pin_fill.png"></button>
+						<button id="dark" type="submit"><img src="../../needs/img/Bell_pin_fill.png"></button>
 					</form>
 				</div>
 				<div class="logout">
@@ -38,6 +35,19 @@ function createNavbar() {
 			</div>
 		</header>
     `;
+	
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
+
+	const darkModeToggle = document.querySelector('#darkModeToggle');
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+}
+
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    
+    // Save user's preference
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode);
 }

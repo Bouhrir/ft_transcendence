@@ -215,9 +215,9 @@ body {
 }
 .head1{
     display: flex;
-    /* justify-content: center; */
     align-items: center;
-    margin-left: 1%; 
+    justify-content: center;
+    flex-direction: row;
     animation: slideRight 0.8s ease;
 }
 .head2{
@@ -257,7 +257,7 @@ body {
     align-items: center;
     /* justify-content: center; */
     /* margin-top: 10px; */
-    margin-left: 7.3%;
+    margin-left: 8.2%;
     height: 10vh;
     /* flex: 1 1; */
 }
@@ -577,7 +577,7 @@ button.join:hover .flech {
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 83vh;
+    height: 84vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
@@ -1316,9 +1316,20 @@ button.join:hover .flech {
     
     margin-top: 4%;
 }
+
 .sign2FA button:hover{
     background-color: white;
     transition: background-color 0.5s ease-in-out;
     color:black;
     cursor: pointer;
+}
+
+/* dark mode */
+body.dark-mode {
+    background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
+    color: #fff;
+}
+
+body.dark-mode .navbar a {
+    color: #ddd;
 }
