@@ -15,19 +15,21 @@
     color: white;
 }
 .chat{
+    border-radius: 15px;
     display : flex;
-    width: 80%;
-    height: 90%;
-    border : 1px solid white;
+    width: 55%;
+    height: 69%;
     background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
     backdrop-filter: blur(5%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideUp 0.8s ease;
 }
 #left_side {
     width: 25%;
-    border : 1px solid white;
     display: flex;
     align-items: center;
     flex-direction: column;
+    border-right: 0.5px solid white;
 
     /* background-color: rgba(255, 255, 255, 0.2); */
     /* padding: 20px; */
@@ -44,19 +46,32 @@
 #archive{
     width: 100%;
     height: 85%;
-    border : 1px solid white;
+    /* border : 3px solid rgb(255, 0, 0); */
+    padding: 10px;
+    padding-top: 50px;
 
 }
 #main_part {
     /* display: flex; */
-    border : 1px solid white;
-    width: 50%;
+    width: 75%;
 }
-#right_side {
-    width: 25%;
-    border : 1px solid white;
-    /* background-color: rgba(255, 255, 255, 0.2); */
-    /* padding: 20px; */
+.chat-img{
+    width: 90%;
+    height: 10%;
+    display : flex;
+    align-items : center;
+    justify-content : start;
+    gap: 10px;
+    /* border : 3px solid rgb(24, 31, 138) */
+}
+.img-pic {
+    height: 100%;
+    border-radius: 100%;
+
+}
+.chat-img p{
+    font-size: 1vw;
+    font-family: 'celesti';
 }
 
 

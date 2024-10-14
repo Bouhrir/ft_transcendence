@@ -4,10 +4,12 @@ class MessengerComponent extends HTMLElement {
         <div id="chat-container">
             <div class="chat">
                 <div id="left_side">
-                    <h2>Messages</h2>
+                    <h2>Friends</h2>
                     <div id="archive">
-                        <div class="chat-img"></div>
-                        <p>amdouuyah</p>
+                        <div class="chat-img" id="chater1">
+                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="img-pic">
+                            <p>amdouuyah</p>
+                            </div>
                     </div>
                 </div>
                 <div id="main_part">
@@ -22,9 +24,6 @@ class MessengerComponent extends HTMLElement {
                         <button id="send" type="submit">send</button>
 
                     </div>
-                </div>
-                <div id="right_side">
-                    <h2>online_friends</h2>
                 </div>
             </div>
         </div>`;
@@ -53,7 +52,7 @@ class MessengerComponent extends HTMLElement {
             //     }));
             //     document.getElementById('message').value = '';
             // }
-
+        
         const access = getAccessTokenFromCookies();
         let data;
         const response = await fetch('http://localhost:81/auth/me/', {
