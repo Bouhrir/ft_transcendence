@@ -9,9 +9,9 @@ class ProfileComponent extends HTMLElement {
             </div>
             <div class="ProfileAndMatches">
                 <div class="Profile1">
-                    <div class="ProfileImg"></div>
-                    <h1>full Name</h1>
-                    <p>username</p>
+                    <img id="ProfileImg" class="ProfileImg"></img>
+                    <h1 id="FullName" ></h1>
+                    <p id="UserName"></p>
                     <p>LVL 9</p>
 					<div class="AddFriends">
 						<a href="#gamebar" class="join"> Add Friends<span class="flech">→</span></a>
@@ -37,8 +37,47 @@ class ProfileComponent extends HTMLElement {
             </div>
         </div>
         `;
+        await this.fetchUserData();
+        
 
         
+    }
+    async fetchUserData(){
+        const access = this.getAccessTokenFromCookies();
+        const imgProfile = document.getElementById('ProfileImg');
+        const fullName = document.getElementById('FullName');
+        const username = document.getElementById('UserName');
+
+
+        const response = await fetch('http://localhost:81/auth/me/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data.id);
+
+            fullName.textContent = data.first_name + ' ' + data.last_name;
+            username.textContent = data.username;
+            imgProfile.src = data.image;
+            
+
+        } else {
+            console.error('Failed to fetch user data:', response.statusText);
+        }
+    }
+    getAccessTokenFromCookies() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('access=')) {
+                return cookie.substring('access='.length);
+            }
+        }
+        return null;
     }
 }
 

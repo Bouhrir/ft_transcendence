@@ -29,7 +29,7 @@ def register_api(request):
 
     if serializer.is_valid():
         serializer.save()
-        user = User.objects.get(**serializer.data) 
+        # user = User.objects.get(**serializer.data) 
         return Response({
             "message": "User registered successfully",
         }, status=status.HTTP_201_CREATED)
@@ -225,6 +225,7 @@ def register_42(user_data):
             'last_name': user_data['last_name'],
             'image': user_data['image']['versions']['large'],
             'password': generate_random_password(),
+            'intra': True,
         })
         
         if serializer.is_valid():

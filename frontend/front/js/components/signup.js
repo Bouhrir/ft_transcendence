@@ -71,6 +71,7 @@ class SignupComponent extends HTMLElement {
                     last_name: lastname,
                     email: email,
                     password: password,
+                    intra:'False',
                 })
             });
 
