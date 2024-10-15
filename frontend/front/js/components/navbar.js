@@ -41,6 +41,7 @@ function createNavbar() {
 
 	const darkModeToggle = document.querySelector('#darkModeToggle');
     darkModeToggle.addEventListener('click', toggleDarkMode);
+	
 }
 
 

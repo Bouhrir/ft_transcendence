@@ -1,3 +1,4 @@
+import { checkJwt , getAccessTokenFromCookies} from './help.js';
 class DashboardComponent extends HTMLElement {
     async connectedCallback() {
         this.innerHTML = `
@@ -159,14 +160,15 @@ class DashboardComponent extends HTMLElement {
         </div>
     </div>
         `;
+		await checkJwt();
         await this.fetchUserData();
         await this.fetchFriendsData();
+		await this.LastMatches()
         // this.checkAuth();
     }
 
-
     async fetchUserData(){
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         const fullName = document.getElementById('fullName');
         const username = document.getElementById('username');
         const imgProfile = document.getElementById('ProfileImg');
@@ -180,7 +182,7 @@ class DashboardComponent extends HTMLElement {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data.id);
+            console.log('id', data.id);
 
             fullName.textContent = data.first_name + ' ' + data.last_name;
             username.textContent = data.username;
@@ -195,17 +197,10 @@ class DashboardComponent extends HTMLElement {
     async fetchFriendsData(){
         ////fetch friends data
     }
+	async LastMatches(){
+		//fetch last matches
+	}
     
-    getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
-    }
 }
 
 customElements.define('dashboard-component', DashboardComponent);

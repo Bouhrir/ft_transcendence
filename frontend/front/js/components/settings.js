@@ -1,3 +1,4 @@
+import { checkJwt } from "./help.js";
 class SettingComponent extends HTMLElement {
     constructor() {
         super();
@@ -82,7 +83,7 @@ class SettingComponent extends HTMLElement {
         </div>
     </div>
         `;
-
+		await checkJwt();
         await this.check2FAStatus();
         await this.fetchUserData();
         this.setValues()
@@ -121,7 +122,6 @@ class SettingComponent extends HTMLElement {
 
             if (response.ok) {
                 this.userData = await response.json();
-                console.log(this.userData.id);
             } else {
                 console.error('Failed to fetch user data:', response.statusText);
             }

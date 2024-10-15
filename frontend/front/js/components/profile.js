@@ -58,7 +58,6 @@ class ProfileComponent extends HTMLElement {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data.id);
 
             fullName.textContent = data.first_name + ' ' + data.last_name;
             username.textContent = data.username;

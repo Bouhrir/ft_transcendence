@@ -83,8 +83,6 @@ class SigninComponent extends HTMLElement {
             if (response.ok) {
                 document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
                 document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
-                console.log('-----sign-----');
-                console.log(data.access);
                 await this.check2FAStatus();
                 if (!this.is2FAEnabled)
                     window.location.hash = '#dashboard';
