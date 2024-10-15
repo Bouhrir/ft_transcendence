@@ -1,3 +1,4 @@
+import { checkJwt, getAccessTokenFromCookies } from "./help.js";
 class ProfileComponent extends HTMLElement {
     async connectedCallback(){
         this.innerHTML = `
@@ -37,13 +38,11 @@ class ProfileComponent extends HTMLElement {
             </div>
         </div>
         `;
+        await checkJwt();
         await this.fetchUserData();
-        
-
-        
     }
     async fetchUserData(){
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         const imgProfile = document.getElementById('ProfileImg');
         const fullName = document.getElementById('FullName');
         const username = document.getElementById('UserName');
@@ -67,16 +66,6 @@ class ProfileComponent extends HTMLElement {
         } else {
             console.error('Failed to fetch user data:', response.statusText);
         }
-    }
-    getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
     }
 }
 

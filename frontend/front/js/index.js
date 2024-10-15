@@ -1,3 +1,5 @@
+import { createNavbar } from "./components/navbar.js"
+
 const routes = {
     '': 'signin-component',
     'signin': 'signin-component',
@@ -22,7 +24,6 @@ function getAccessTokenFromCookies() {
     }
     return null;
 }
-
 
 function navigate() {
     const path = window.location.hash.substring(1);

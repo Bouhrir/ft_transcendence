@@ -1,4 +1,6 @@
 from django.urls import  path
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -20,6 +22,7 @@ urlpatterns = [
     path('2fa/verify/', views.verify_2fa),
     path('2fa/disable/', views.disable_2fa),
     path('2fa/status/', views.get_2fa_status),
+    
     path('logout/', views.logout_view),
     
     #intra login
@@ -32,3 +35,5 @@ urlpatterns = [
 
     path('', views.welcome),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

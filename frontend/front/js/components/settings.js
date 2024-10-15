@@ -1,4 +1,7 @@
-import { checkJwt } from "./help.js";
+import { checkJwt, getAccessTokenFromCookies, displayMsg } from "./help.js";
+
+let fileInput = 'miroka';
+
 class SettingComponent extends HTMLElement {
     constructor() {
         super();
@@ -35,7 +38,7 @@ class SettingComponent extends HTMLElement {
                                     <div class="editprof__">
                                         <button class="edit-pic">
                                             <img class="camera" src="../../needs/img/photo-camera.png" alt="Edit Profile Picture" class="icon">
-                                            <img class="pic_p" src="../../needs/img/Rectangle 24.png" alt="Edit Profile Picture" class="icon">
+                                            <img class="pic_p" id="ProfileImg"src="#" alt="Edit Profile Picture" class="icon">
                                         </button>
                                     </div>
                             </div>
@@ -85,32 +88,50 @@ class SettingComponent extends HTMLElement {
         `;
 		await checkJwt();
         await this.check2FAStatus();
+        this.fileInput();
         await this.fetchUserData();
         this.setValues()
         this.setupEventListeners();
     }
+    fileInput(){
+        fileInput = document.createElement('input');
+        fileInput.className = 'IMG';
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';  // Only accept image files
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('ProfileImg').src = e.target.result;
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+            document.querySelector('.edit-pic').addEventListener('click', function() {
+            fileInput.click();
+        });
+    }
+
+    setupEventListeners() {
+        document.getElementById('2faButton').addEventListener('click', this.handle2FAToggle.bind(this));
+        document.getElementById('verifyButton').addEventListener('click', this.handleVerification.bind(this));
+        document.getElementById('save').addEventListener('click', this.handleSave.bind(this));
+        document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
+    }
     setValues() {
         if (this.userData) {
-            document.getElementById('firstName').value = this.userData.first_name || '';
-            document.getElementById('lastName').value = this.userData.last_name || '';
-            document.getElementById('email').value = this.userData.email || '';
+            document.getElementById('firstName').value = this.userData.first_name || 'meow';
+            document.getElementById('lastName').value = this.userData.last_name || 'meow';
+            document.getElementById('email').value = this.userData.email || 'meaw@gmail.com';
+            document.getElementById('ProfileImg').src = this.userData.image || '../../needs/img/Rectangle 25.png';
         }
     }
-    displayMsg(data){
-        let Msg = '';
-        for (const field in data) {
-            if (data.hasOwnProperty(field)) {
-                if (Array.isArray(data[field])) {
-                    Msg += `${field}: ${data[field].join(', ')}\n`;
-                } else {
-                    Msg += `${field}: ${data[field]}\n`;
-                }
-            }
-        }
-        return Msg
-    }
+
     async fetchUserData() {
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         try {
             const response = await fetch('http://localhost:81/auth/me/', {
                 method: 'GET',
@@ -130,7 +151,7 @@ class SettingComponent extends HTMLElement {
         }
     }
     async check2FAStatus() {
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
                 method: 'GET',
@@ -159,15 +180,10 @@ class SettingComponent extends HTMLElement {
         button.textContent = this.is2FAEnabled ? 'Disable 2FA' : 'Enable 2FA';
     }
 
-    setupEventListeners() {
-        document.getElementById('2faButton').addEventListener('click', this.handle2FAToggle.bind(this));
-        document.getElementById('verifyButton').addEventListener('click', this.handleVerification.bind(this));
-        document.getElementById('save').addEventListener('click', this.handleSave.bind(this));
-        document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
-    }
+
     
     async handle2FAToggle() {
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         const qrModal = document.getElementById('qrModal');
         const qrCodeInModal = document.getElementById('qrCodeInModal');
         const verificationSection = document.getElementById('verificationSection');
@@ -231,7 +247,7 @@ class SettingComponent extends HTMLElement {
     async handleVerification() {
         const verificationCode = document.getElementById('verificationCode').value;
         const toast = document.getElementById('error-message');
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
 
         try {
             const response = await fetch('http://localhost:81/2fa/verify/', {
@@ -245,7 +261,7 @@ class SettingComponent extends HTMLElement {
                 })
             });
             const data = await response.json();
-            let msg = this.displayMsg(data);
+            let msg = displayMsg(data);
             console.log(msg);
             console.log('verify', this.is2FAEnabled);
             if (response.ok) {
@@ -273,31 +289,38 @@ class SettingComponent extends HTMLElement {
         const current_password = document.getElementById('CPassword').value;
         const new_password = document.getElementById('NPassword').value;
         const toast = document.getElementById('error-message');
-        const access = this.getAccessTokenFromCookies();
-
+        const access = getAccessTokenFromCookies('access');
+        const profileImg = fileInput.files[0];
+        console.log("hie: ", profileImg);
         try {
+            const formData = new FormData();
+            formData.append('first_name', firstName);
+            formData.append('last_name', lastName);
+            formData.append('email', email);
+            formData.append('password', current_password);
+            formData.append('new_password', new_password);
+    
+            // Add the image file if it exists
+            if (profileImg) {
+                formData.append('image', profileImg);  // Append the file
+            }
             const response = await fetch('http://localhost:81/auth/update_profile/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${access}`,
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    first_name: firstName,
-                    last_name: lastName,
-                    email: email,
-                    password:current_password,
-                    new_password:new_password
-                })
+                body: formData 
             });
             const data = await response.json();
-            let Msg = this.displayMsg(data);
+            let Msg = displayMsg(data);
             
             if (response.ok) {
                 toast.textContent = Msg;
-                toast.color = 'green';
+                toast.style.color = 'green';
             } else {
                 toast.textContent =  Msg;
+                toast.style.color = 'red';
             }
         } catch (error) {
 
@@ -307,7 +330,7 @@ class SettingComponent extends HTMLElement {
     }
 
     async deleteuser(){
-        // const access = this.getAccessTokenFromCookies();
+        // const access = getAccessTokenFromCookies('access');
         // try{
         //     const deluser = await fetch('http://localhost:81/auth/deluser/', {
         //         method : 'DELETE',
@@ -325,17 +348,6 @@ class SettingComponent extends HTMLElement {
         // catch(error){
         //     console.error('can`t delete user: ', error);
         // }
-    }
-
-    getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
     }
 }
 

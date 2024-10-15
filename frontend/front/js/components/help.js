@@ -47,3 +47,17 @@ export function getAccessTokenFromCookies(token) {
 	}
 	return null;
 }
+
+export function displayMsg(data){
+	let Msg = '';
+	for (const field in data) {
+		if (data.hasOwnProperty(field)) {
+			if (Array.isArray(data[field])) {
+				Msg += `${field}: ${data[field].join(', ')}\n`;
+			} else {
+				Msg += `${field}: ${data[field]}\n`;
+			}
+		}
+	}
+	return Msg
+}

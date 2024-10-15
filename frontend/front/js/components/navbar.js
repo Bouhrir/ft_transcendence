@@ -1,4 +1,5 @@
-function createNavbar() {
+import { getAccessTokenFromCookies } from "./help.js";
+export function createNavbar() {
 	const navbar = document.createElement('div');
 	navbar.className = 'navbar';
 	navbar.innerHTML = `
@@ -25,7 +26,7 @@ function createNavbar() {
 					</form>
 				</div>
 				<div class="logout">
-					<a href="#signin">⇲</a>
+						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
 				</div>
 				<div class="profile">
 					<form action="#profile">
@@ -36,9 +37,33 @@ function createNavbar() {
 		</header>
     `;
 	
+	
+
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
-
+	
+	const logout = document.getElementById('logout');
+	logout.addEventListener('click', async () => {
+		const access = getAccessTokenFromCookies('access');
+		try {
+			const loggedout = await fetch('http://localhost:81/auth/logout/', {
+				method: 'DELETE',
+				headers: {
+					'Authorization': `Bearer ${access}`,
+					'Content-Type': 'application/json',
+				}
+			});
+			if (loggedout.ok) {
+				// alert('Logout Successful');
+				window.location.href = '#signin';
+				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+			}
+		}
+		catch (error) {
+			console.error('Can`t Logout: ', error);
+		}
+	});
 	const darkModeToggle = document.querySelector('#darkModeToggle');
     darkModeToggle.addEventListener('click', toggleDarkMode);
 	

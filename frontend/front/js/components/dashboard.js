@@ -1,4 +1,5 @@
 import { checkJwt , getAccessTokenFromCookies} from './help.js';
+
 class DashboardComponent extends HTMLElement {
     async connectedCallback() {
         this.innerHTML = `
@@ -42,7 +43,7 @@ class DashboardComponent extends HTMLElement {
             <div class="rank-profile">
                 <div class="lvl-card">
                     <div class="lvl-img">
-                        <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
+                        <p class="level">54%</p><img id="playerIMG1" src="#" style="width:190px; height: 180px;">
                     </div>
                     <div>
                         <p>obouhrir</p>
@@ -54,7 +55,7 @@ class DashboardComponent extends HTMLElement {
                 <div class="lvl-card">
                     <div>
                         <div class="lvl-img">
-                            <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
+                            <p class="level">54%</p><img id="playerIMG2" src="#" style="width:190px; height: 180px;">
                         </div>
                         <p>amdouyah</p>
                         <p>LV9</p>
@@ -64,7 +65,7 @@ class DashboardComponent extends HTMLElement {
             <div class="rank-profile">
                 <div class="lvl-card">
                     <div class="lvl-img">
-                        <p class="level">54%</p><img src="#" style="width:190px; height: 180px;">
+                        <p class="level">54%</p><img id="playerIMG3" src="#" style="width:190px; height: 180px;">
                     </div>
                     <div>
                         <p>amdouyah</p>
@@ -86,75 +87,19 @@ class DashboardComponent extends HTMLElement {
                     <h3>Last Matches</h3>
                     <a href="#">view all matches</a>
                 </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
                 <div class="match-green-card">
-                    <img src="../../needs/img/logo.png">
+                    <img src="#" width=60px height=60px>
                     <p class="rate1">5</p>
                     <p> - </p>
                     <p class="rate">10</p>
-                    <img src="../../needs/img/logo.png">
+                    <img src="#" width=60px height=60px>
                 </div>
                 <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
+                    <img src="#" width=60px height=60px>
+                    <p class="rate1">10</p>
                     <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-green-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate1">5</p>
-                    <p> - </p>
-                    <p class="rate">10</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-green-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate1">5</p>
-                    <p> - </p>
-                    <p class="rate">10</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
-                </div>
-                <div class="match-red-card">
-                    <img src="../../needs/img/logo.png">
-                    <p class="rate">10</p>
-                    <p> - </p>
-                    <p class="rate1">5</p>
-                    <img src="../../needs/img/logo.png">
+                    <p class="rate">5</p>
+                    <img src="#" width=60px height=60px>
                 </div>
             </div>
         </div>
@@ -193,9 +138,32 @@ class DashboardComponent extends HTMLElement {
             console.error('Failed to fetch user data:', response.statusText);
         }
     }
+    async getuser(id, player){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/getuser/', {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({
+               'id':id
+            })
+        });
+        if (response.ok){
+            const data = await response.json();
+            player.src = data.image;
+        }
+    }
 
     async fetchFriendsData(){
-        ////fetch friends data
+        const player1 = document.getElementById('playerIMG1');
+        const player2 = document.getElementById('playerIMG2');
+        const player3 = document.getElementById('playerIMG3');
+        this.getuser(69, player1);
+        this.getuser(75, player2);
+        this.getuser(70, player3);
+      
     }
 	async LastMatches(){
 		//fetch last matches

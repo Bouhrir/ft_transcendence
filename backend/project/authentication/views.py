@@ -19,6 +19,8 @@ import secrets
 import requests
 from django.contrib.auth import logout
 from django.conf import settings  # Added import for settings
+import requests
+from django.core.files.base import ContentFile
 
 
 
@@ -109,29 +111,33 @@ def disable_2fa(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_profile(request):
-    user = request.user
-    profile = UserProfile.objects.get(user=user).user
+    id = request.user.id
+    image = request.FILES.get('image')
+
+    profile = UserProfile.objects.get(user=id)
+    user = profile.user
     data = request.data
 
     if 'password' in data:
-        current_password = data['password']
-        if (data['password'] != ""):
-            if not check_password(current_password, profile.password):
-                return Response({"error": "Invalid current password"}, status=status.HTTP_400_BAD_REQUEST)
+        if data['password'] != "":
+            if not check_password(data['password'], user.password):
+                return Response({"error": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                user.set_password(data['new_password'])
     if 'first_name' in data:
-        profile.first_name = data['first_name']
+        user.first_name = data['first_name']
     if 'last_name' in data:
-        profile.last_name = data['last_name']
-    if 'username' in data:
-        profile.last_name = data['username']
+        user.last_name = data['last_name']
     if 'email' in data:
-        profile.email = data['email']
-    if 'new_password' in data:
-        print(data['new_password'])
-        profile.set_password(data['new_password'])
+        user.email = data['email']
+    if image:
+        profile.image.save(f"{user.username}_image.png", image)
+
+    user.save()
     profile.save()
 
     return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -153,12 +159,15 @@ def me(request):
 def get_user(request):
     id = request.data.get('id')
     user = User.objects.get(id=id)
+    image = UserProfile.objects.get(user=user).image
+    imageData = base64.b64encode(image.read()).decode('utf-8')
     return Response({
         "id":user.id,
         "username":user.username,
         "email":user.email,
         "first_name":user.first_name,
         "last_name":user.last_name,
+        "image":f"data:image/png;base64,{imageData}",
     })
 
 def welcome(request):

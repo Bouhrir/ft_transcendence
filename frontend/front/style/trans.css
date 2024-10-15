@@ -656,12 +656,7 @@ button.join:hover .flech {
     margin-right: 10px;
     color: rgb(255, 0, 0);
 }
-.match-red-card img{
-    width: 15%;
-}
-.match-green-card img{
-    width: 15%;
-}
+
 .match-txt {
     display: flex;
     justify-content: space-between;
@@ -737,7 +732,8 @@ button.join:hover .flech {
     justify-content: center;
     border-right: orangered solid 2px;
     border-bottom: orangered solid 2px;
-    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+    transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
+
 }
 .lvl-img{
     margin-top: 10px;
@@ -764,7 +760,8 @@ button.join:hover .flech {
 
 }
 .lvl-card:hover {
-    transform: scale(1.1); /* Zoom in effect */
+    transition: transform 0.3s ease-in-out;
+    transform: scale(1.08); /* Zoom in effect */
 }
 /* Container for the price image */
 .price {
@@ -857,7 +854,11 @@ button.join:hover .flech {
     font-family: 'Baloo_Bhai_2';
     outline: none;
     color: white;
+    transition: box-shadow 0.3s ease-in-out ;
     animation: slideUp 0.8s ease;
+}
+.account-settings:hover{
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
 }
 .error-message{
     position: absolute;
@@ -936,7 +937,7 @@ button.join:hover .flech {
 .camera{
     width: 30%;
     position: relative;
-    left: 165%;
+    left: 143%;
     /* height: 50%; */
 }
 .editprof__ button:hover{
@@ -945,8 +946,8 @@ button.join:hover .flech {
 }
 .pic_p{
     display: flex;
-    margin-left: 10px;
-    width: 8vw;
+    width: 200px;
+    height: 190px;
     box-shadow: 11px 11px 11px rgba(0, 0, 0, 0.25);
     border-radius: 100%;
     font-family: 'Baloo_Bhai_2';
@@ -1113,8 +1114,8 @@ button.join:hover .flech {
     /* padding-left: 10px; */
 }
 .gameLine:hover{
-    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
-    transform: scale(1.1);
+    transform: translate(0%, 0%) scale(1.02);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
     /* transition: transform 0.2s ease-in-out; */
 }
 .gameLine a {
@@ -1322,6 +1323,15 @@ button.join:hover .flech {
     transition: background-color 0.5s ease-in-out;
     color:black;
     cursor: pointer;
+}
+
+.logout button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.logout button img{
+    width: 25px;
 }
 
 /* dark mode */
