@@ -17,6 +17,9 @@ urlpatterns = [
     path('getuser/', views.get_user),
     path('deluser/', views.deluser),
     path('users/', views.user_list_view),
+
+
+    path('search/', views.search_users),
     # setup 2fa 
     path('2fa/setup/', views.setup_2fa),
     path('2fa/verify/', views.verify_2fa),

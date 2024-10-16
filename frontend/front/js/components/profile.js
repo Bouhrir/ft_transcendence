@@ -47,13 +47,18 @@ class ProfileComponent extends HTMLElement {
         const fullName = document.getElementById('FullName');
         const username = document.getElementById('UserName');
 
-
-        const response = await fetch('http://localhost:81/auth/me/', {
-            method: 'GET',
-            headers: {
+        
+        const userId = window.location.hash.split('/')[1];
+        console.log(userId)
+        const response = await fetch('http://localhost:81/auth/getuser/', {
+            method: 'POST',
+            headers:{
                 'Authorization': `Bearer ${access}`,
                 'Content-Type': 'application/json',
-            }
+            },
+            body:JSON.stringify({
+                'id':userId
+            })
         });
         if (response.ok) {
             const data = await response.json();

@@ -1,4 +1,5 @@
 import { createNavbar } from "./components/navbar.js"
+import { getAccessTokenFromCookies} from './components/help.js'
 
 const routes = {
     '': 'signin-component',
@@ -14,26 +15,21 @@ const routes = {
     'profile': 'profile-component'
 };
 
-function getAccessTokenFromCookies() {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith('access=')) {
-            return cookie.substring('access='.length);
-        }
-    }
-    return null;
-}
-
 function navigate() {
     const path = window.location.hash.substring(1);
-    const page = routes[path] || 'signin-component';
+    let page = routes[path] || 'signin-component';
+
+    if (path.startsWith('profile')) {
+        const userId = path.split('/')[1]; 
+        page = 'profile-component';
+        window.userId = userId;
+    }
     console.log(page);
-    // applyDarkModePreference();
+
     if (page !== 'signin-component' && page !== 'signup-component') {
         createNavbar();
     }
-    if (getAccessTokenFromCookies()) {
+    if (getAccessTokenFromCookies('refresh')) {
         document.getElementById('container').innerHTML = `<${page}></${page}>`;
     } else if (page !== 'signin-component' && page !== 'signup-component') {
         console.log("token not found")

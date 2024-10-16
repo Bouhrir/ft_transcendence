@@ -141,11 +141,20 @@ body {
 .signinbox:hover, .signupbox:hover {
 	box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
 }
-
+@keyframes slideDown {
+    60% {
+        opacity: 1;
+        transform: translateY(10px);  /* Move to original position */
+    }
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);  /* Move to original position */
+    }
+}
 @keyframes slideDownFadeIn {
     100% {
         opacity: 1;
-        transform: translateY(0);  /* Move to original position */
+        transform: translateY(0px);  /* Move to original position */
     }
     0% {
         opacity: 0;
@@ -431,8 +440,6 @@ button.join:hover .flech {
     font-size: 16px;
     margin-top: 11%;
     outline: none;
-    /* z-index: 1; */
-    /* padding-left: 10px; */
     padding: 12px 70px 12px 30px; 
     color: white;
 }
@@ -1342,4 +1349,36 @@ body.dark-mode {
 
 body.dark-mode .navbar a {
     color: #ddd;
+}
+
+
+#resultSearch {
+    position: absolute;
+    z-index: 1;
+    width: 21vw;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 16px;
+    margin-top: 7px;
+    animation: slideDown 0.4s ease-in-out;
+    padding: 12px 70px 12px 30px; 
+    color: white;
+}
+
+.user-result {
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.5em 0;
+}
+
+.user-result h2 {
+    font-size: 1.2em;
+    margin-bottom: 0.2em;
+}
+
+.user-result p {
+    color: #6c757d;
+    margin-bottom: 0;
 }

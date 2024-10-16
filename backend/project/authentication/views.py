@@ -301,61 +301,12 @@ def logout_view(request):
     logout(request)
     return Response({"detail": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
 
-# from rest_framework.response  import Response
-# from rest_framework.decorators  import api_view
-# from django.contrib.auth.models import User
-# from rest_framework import status
-# from django.shortcuts import render
-# from django.contrib.auth import login , authenticate
-# from django.http import HttpResponse
-# from rest_framework_simplejwt.tokens import RefreshToken
-
-
-
-
-
-
-
-# # # Create your views here.
-
-
-
-
-# @api_view(['POST'])
-# def signup(request):
-#     username = request.data.get('username')
-#     password = request.data.get('password')
-#     email = request.data.get('email')
-
-#     if not username or not password or not email:
-#         return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     if User.objects.filter(username=username).exists():
-#         return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     user = User.objects.create_user(username=username, email=email, password=password)
-
-#     return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-
-
-# @api_view(['POST'])
-# def signin(request):
-#     username = request.data.get('username')
-#     password = request.data.get('password')
-
-#     if not username or not password:
-#         return Response({"error":"Both username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     user = authenticate(request, username=username, password=password)
-
-#     if user is not None:
-#         login(request, user)
-#         refresh = RefreshToken.for_user(user)
-#         response = Response({
-#             "message": "User logged in successfully",
-#             "access":str(refresh.access_token),
-#         }, status=status.HTTP_200_OK)
-#         response.set_cookie(key='refresh', value=str(refresh), httponly=True)
-#         return response
-#     else:
-#         return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
+from django.db.models import Q
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def search_users(request):
+    query = request.GET.get('q', '')
+    print(query)
+    users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+    user_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+    return Response(user_data, status=status.HTTP_200_OK)
