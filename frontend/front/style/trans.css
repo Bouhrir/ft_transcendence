@@ -21,11 +21,11 @@ body {
     flex-direction: center;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 10%;
     height: 100vh;
     padding: 0 100px;
     gap: 11rem;
-    color: white
+    color: white;
 }
 .logop{
     display: flex;
@@ -145,10 +145,12 @@ body {
     60% {
         opacity: 1;
         transform: translateY(10px);  /* Move to original position */
+		width: 21vw;
     }
     0% {
         opacity: 0;
         transform: translateY(-50px);  /* Move to original position */
+		width: 9vw;
     }
 }
 @keyframes slideDownFadeIn {
@@ -1343,12 +1345,23 @@ button.join:hover .flech {
 
 /* dark mode */
 body.dark-mode {
-    background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
-    color: #fff;
+	background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
+	color: #fff;
+	animation: darkIn 0.5s ease-in-out forwards;	
 }
 
 body.dark-mode .navbar a {
-    color: #ddd;
+	color: #ddd;
+}
+
+@keyframes darkIn {
+	100%{
+		opacity: 1;
+
+	}
+	0% {
+		opacity: 0;
+	}
 }
 
 
@@ -1366,11 +1379,13 @@ body.dark-mode .navbar a {
     animation: slideDown 0.4s ease-in-out;
     padding: 12px 70px 12px 30px; 
     color: white;
+	
 }
 
 .user-result {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 0.5px solid #dee2e6;
     padding: 0.5em 0;
+	cursor: pointer;
 }
 
 .user-result h2 {
@@ -1379,6 +1394,49 @@ body.dark-mode .navbar a {
 }
 
 .user-result p {
-    color: #6c757d;
+    color: #383e44;
     margin-bottom: 0;
+}
+
+/* Base styles for the toaster */
+.toaster {
+    position: fixed;
+    top: 20px;
+    left: 90%;
+    color: white;
+    padding: 15px 15px;
+	margin: 15px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    opacity: 0;
+    /* visibility: hidden; */
+    transform: translateY(-30px);  /* Start position (slightly off-screen) */
+    z-index: 1000;
+    
+    /* Animation timing (total duration of 5 seconds) */
+    animation: slideInFadeOut 5s ease-in-out forwards;
+}
+
+/* Define the slide in and fade out animation */
+@keyframes slideInFadeOut {
+    0% {
+        opacity: 0;
+        visibility: visible;
+        transform: translateX(30px);  /* Slide in from top */
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(0);  /* Toaster fully visible */
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(0);  /* Toaster still visible */
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(30px);  /* Slide out and fade out */
+        visibility: hidden;
+    }
 }

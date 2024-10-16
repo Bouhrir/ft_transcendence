@@ -39,6 +39,14 @@ function navigate() {
     }
 
 }
+//dark mode activate
+function checkAndApplyDarkMode() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+}
+document.addEventListener('DOMContentLoaded', checkAndApplyDarkMode);
 
 window.addEventListener('hashchange', navigate);
 window.addEventListener('DOMContentLoaded', navigate);

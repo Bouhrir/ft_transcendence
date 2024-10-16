@@ -1,3 +1,4 @@
+import { displayMsg, getAccessTokenFromCookies } from './help.js';
 class SigninComponent extends HTMLElement {
     constructor() {
         super();
@@ -9,7 +10,7 @@ class SigninComponent extends HTMLElement {
             navbar.remove();
         }
         this.innerHTML = `
-            <div id="error-message" class="error-message"></div>
+            <div id="error-message" class="toaster"></div>
             <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
             </div>
@@ -103,7 +104,7 @@ class SigninComponent extends HTMLElement {
                         const verificationCode = document.getElementById('twofaCode').value;
 
                         console.log(verificationCode);
-                        const access = this.getAccessTokenFromCookies();
+                        const access = getAccessTokenFromCookies('access');
                         const response = await fetch('http://localhost:81/2fa/verify/', {
                             method: 'POST',
                             headers: {
@@ -115,6 +116,7 @@ class SigninComponent extends HTMLElement {
                             })
                         });
                         if (response.ok){
+
                             errorMessage.textContent = 'sucess verification!';
                             errorMessage.style.color = 'green';
                             twofaVerifyTab.style.display = 'none';
@@ -122,31 +124,26 @@ class SigninComponent extends HTMLElement {
                         }
                         else{
                             errorMessage.textContent = 'failed verification!';
-                            errorMessage.style.color = 'red';
+                            // errorMessage.style.color = 'red';
                         }
 
                     });
                 }
 
             } else {
-                console.log (data);
-                let errorMsg = '';
-
-                for (const field in data) {
-                    if (data.hasOwnProperty(field)) {
-                        if (!data.detail)
-                            errorMsg += `${field}: ${data[field].join(', ')}\n`;
-                        else if(data.detail)
-                            errorMsg = 'error: invalid username or password';
-                    }
-                }
+				let errorMsg = '';
+				if (!data.detail)
+                	errorMsg = displayMsg(data);
+				else
+					errorMsg = 'Invalid username or password';
                 errorMessage.textContent = errorMsg;
+				errorMessage.style.backgroundColor = 'rgba(255, 69, 58, 0.9)';
             }
         });
     }
 
     async check2FAStatus() {
-        const access = this.getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
                 method: 'GET',
@@ -166,16 +163,6 @@ class SigninComponent extends HTMLElement {
         } catch (error) {
             console.error('Error checking 2FA status:', error);
         }
-    }
-    getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
     }
 }
 customElements.define('signin-component', SigninComponent);

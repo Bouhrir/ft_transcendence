@@ -1,5 +1,5 @@
-import { getAccessTokenFromCookies } from "./help.js";
-export function createNavbar() {
+import { displayMsg, getAccessTokenFromCookies } from "./help.js";
+export async function createNavbar() {
 	const navbar = document.createElement('div');
 	navbar.className = 'navbar';
 	navbar.innerHTML = `
@@ -30,7 +30,7 @@ export function createNavbar() {
 						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
 				</div>
 				<div class="profile" id="profile">
-					<button type="submit"><img src="../../needs/img/Rectangle 24.png"></button>
+					<button type="submit"><img id="icon-img" width=5px height=5px src="#"></button>
 				</div>
 			</div>
 		</header>
@@ -40,10 +40,11 @@ export function createNavbar() {
 
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
-	logout();
 	search();
 	profile();
+	logout();
 	darkMode();
+	await iconImg();
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -86,11 +87,18 @@ function search(){
 							});
 							if (response.ok){
 								window.location.hash = `#profile/${user.id}`;
-								
+							}
+							else{
+								const data = await response.json();
+								displayMsg(data);
 							}
 						})
                     });
                 }
+				else{
+					const data = await response.json();
+					displayMsg(data);
+				}
             }
             catch (error) {
                 console.error('Can`t search: ', error);
@@ -113,6 +121,7 @@ function logout(){
 				}
 			});
 			if (loggedout.ok) {
+				location.reload();
 				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 			}
@@ -124,6 +133,7 @@ function logout(){
 	
 }
 
+// current profile 
 function profile(){
 	const profile = document.getElementById('profile');
 	const access = getAccessTokenFromCookies('access');
@@ -141,15 +151,32 @@ function profile(){
 		}
 	});
 }
-
-//dark mode activate
+async function iconImg(){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('http://localhost:81/auth/me/', {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${access}`,
+			'Content-Type': 'application/json',
+		}
+	});
+	const data = await response.json();
+	if (response.ok) {
+		const iconImg = document.getElementById('icon-img');
+		iconImg.src = data.image;
+	}
+	else 
+		displayMsg(data);
+}
+// Existing code for dark mode toggle
 function darkMode(){
-	const darkModeToggle = document.querySelector('#darkModeToggle');
+    const darkModeToggle = document.querySelector('#darkModeToggle');
     darkModeToggle.addEventListener('click', toggleDarkMode);
 }
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     
-	const isDarkMode = document.body.classList.contains('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDarkMode);
 }
