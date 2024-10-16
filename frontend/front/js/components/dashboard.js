@@ -108,7 +108,7 @@ class DashboardComponent extends HTMLElement {
 		await checkJwt();
         await this.fetchUserData();
         await this.fetchFriendsData();
-		await this.LastMatches()
+		await this.LastMatches();
         // this.checkAuth();
     }
 
@@ -162,7 +162,7 @@ class DashboardComponent extends HTMLElement {
         const player3 = document.getElementById('playerIMG3');
         this.getuser(69, player1);
         this.getuser(75, player2);
-        this.getuser(70, player3);
+        this.getuser(91, player3);
       
     }
 	async LastMatches(){
