@@ -13,9 +13,6 @@ class MessengerComponent extends HTMLElement {
                     </div>
                 </div>
                 <div id="main_part">
-                    <div id="user_area">
-
-                    </div>
                     <div id="chat_area">
 
                     </div>
@@ -66,12 +63,32 @@ class MessengerComponent extends HTMLElement {
             data = await response.json();;
             console.log(data.id);
         }
-        const currentUserId = 27;
+
+
+
+
+        const currentUserId = data.id;
         const currentUserName = 'username';
-        const receiverId = 27;
+        const receiverId = data.id;
         const receiverName = 'username';
+        const room = await fetch('http://localhost:81/chat/room/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+
+        },
+        body: JSON.stringify({
+            'user1': currentUserId,
+            'user2': receiverId,
+        }),
+        });
+        if(room.ok){
+            const roomData = await room.json();
+        }
 
         const roomName = 'gamechata';
+        // data.rec_id
 
         // console.log(currentUserId+ ' '+ currentUserName);
         const socket = new WebSocket('ws://localhost:81/ws/chat/' + roomName + '/');
@@ -80,16 +97,17 @@ class MessengerComponent extends HTMLElement {
         }
         socket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
+            console.log("hna");
         }
         socket.onmessage =function(event){
             const data = JSON.parse(event.data);
-            console.log(data);
-            console.log("test---------------");
+            // console.log(data);
             console.log(data.rec_id);
+            // console.log("test---------------");
             console.log(data.snd_id);
-            if (data.snd_id === receiverId && data.rec_id === currentUserId) {
+            if (data.rec_id === receiverId && data.rec_id === currentUserId) {
                 // Display the message
-                const messageDisplay = document.getElementById('message-display');
+                const messageDisplay = document.getElementById('chat_area');
                 messageDisplay.innerHTML += `<p>${data.msg}</p>`;
                  //const newMessage = document.createElement('p');
                // newMessage.textContent = data.message;
@@ -99,7 +117,8 @@ class MessengerComponent extends HTMLElement {
         }
         document.getElementById('send').addEventListener('click', function() {
             const message = document.getElementById('message').value;
-            console.log(message);
+            // console.log("hna");
+
             
             if (message.trim() !== "") {
                 socket.send(JSON.stringify({
