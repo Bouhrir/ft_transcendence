@@ -5,6 +5,7 @@ import pyotp
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/', null=True, blank=True)
     totp_secret = models.CharField(max_length=50, default=pyotp.random_base32)
     is_2fa_enabled = models.BooleanField(default=False)
 

@@ -215,9 +215,9 @@ body {
 }
 .head1{
     display: flex;
-    /* justify-content: center; */
     align-items: center;
-    margin-left: 1%; 
+    justify-content: center;
+    flex-direction: row;
     animation: slideRight 0.8s ease;
 }
 .head2{
@@ -257,7 +257,7 @@ body {
     align-items: center;
     /* justify-content: center; */
     /* margin-top: 10px; */
-    margin-left: 7.3%;
+    margin-left: 8.2%;
     height: 10vh;
     /* flex: 1 1; */
 }
@@ -577,7 +577,7 @@ button.join:hover .flech {
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 83vh;
+    height: 84vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
@@ -645,23 +645,18 @@ button.join:hover .flech {
     justify-content: center;
 }
 .rate{
-    font-size: 1vh;
+    font-size: 2vh;
     margin-right: 10px;
     margin-left: 10px;
     color: rgb(72, 255, 0);
 }
 .rate1{
-    font-size: 1vh;
+    font-size: 2vh;
     margin-left: 10px;
     margin-right: 10px;
     color: rgb(255, 0, 0);
 }
-.match-red-card img{
-    width: 15%;
-}
-.match-green-card img{
-    width: 15%;
-}
+
 .match-txt {
     display: flex;
     justify-content: space-between;
@@ -737,7 +732,8 @@ button.join:hover .flech {
     justify-content: center;
     border-right: orangered solid 2px;
     border-bottom: orangered solid 2px;
-    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+    transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
+
 }
 .lvl-img{
     margin-top: 10px;
@@ -764,7 +760,8 @@ button.join:hover .flech {
 
 }
 .lvl-card:hover {
-    transform: scale(1.1); /* Zoom in effect */
+    transition: transform 0.3s ease-in-out;
+    transform: scale(1.08); /* Zoom in effect */
 }
 /* Container for the price image */
 .price {
@@ -850,19 +847,22 @@ button.join:hover .flech {
     display: flex;
     margin: 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.316);
-    width: 50vw;
-    height: 50vh; 
+    width: 48vw;
     background: linear-gradient(rgba(255, 255, 255, 0.161), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
     border-radius: 10px;
     font-family: 'Baloo_Bhai_2';
     outline: none;
     color: white;
+    transition: box-shadow 0.3s ease-in-out ;
     animation: slideUp 0.8s ease;
+}
+.account-settings:hover{
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
 }
 .error-message{
     position: absolute;
-    color: red;
+    color: white;
     font-family: 'Baloo_Bhai_2';
     font-size: 20px;
     top : 0%;
@@ -917,16 +917,13 @@ button.join:hover .flech {
 }
 .editprof{
     display: flex;
-    margin-top: 10px;
     justify-content: center;
     text-decoration: none;
-    margin-left: 20px;
     font-family: 'Baloo_Bhai_2';
     font-size: large;
+    /* margin-top: -10px; */
 }
 .editprof__{
-    /* display: flex; */
-    /* justify-content: flex-start; */
     align-items: center;
 }
 .editprof__ button{
@@ -940,7 +937,7 @@ button.join:hover .flech {
 .camera{
     width: 30%;
     position: relative;
-    left: 165%;
+    left: 143%;
     /* height: 50%; */
 }
 .editprof__ button:hover{
@@ -949,8 +946,8 @@ button.join:hover .flech {
 }
 .pic_p{
     display: flex;
-    margin-left: 10px;
-    width: 8vw;
+    width: 200px;
+    height: 190px;
     box-shadow: 11px 11px 11px rgba(0, 0, 0, 0.25);
     border-radius: 100%;
     font-family: 'Baloo_Bhai_2';
@@ -973,35 +970,47 @@ button.join:hover .flech {
 .edit_but{
     display: flex;
     justify-content: flex-end;
-    margin-right: -5%;
+    /* margin-right: -5%; */
     margin-top: 3%;
 }
 .edit_but button{
     width: 3vw;
     height: 3vh;
     font-size: large;
+    margin-left: 100%;
+    margin-top: 33%;
 }
+
 .information_box{
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
 }
 .acciformation{
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
     margin-left: 20px;
     border-radius: 20px;
-    width:35vw;
+    width: 35vw;
     height: 45vh;
     text-decoration: none;
     font-family: 'Baloo_Bhai_2';
     font-size: large;
-    /* border: #fff solid 1px; */
+    height: 100%;
+    /* border: 1px solid; */
 }
 .acciformation h1{
     color: #fff;
     margin: 10px 10px 20px;
     font-family: 'Baloo_Bhai_2';
+}
+.acclist{
+    /* border: 1px solid white; */
+    width: 63%;
+    height: 72%;
+    margin-bottom: 7%;
 }
 .name_last{
     display: flex;
@@ -1031,9 +1040,10 @@ button.join:hover .flech {
     color: rgb(176, 175, 175);
     font-size: 2vh;
 }
-.mail_nd_pass{
+.mail{
     display: flex;
     justify-content: space-between;
+    /* flex-direction: row; */
     margin-top: 5%;
     margin-left: 3%;
 }
@@ -1049,6 +1059,13 @@ button.join:hover .flech {
 }
 .add_mail p{
     font-size: 122%;
+}
+.n_pass{
+    display: flex;
+    justify-content: space-between;
+    /* flex-direction: row; */
+    margin-top: 5%;
+    margin-left: 3%;
 }
 .pass {
     display: flex;
@@ -1097,8 +1114,8 @@ button.join:hover .flech {
     /* padding-left: 10px; */
 }
 .gameLine:hover{
-    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
-    transform: scale(1.1);
+    transform: translate(0%, 0%) scale(1.02);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
     /* transition: transform 0.2s ease-in-out; */
 }
 .gameLine a {
@@ -1244,4 +1261,85 @@ button.join:hover .flech {
     font-family:'Baloo_Bhai_2';
     color:white;
     font-size: 4rem;
+}
+
+.sign2FA{
+    display: flex;
+    margin-top: 3%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    height: 30rem;
+    width: 20vw;
+    margin-left: 40.5%;
+    /* padding-top: 20px; */
+    background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.003));
+    backdrop-filter: blur(9px);
+    border: 1px solid rgba(229, 102, 39, 0.278);
+    border-radius: 50px;
+    animation: slideDownFadeIn 0.8s ease forwards;
+	transition: box-shadow 0.3s ease-in-out;
+    gap: 2%;
+}
+.sign2FA:hover{
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1.5);
+}
+.sign2FA h3 {
+    font-family: 'celesti';
+    color: white;
+    font-size: 2.5rem;
+    padding-bottom: 3%;
+}
+.sign2FA input {
+    width: 60%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+.sign2FA button{
+    width: 30%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    outline: none;
+    font-family: 'Baloo_Bhai_2';
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    margin-bottom: 10px;
+    
+    margin-top: 4%;
+}
+
+.sign2FA button:hover{
+    background-color: white;
+    transition: background-color 0.5s ease-in-out;
+    color:black;
+    cursor: pointer;
+}
+
+.logout button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.logout button img{
+    width: 25px;
+}
+
+/* dark mode */
+body.dark-mode {
+    background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
+    color: #fff;
+}
+
+body.dark-mode .navbar a {
+    color: #ddd;
 }

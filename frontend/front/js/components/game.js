@@ -2,27 +2,27 @@ class GameComponent extends HTMLElement {
 	connectedCallback(){
 		this.innerHTML = `
 		<div class="ping-pong">
-		<h1>PING PONG</h1>
-		<div class="scoreboard">
-			<div class="player-profile" id="player1-profile">
-				<img src="../svg/miroka.svg" alt="Player 1" class="profile-pic">
-				<p class="player-name">miroka</p>
+			<h1>PING PONG</h1>
+			<div class="scoreboard">
+				<div class="player-profile" id="player1-profile">
+					<img src="../svg/miroka.svg" alt="Player 1" class="profile-pic">
+					<p class="player-name">miroka</p>
+				</div>
+				<div class="score-display">
+					<span id="score1">0</span> : <span id="score2">0</span>
+				</div>
+				<div class="player-profile" id="player2-profile">
+					<img src="../svg/droke.svg" alt="Player 2" class="profile-pic">
+					<p class="player-name">droke</p>
+				</div>
 			</div>
-			<div class="score-display">
-				<span id="score1">0</span> : <span id="score2">0</span>
+			<div class="subping">
+				<div id="countdown"></div>
+				<div id="paddle1" class="paddle"></div>
+				<div id="paddle2" class="paddle"></div>
+				<div id="ball"></div>
 			</div>
-			<div class="player-profile" id="player2-profile">
-				<img src="../svg/droke.svg" alt="Player 2" class="profile-pic">
-				<p class="player-name">droke</p>
-			</div>
-		</div>
-		<div class="subping">
-			<div id="countdown"></div>
-			<div id="paddle1" class="paddle"></div>
-			<div id="paddle2" class="paddle"></div>
-			<div id="ball"></div>
-		</div>
-		<p style="font-size:30px">Press space to start</p>
+			<p style="font-size:30px">Press space to start</p>
 		</div>
 		`;
 
