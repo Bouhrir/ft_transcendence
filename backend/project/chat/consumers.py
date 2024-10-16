@@ -37,7 +37,6 @@ class SomeConsumer(JsonWebsocketConsumer):
         
         
     def receive(self, text_data):
-        # print("test/n")
         data_json = json.loads(text_data)
         
         message = data_json['msg']
@@ -45,16 +44,11 @@ class SomeConsumer(JsonWebsocketConsumer):
         receiver_id = data_json['rec_id']        
         try:
             sender = User.objects.get(id=sender_id)
-        except User.DoesNotExist:
-            pass
-        try:
             receiver = User.objects.get(id=receiver_id)
         except User.DoesNotExist:
             pass
-        
-        # self.save_message(sender, receiver, message)
-        #receive method is called when the connection receives a message
-        
+    
+        self.save_message(sender, receiver, message)
         async_to_sync(self.channel_layer.group_send)(self.room_group_name, {
                 'type': "chat.message",
                 'data': {
@@ -62,20 +56,8 @@ class SomeConsumer(JsonWebsocketConsumer):
                     'snd_id': sender_id,
                     'rec_id': receiver_id
                 }
-            })
-    
-    # def get_receive_chanel_name(self, receiver):
-    #     for connection in self.connections:
-    #         if connection.scope['user'] == receiver:
-    #             return connection.channel_name
-    #     return None
-        
+            })     
     def chat_message(self, event):
-        # event['data']
-        # print('=======')
-        # print(event['data'])
-        # print('=======')
-        
         self.send(text_data=json.dumps(event['data']))
     
     def save_message(self, sende_id, receiver_id, message):
@@ -89,27 +71,8 @@ class SomeConsumer(JsonWebsocketConsumer):
 
 
 
-#  def connect(self):
-#         cookie_value = self.scope['cookies'].get('access')
-#         # print(cookie_value)
-#         if cookie_value:
-#             try:
-#                 payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
-#                 user_id = payload.get('user_id')
-#                 self.scope['user'] = database_sync_to_async(User.objects.get)(id=user_id)
-#             except (ExpiredSignatureError, DecodeError, User.DoesNotExist, TokenError):
-#                 self.scope['user'] = AnonymousUser()
-#         else:
-#             self.scope['user'] = AnonymousUser()
-
-#         if self.scope['user'].is_authenticated:
-#             # print(self.scope['user'])
-#             self.room_group_name = 'chat_%s' % self.scope['url_route']['kwargs']['room_name']
-#             async_to_sync(self.channel_layer.group_add)(
-#                 self.room_group_name,
-#                 self.channel_name
-#             )
-#             self.accept() # Accept the WebSocket connection
-#             self.connections.append(self)
-#         else:
-#             self.close()
+    # def get_receive_chanel_name(self, receiver):
+    #     for connection in self.connections:
+    #         if connection.scope['user'] == receiver:
+    #             return connection.channel_name
+    #     return None

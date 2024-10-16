@@ -4,7 +4,7 @@ class MessengerComponent extends HTMLElement {
         <div id="chat-container">
             <div class="chat">
                 <div id="left_side">
-                    <h2>Friends</h2>
+                    <h1>Friends</h1>
                     <div id="archive">
                         <div class="chat-img" id="chater1">
                             <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" class="img-pic">
