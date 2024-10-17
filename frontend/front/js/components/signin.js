@@ -1,5 +1,9 @@
 class SigninComponent extends HTMLElement {
-    connectedCallback() {
+    constructor() {
+        super();
+        this.is2FAEnabled = false;
+    }
+    async connectedCallback() {
         const navbar = document.querySelector('.navbar');
         if (navbar) {
             navbar.remove();
@@ -33,7 +37,7 @@ class SigninComponent extends HTMLElement {
                     <h2 class="or">or</h2>
                 </div>
                 <div class="btn42">
-                    <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                    <button id="btn42" type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
                 </div>
                 <div class="dont">
                     <h2>Don’t have an account? <a href="#signup">Sign up<a></h2>
@@ -41,6 +45,21 @@ class SigninComponent extends HTMLElement {
             </div>`;
 
         const signin = document.getElementById('signin');
+        const btn42 = document.getElementById('btn42');
+        btn42.addEventListener('click', () => {
+            window.location = 'http://localhost:81/auth/intra/';
+        });
+        window.addEventListener('load', () => {
+            const url = new URL(window.location.href);
+            const key = url.hash.slice(1); // This will remove the '#' character
+            if (key === 'true') {
+                window.location.hash = '#dashboard';
+            }
+            if (key === 'false'){
+                console.log('field intra42 Login')
+                window.location.href = '#signin';
+            }
+        });
         signin.addEventListener('submit', async (e) => {
             e.preventDefault();
             const errorMessage = document.getElementById('error-message');
@@ -61,13 +80,54 @@ class SigninComponent extends HTMLElement {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
-				document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
-                console.log('-----sign-----');
-                console.log(data.access);
-                window.location.hash = '#dashboard';
+                document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
+                await this.check2FAStatus();
+                if (!this.is2FAEnabled)
+                    window.location.hash = '#dashboard';
+                else
+                {
+                    const signin = document.getElementById('signin');
+                    signin.style.display = 'none';
+
+                    const twofaVerifyTab = document.createElement('div');
+                    twofaVerifyTab.className = 'sign2FA';
+                    twofaVerifyTab.innerHTML = `
+                        <h3>TWO FA VERIFICATION</h3>
+                        <input id="twofaCode" type="text" placeholder="Enter your 2FA code" >
+                        <button type="submit" id="twofa-verify-btn">Verify</button>
+                        `;
+                    document.body.append(twofaVerifyTab);
+                    document.getElementById('twofa-verify-btn').addEventListener('click', async () => {
+                        const verificationCode = document.getElementById('twofaCode').value;
+
+                        console.log(verificationCode);
+                        const access = this.getAccessTokenFromCookies();
+                        const response = await fetch('http://localhost:81/2fa/verify/', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${access}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                "verification_code": verificationCode
+                            })
+                        });
+                        if (response.ok){
+                            errorMessage.textContent = 'sucess verification!';
+                            errorMessage.style.color = 'green';
+                            twofaVerifyTab.style.display = 'none';
+                            window.location.hash = '#dashboard';
+                        }
+                        else{
+                            errorMessage.textContent = 'failed verification!';
+                            errorMessage.style.color = 'red';
+                        }
+
+                    });
+                }
+
             } else {
                 console.log (data);
                 let errorMsg = '';
@@ -83,6 +143,39 @@ class SigninComponent extends HTMLElement {
                 errorMessage.textContent = errorMsg;
             }
         });
+    }
+
+    async check2FAStatus() {
+        const access = this.getAccessTokenFromCookies();
+        try {
+            const response = await fetch('http://localhost:81/2fa/status/', {
+                method: 'GET',
+                mode:'cors',
+                headers: {
+                    'Authorization': `Bearer ${access}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.is2FAEnabled = data.is_2fa_enabled;
+            } else {
+                console.error('Failed to get 2FA status:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error checking 2FA status:', error);
+        }
+    }
+    getAccessTokenFromCookies() {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('access=')) {
+                return cookie.substring('access='.length);
+            }
+        }
+        return null;
     }
 }
 customElements.define('signin-component', SigninComponent);
