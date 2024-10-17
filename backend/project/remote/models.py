@@ -4,12 +4,77 @@ from django.contrib.auth.models import User
 class Game(models.Model):
 	host = models.ForeignKey(User, related_name='host', on_delete=models.CASCADE)
 	guest = models.ForeignKey(User, related_name='guest', on_delete=models.CASCADE, null=True, blank=True)
-	status = models.CharField(max_length=20, default='waiting')# e.g., waiting, active, finished
+	status = models.CharField(max_length=20, default='waiting')# e.g., waiting, active, finished, cancelled
 	host_score = models.IntegerField(default=0)
 	guest_score = models.IntegerField(default=0)
 	winner = models.ForeignKey(User, related_name='winner', on_delete=models.CASCADE, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	room_name = models.CharField(max_length=50, unique=True, default="default")  # Add room_name here
 
 	def __str__(self):
 		return f"Room: {self.id} - {self.player1} vs {self.player2 or 'Waiting for player'}"
 
+	# Method to determine the winner based on scores
+	def determine_winner(self):
+		if self.host_score > self.guest_score:
+			self.winner = self.host
+		elif self.guest_score > self.host_score:
+			self.winner = self.guest
+		else:
+			self.winner = None  # In case of a tie or no winner
+		self.status = "finished"  # Set the status to finished when winner is determined
+		self.save()
+		# return self.winner
+
+	def get_player_score(self, player_id):
+		if self.host.id == player_id:
+			return self.host_score
+		elif self.guest and self.guest.id == player_id:
+			return self.guest_score
+		else:
+			raise ValueError("Player ID is not associated with this game.")
+
+	def set_score(self, player_id, player_score, ai_score):
+		if self.host.id == player_id:
+			self.host_score = player_score
+			self.guest_score = ai_score
+		elif self.guest and self.guest.id == player_id:
+			self.host_score = ai_score
+			self.guest_score = player_score
+
+	def set_guest_score(self, guest_score):
+		# self.guest_score = guest_score
+		setattr(self, 'guest_score', guest_score)
+
+	def set_winner(self, winner):
+		setattr(self, 'winner', winner)
+
+
+	# def score_game(self, player_id, score1, score2):
+	# 	host_id = await sync_to_async(self.get_host_id)()
+	# 	guest_id = await sync_to_async(self.get_guest_id)()
+	# 	if self.host.id == player_id:
+	# 		self.host_score = score1
+	# 		self.guest_score = score2  # Keep guest score unchanged
+	# 	elif self.guest and self.guest.id == player_id:
+	# 		self.guest_score = score1
+	# 		self.host_score = score2  # Keep host score unchanged
+	# 	else:
+	# 		raise ValueError("Player ID is not associated with this game.")
+		
+	# 	self.save()  # Save the updated scores
+	# Method to get the host
+	def get_host(self):
+		return self.host
+
+	# Method to get the guest
+	def get_guest(self):
+		return self.guest
+	
+		# New method to check if a player is host or guest
+	def get_player_role(self, player_id):
+		if self.host.id == player_id:
+			return "host"
+		elif self.guest and self.guest.id == player_id:
+			return "guest"
+		return "not a participant"

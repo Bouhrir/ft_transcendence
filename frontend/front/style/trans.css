@@ -1171,6 +1171,9 @@ button.join:hover .flech {
     height: 43%;
     border-radius: 20px;
     animation: slideUp 1s ease;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
 }
 .av-img{
     border: 2px solid white;

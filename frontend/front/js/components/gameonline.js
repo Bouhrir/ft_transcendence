@@ -124,11 +124,18 @@ class GameComponentOnline extends HTMLElement {
         // deleteInvitation("amdouyah")
         
         // let player_id;
-		const canvas = document.getElementById('pongGame');
+        if (!window.gameRoom) {
+            console.log("test")
+            // Redirect to another page if room_name is missing
+            window.location.href = '#dashboard';
+        }
+        else {
+		    const canvas = document.getElementById('pongGame');
             const ctx = canvas.getContext('2d');
             let isWebSocketOpen = false;  // Track WebSocket connection state
             
             // Game objects
+            const leaveButton = document.getElementById('leave-button')
             const paddleWidth = 10;
             const paddleHeight = 100;
             const ballRadius = 10;
@@ -166,7 +173,7 @@ class GameComponentOnline extends HTMLElement {
                 color: 'white'
             
             };
-            window.gameRoom = "123"
+            console.log(window.gameRoom)
             const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
             // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
             ws.onopen = function() {
@@ -212,7 +219,14 @@ class GameComponentOnline extends HTMLElement {
                     }
                     
                 }
+                else if (data.action == "no_room") {
+                    const view = document.querySelector(".waiting")
+                    view.style.display = "flex"
+                    const message = document.querySelector(".waiting-message")
+                    message.innerText = "game room doesn't exist"
+                }
                 else if (data.action == "start") {
+                    console.log("game starting")
                     const view = document.querySelector(".waiting")
                     view.style.display = "none"
                 }
@@ -303,7 +317,17 @@ class GameComponentOnline extends HTMLElement {
                     // player.dy = 0;
                 }
             });
+            window.isTournament = true
+            leaveButton.addEventListener('click', (e) => {
+                window.location.href = "#tournament"
+                // if (window.isTournament) {
+                    // return
+                    // maybe close the socket
+                // }
+                // console.log('leave button')
+            })
             gameLoop();
+        }
             // Start the game loop
 	}
 }

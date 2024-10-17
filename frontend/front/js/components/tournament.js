@@ -6,23 +6,23 @@ class TournamentComponent extends HTMLElement {
     //     this.maxPlayers = 4;
     // }
 
-    connectedCallback() {
+    async connectedCallback() {
 
         this.innerHTML = `
             <div class="avatar-winner">
-                <p>W I N N ER</p>
-                <div class="av-win"></div>
+                <p id="winning-msg">W I N N ER</p>
+                <div class="av-win" id="winner-player"></div>
             </div>
             <div class="tournament">
                 <div class="lines">
                     <div class="avatar-player">
-                        <div class="av-img"></div>
-                        <span class="tourn-score">0</span>
+                        <div class="av-img" id="semis-first-player"></div>
+                        <span class="tourn-score" id="semis-first-player-score">0</span>
                             <svg width="2" height="58" viewBox="0 0 2 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.01739 -0.000154686L2 113" stroke="white" stroke-width="2"/>
                             </svg>
-                        <span class="tourn-score">0</span>
-                        <div class="av-img"></div>
+                        <span class="tourn-score" id="semis-second-player-score">0</span>
+                        <div class="av-img" id="semis-second-player"></div>
                     </div>
                     <div>
                         <svg width="114" height="468" viewBox="0 0 114 468" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,9 +34,9 @@ class TournamentComponent extends HTMLElement {
                     </div>
 
                     <div class="avatar-player">
-                        <div class="av-img"></div>
+                        <div class="av-img" id="final-first-player"></div>
                     </div>
-                    <p class="tourn-score-final">0</p>
+                    <p class="tourn-score-final" id="final-first-player-score">0</p>
                 </div>
                 <div id="lineMiddle">
                     <div>
@@ -46,9 +46,9 @@ class TournamentComponent extends HTMLElement {
                     </div>
                 </div>
                 <div class="lines">
-                    <p class="tourn-score-final">0</p>
+                    <p class="tourn-score-final" id="final-second-player-score">0</p>
                     <div class="avatar-player">
-                        <div class="av-img"></div>
+                        <div class="av-img" id="final-second-player"></div>
                     </div>
                     <div>
                         <svg width="114" height="468" viewBox="0 0 114 468" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,13 +59,13 @@ class TournamentComponent extends HTMLElement {
                         </svg>
                     </div>
                     <div class="avatar-player" >
-                        <div class="av-img"></div>
-                        <span class="tourn-score">0</span>
+                        <div class="av-img" id="semis-third-player"></div>
+                        <span class="tourn-score" id="semis-third-player-score">0</span>
                         <svg width="2" height="58" viewBox="0 0 2 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.01739 -0.000154686L2 113" stroke="white" stroke-width="2"/>
                         </svg>
-                        <span class="tourn-score">0</span>
-                        <div class="av-img"></div>
+                        <span class="tourn-score" id="semis-fourth-player-score">0</span>
+                        <div class="av-img" id="semis-fourth-player"></div>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,6 @@ class TournamentComponent extends HTMLElement {
             <div id="playerList"></div>
         `;
     
-
         function getAccessTokenFromCookies() {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
@@ -87,58 +86,173 @@ class TournamentComponent extends HTMLElement {
             }
             return null;
         }
-  
+        
         const access = getAccessTokenFromCookies();
         const joinButton = document.getElementById('joinButton');
         const aliasInput = document.getElementById('aliasInput');
         let isWebSocketOpen = false;
         let player_id;
         let alias;
-        const ws = new WebSocket('ws://localhost:81/ws/tournament/');
-        ws.onopen = function() {
-            console.log("tournament WebSocket is open now.");
-            isWebSocketOpen = true;
-        };
+        const semisFirstPlayer = document.getElementById("semis-first-player")
+        const semisSecondPlayer = document.getElementById("semis-second-player")
+        const semisThirdPlayer = document.getElementById("semis-third-player")
+        const semisFourthPlayer = document.getElementById("semis-fourth-player")
+        const finalFirstPlayer = document.getElementById("final-first-player")
+        const finalSecondPlayer = document.getElementById("final-second-player")
+        const semisFirstPlayerScore = document.getElementById("semis-first-player-score")
+        const semisSecondPlayerScore = document.getElementById("semis-second-player-score")
+        const semisThirdPlayerScore = document.getElementById("semis-third-player-score")
+        const semisFourthPlayerScore = document.getElementById("semis-fourth-player-score")
+        const finalFirstPlayerScore = document.getElementById("final-first-player-score")
+        const finalSecondPlayerScore = document.getElementById("final-second-player-score")
+        const winnerPlayer = document.getElementById("winner-player")
+        const winningMsg = document.getElementById("winning-msg")
+        
+        winnerPlayer.style.backgroundImage = "url('/needs/img/Rectangle 27.png')"
 
+        function backFromGame() {
+            if (window.isTournament) {
+                console.log("back from game!!!")
+                if (window.isWebSocketOpen) {
+                    const data = {
+                        type: 'back',
+                        // player_id: player_id,
+                        // alias: alias
+                    };
+                    window.ws.send(JSON.stringify(data));
+                }
+                window.isTournament = false
+                joinButton.style.display = "none"
+                aliasInput.style.display = "none"
+            }
+            // maybe make it false again
+        }
+        backFromGame()
+
+        if (!window.isWebSocketOpen) {
+            const ws = new WebSocket('ws://localhost:81/ws/tournament/');
+            window.ws = ws
+        }
+        window.ws.onopen = function() {
+            console.log("tournament WebSocket is open now.");
+            window.isWebSocketOpen = true;
+        };
+        
         // Handle WebSocket errors
-        ws.onerror = function(error) {
+        window.ws.onerror = function(error) {
             console.error("Chat WebSocket error:", error);
         };
-
+        
         // Handle WebSocket close
-        ws.onclose = function() {
+        window.ws.onclose = function() {
+            console.log("closing websocket")
             isWebSocketOpen = false;
         };
-
-        ws.onmessage = function(e) {
-            // console.log("please")
+        // document.get
+        window.ws.onmessage = function(e) {
             const data = JSON.parse(e.data);
             if (data.action == "new_connection") {
                 player_id = data.player_id
-                console.log("new connection: ", player_id)
+                console.log("new tournament connection: ", player_id)
+                status(data.games)
             }
-            // else if (data.action == "game") {
-            // }
             else if (data.action == "redirect_game") {
+                console.log("games prepared")
+                joinButton.style.display = "block"
+                joinButton.innerText = "PLAY!"
+                aliasInput.style.display = "none"
                 window.gameRoom = data.room
-                window.location.href = "#game-online"
             }
-        };
-        
+            else if (data.action == "cancelled") {
+                joinButton.style.display = "none"
+            }
+            else if (data.action == "status") {
+                status(data.games)
+            }
+            else if (data.action == "nobody_won") {
+                winningMsg.innerText = "nobody won"
+            }
+        }
         joinButton.addEventListener('click', (e) => {
             alias = aliasInput.value
-            console.log(alias)
-            if (isWebSocketOpen) {
-                const data = {
-                    type: 'join',
-                    player_id: player_id,
-                    alias: alias
-                };
-                ws.send(JSON.stringify(data));
+            if (joinButton.innerText == "JOIN!") {
+                if (window.isWebSocketOpen) {
+                    const data = {
+                        type: 'join',
+                        player_id: player_id,
+                        alias: alias
+                    };
+                    window.ws.send(JSON.stringify(data));
+                }
+                aliasInput.style.display = "none"
+                joinButton.style.display = "none"
+            } else if (joinButton.innerText == "PLAY!"){
+                if (window.isWebSocketOpen) {
+                    const data = {
+                        type: 'play',
+                        player_id: player_id,
+                        alias: alias
+                    };
+                    window.ws.send(JSON.stringify(data));
+                }
+                window.isTournament = true
+                window.location.href = "#game-online"
+                // close socket when you leave the page
             }
+            
         });
+        
+        // window.addEventListener('beforeunload', function() {
+        // if (ws) {
+        //         console.log("Closing WebSocket before page unload.");
+        //         ws.close();  // Close the WebSocket connection
+        //     }
+        // });
 
-
+        function setPlayer(player, playerElement, scoreElement) {
+            // const avatar = getAvatar()
+            // score
+            // winner or loser
+            // playerElement.style.backgroundImage = "url(${avatar})"
+            if (!playerElement || !scoreElement) {
+                console.error("Player or score element is not found in the DOM.");
+                return;
+            }
+            if (!player) {
+                return
+            }
+            scoreElement.innerHTML = `${player["score"]}`
+            if (player["result"] == "winner") {
+                playerElement.style.border = "3px solid rgb(112, 174, 110)";
+            }
+            else if (player["result"] == "loser") {
+                playerElement.style.border = "3px solid rgb(230, 59, 46)";
+            }
+        }
+        function status(games) {
+            const first_semis = games.first_semis
+            const second_semis = games.second_semis
+            const final = games.final
+            // get the picture of the player
+            // if the tournament is ongoing or the player joined the tournament
+            if (games["status"] == "ongoing") {
+                aliasInput.style.display = "none"
+                joinButton.style.display = "none"
+            }
+            console.log("first_semis: ", first_semis)
+            console.log("second_semis: ", second_semis)
+            console.log("final: ", final)
+            setPlayer(first_semis[0], semisFirstPlayer, semisFirstPlayerScore)
+            setPlayer(first_semis[1], semisSecondPlayer, semisSecondPlayerScore)
+            setPlayer(second_semis[0], semisThirdPlayer, semisThirdPlayerScore)
+            setPlayer(second_semis[1], semisFourthPlayer, semisFourthPlayerScore)
+            setPlayer(final[0], finalFirstPlayer, finalFirstPlayerScore)
+            setPlayer(final[1], finalSecondPlayer, finalSecondPlayerScore)
+        }
+        
+        
+        
+                    
 
 
         
