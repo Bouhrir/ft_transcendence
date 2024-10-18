@@ -207,7 +207,7 @@ class SettingComponent extends HTMLElement {
                     document.body.style.background = '#333'
                     qrModal.style.display = 'block';
                     verificationSection.style.display = 'block';
-                    document.getElementById('whole').style.display = 'none';
+                    // document.getElementById('whole').style.display = 'none';
                     closeModal.addEventListener('click', () => {
                         qrModal.style.display = 'none';
                     });

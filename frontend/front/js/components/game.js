@@ -1,6 +1,6 @@
 import { getAccessTokenFromCookies } from "./help.js";
 let PlayerUser = '';
-
+let ai = false;
 class GameComponent extends HTMLElement {
 	async connectedCallback(){
 		this.innerHTML = `
@@ -15,7 +15,7 @@ class GameComponent extends HTMLElement {
 					<span id="score1">0</span> : <span id="score2">0</span>
 				</div>
 				<div class="player-profile" id="player2-profile">
-					<img src="../../svg/ai.webp" alt="Player 2" class="profile-pic" width=100px height=100px>
+					<img id="ai" src="../../svg/ai.webp" alt="Player 2" class="profile-pic" width=100px height=100px>
 					<p class="ai" >الذكاء الاصطناعي</p>
 				</div>
 			</div>
@@ -25,6 +25,7 @@ class GameComponent extends HTMLElement {
 				<div id="paddle2" class="paddle"></div>
 				<div id="ball"></div>
 			</div>
+			<div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
 			<p style="font-size:30px">Press space to start</p>
 		</div>
 		`;
@@ -43,6 +44,8 @@ class GameComponent extends HTMLElement {
 
 		let keypress = [];
 		let aiSpeed = 2; // Speed at which the AI paddle moves
+		let SPEED = 2;
+
 
 		document.addEventListener('keydown', function (e) {
 			keypress[e.key] = true;
@@ -100,8 +103,8 @@ class GameComponent extends HTMLElement {
 		}
 
 		// Move paddle 1 manually with keys
+		
 		function movePaddle() {
-			let SPEED = 2;
 			if (keypress['w']) {
 				if (paddle1Y - 9 >= 0) {
 					paddle1Y -= SPEED;
@@ -114,20 +117,27 @@ class GameComponent extends HTMLElement {
 			}
 			paddle1.style.top = `${paddle1Y}%`;
 
+			if (keypress['+'])
+				ai = true;
+			if (keypress['-'])
+				ai = false;
+			if (ai)
+				moveAIPaddle();
+			else
+				MoveHumanPaddle();
 
-			if (keypress['up']) {
-				if (paddle2Y - 9 >= 0) {
-					paddle2Y -= SPEED;
-				}
+			if (keypress['/'])
+			{
+				ball.style.height = '1rem';
+				ball.style.width = '1rem';
 			}
-			if (keypress['down']) {
-				if (paddle2Y + 9 <= 100) {
-					paddle2Y += SPEED;
-				}
+			if (keypress['*'])
+			{
+				ball.style.height = '4rem';
+				ball.style.width = '4rem';
 			}
-			paddle1.style.top = `${paddle1Y}%`;
-			paddle2.style.top = `${paddle2Y}%`;
-			moveAIPaddle();
+
+
 		}
 
 		// AI logic to move the second paddle
@@ -148,7 +158,19 @@ class GameComponent extends HTMLElement {
 
 			paddle2.style.top = `${paddle2Y}%`;
 		}
-
+		function MoveHumanPaddle(){
+			if (keypress['ArrowUp']) {
+				if (paddle2Y - 9 >= 0) {
+					paddle2Y -= SPEED;
+				}
+			}
+			if (keypress['ArrowDown']) {
+				if (paddle2Y + 9 <= 100) {
+					paddle2Y += SPEED;
+				}
+			}
+			paddle2.style.top = `${paddle2Y}%`;
+		}
 		function startGame() {
 			let ballRect = ball.getBoundingClientRect();
 			let paddle1Rect = paddle1.getBoundingClientRect();
@@ -195,7 +217,6 @@ class GameComponent extends HTMLElement {
 				return;
 			}
 
-			console.log(aiSpeed)
 			requestAnimationFrame(startGame);
 		}
 

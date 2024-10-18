@@ -173,6 +173,14 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
+#gameCostum{
+    font-family: 'Bungee';
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap :1%;
+}
 /* Animations */
 @keyframes fadeInDown {
     0% {
