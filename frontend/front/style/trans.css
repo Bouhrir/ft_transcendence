@@ -462,7 +462,7 @@ button.join:hover .flech {
     opacity: 70%;
 
 }
-.notification button{
+.notification {
     display: flex;
     /* margin-top: 30%; */
     justify-content: center;
@@ -471,15 +471,23 @@ button.join:hover .flech {
     height: 3.5vh; 
     border: 0.5px solid rgba(255, 255, 255, 0.292);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
-    backdrop-filter: blur(4px);
-    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
+    /* backdrop-filter: blur(50px); */
     border-radius: 12px;
-}
-.notification button:hover{
-    cursor: pointer;
+    z-index: 1;
 }
 .notification img{
     width: 25px;
+    cursor: pointer;
+}
+.bold-point {
+    position: absolute;
+    top: 6.9%;
+    right: 16.3%;
+    width: 10px;
+    height: 10px;
+    background-color: rgb(11, 237, 109);
+    border-radius: 50%;
+    animation: slideRight 0.8s ease;
 }
 .logout{
     display: flex;
@@ -618,7 +626,6 @@ button.join:hover .flech {
     padding-top: 30px;
     margin-top: 10px;
     border: 0.5px solid rgba(255, 255, 255, 0.292);
-    /* font-family: ; */
     width: 17vw;
     height: 81vh; 
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
@@ -1380,6 +1387,38 @@ body.dark-mode .navbar a {
     padding: 12px 70px 12px 30px; 
     color: white;
 	
+}
+#resultRequest {
+    position: absolute;
+    top: 2.9%;
+    z-index: 1;
+    width: 15vw;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    border-radius: 12px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 16px;
+    margin-top: 113px;
+    margin-right: 232px;
+    animation:  0.4s ease-in-out;
+    padding: 12px 70px 12px 30px; 
+    color: white;
+    backdrop-filter: blur(15px);
+    animation: slideDownFadeIn 0.8 ease forwards;
+}
+.request{
+    border-bottom: 0.5px solid #dee2e6;
+    padding: 0.5em 0;
+	cursor: pointer;
+}
+.request p {
+    color: whitesmoke;
+    margin-bottom: 0;
+}
+.request span {
+    font-size: 1.2em;
+    margin-bottom: 0.2em;
+    color:rgb(0,200,0);
 }
 
 .user-result {

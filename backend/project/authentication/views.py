@@ -143,6 +143,7 @@ def update_profile(request):
 @permission_classes([IsAuthenticated])
 def me(request):
     user = request.user
+    print(user)
     userImg = UserProfile.objects.get(user=user).image
     imageData = base64.b64encode(userImg.read()).decode('utf-8')
     return Response({
@@ -306,7 +307,78 @@ from django.db.models import Q
 @permission_classes([IsAuthenticated])
 def search_users(request):
     query = request.GET.get('q', '')
-    print(query)
     users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
     user_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
     return Response(user_data, status=status.HTTP_200_OK)
+
+#add friends
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_friend_request(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    friend_profile.friend_requests.add(user_profile)
+    return Response({'message': 'Friend request sent successfully'}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friend_requests(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    friend_requests = user_profile.friend_requests.all()
+    friend_requests_data = [{"id": friend_request.user.id, "username": friend_request.user.username} for friend_request in friend_requests]
+    return Response(friend_requests_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def accept_friend_request(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    if friend_profile in user_profile.friend_requests.all():
+        user_profile.friend_requests.remove(friend_profile)
+        user_profile.friends.add(friend_profile)
+        return Response({'message': 'Friend request accepted'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'No friend request from this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pending(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    if friend_profile in user_profile.friend_requests.all():
+        return Response({'message': 'Friend request pending'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'No friend request from this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def check_friend(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.friends.filter(user=user).exists():
+        return Response({'message': 'This user is a friend'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)

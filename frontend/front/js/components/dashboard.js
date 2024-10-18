@@ -31,7 +31,7 @@ class DashboardComponent extends HTMLElement {
                         </div>
                     </div>
                     <div class="start">
-                        <a class="hr" href="#game"><button class="join">start game<span class="flech">→</span></button></a>
+                        <a class="hr" href="#gamebar"><button class="join">start game<span class="flech">→</span></button></a>
                     </div>
                     <div class="racket">
                             <img src="../../needs/img/RACKET 1.png">
@@ -105,7 +105,6 @@ class DashboardComponent extends HTMLElement {
         </div>
     </div>
         `;
-		await checkJwt();
         await this.fetchUserData();
         await this.fetchFriendsData();
 		await this.LastMatches();

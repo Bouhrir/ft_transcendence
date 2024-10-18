@@ -1,11 +1,12 @@
 import { checkJwt, getAccessTokenFromCookies } from "./help.js";
+
 class ProfileComponent extends HTMLElement {
     async connectedCallback(){
         this.innerHTML = `
         <div class="profile-acc">
             <div class="Trophie">
                 <p>HIGHEST PRICE</p>
-                <div class="trophie-type"></div>
+                <img class="trophie-type" src="../../needs/img/platinuim.png"></img>
                 <p>silver</p>
             </div>
             <div class="ProfileAndMatches">
@@ -14,8 +15,8 @@ class ProfileComponent extends HTMLElement {
                     <h1 id="FullName" ></h1>
                     <p id="UserName"></p>
                     <p>LVL 9</p>
-					<div class="AddFriends">
-						<a href="#gamebar" class="join"> Add Friends<span class="flech">→</span></a>
+					<div id="addFriends" class="AddFriends">
+						<a class="join"> Add Friends<span class="flech">→</span></a>
 						<a href="#messenger" class="join">Message<span class="flech">→</span></a>
 					</div>
                 </div>
@@ -38,7 +39,6 @@ class ProfileComponent extends HTMLElement {
             </div>
         </div>
         `;
-        await checkJwt();
         await this.fetchUserData();
     }
     async fetchUserData(){
@@ -66,12 +66,97 @@ class ProfileComponent extends HTMLElement {
             fullName.textContent = data.first_name + ' ' + data.last_name;
             username.textContent = data.username;
             imgProfile.src = data.image;
-            
-
+            if (userId === localStorage.getItem('id'))
+            {
+                const currentUser = document.getElementById('addFriends');
+                currentUser.style.display = 'none';
+            }
+            this.chekcIsFriend(userId).then(isfriend => {
+                this.pending(userId).then(check =>{
+                    if (!check)
+                        this.addFreinds(userId);
+                    else if (!isfriend){
+                        const addFriendButton = document.getElementById('addFriends');
+                        addFriendButton.style.display = 'none'
+                        const pendingButton = document.createElement('div');
+                        pendingButton.className = 'join';
+                        pendingButton.textContent = 'Pending';
+                        addFriendButton.parentNode.appendChild(pendingButton);
+                    }
+                });
+            });
         } else {
             console.error('Failed to fetch user data:', response.statusText);
         }
     }
+    async chekcIsFriend(userId){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/check_friend/', {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'friend_id': userId
+            })
+        });
+        if (response.ok){
+            const addFriendButton = document.getElementById('addFriends');
+            addFriendButton.style.display = 'none';
+            const acceptButton = document.createElement('div');
+            acceptButton.className = 'join';
+            acceptButton.textContent = 'FRIEND';
+            addFriendButton.parentNode.appendChild(acceptButton);
+            return true;
+        }
+        return false;
+    }
+    async addFreinds(userId){
+        const addFriendButton = document.getElementById('addFriends');
+        const access = getAccessTokenFromCookies('access');
+        addFriendButton.addEventListener('click', async () => {
+    
+            const response = await fetch('http://localhost:81/auth/add_friend/', {
+                method: 'POST',
+                headers:{
+                    'Authorization': `Bearer ${access}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'friend_id': userId
+                })
+            });
+    
+            if (response.ok) {
+                addFriendButton.style.display = 'none';
+                const pendingButton = document.createElement('div');
+                pendingButton.className = 'join';
+                pendingButton.textContent = 'Pending';
+                addFriendButton.parentNode.appendChild(pendingButton);
+            } else {
+                console.error('Failed to send friend request:', response.statusText);
+            }
+        });
+    }
+    async pending(userId){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/pending/', {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'friend_id': userId
+            })
+        });
+        if (response.ok)
+            return true
+        else
+            return false
+    }
+ 
 }
 
 customElements.define('profile-component', ProfileComponent);

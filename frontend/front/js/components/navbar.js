@@ -21,10 +21,9 @@ export async function createNavbar() {
 				</div>
 		</div>
 			<div class="head3">
-				<div class="notification">
-					<form action="index.html">
-						<button id="dark" type="submit"><img src="../../needs/img/Bell_pin_fill.png"></button>
-					</form>
+				<div id="notifications" class="notification">
+					<img src="../../needs/img/Bell_pin_fill.png">
+					<div id="resultRequest" style="display:none"></div>
 				</div>
 				<div class="logout">
 						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
@@ -33,6 +32,7 @@ export async function createNavbar() {
 					<button type="submit"><img id="icon-img" width=5px height=5px src="#"></button>
 				</div>
 			</div>
+		<div id="bold-point" class="bold-point" style="display:none"></div>
 		</header>
     `;
 	
@@ -44,7 +44,8 @@ export async function createNavbar() {
 	profile();
 	logout();
 	darkMode();
-	await iconImg();
+	notification();
+	iconImg();
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -53,7 +54,7 @@ function search(){
 	resultsContainer.style.display = 'none';
     searchInput.addEventListener('input', async () => {
         const query = searchInput.value;
-        if (query.length > 2) {
+        if (query.length > 1) {
             try {
                 const response = await fetch(`http://localhost:81/auth/search/?q=${query}`, {
                     method: 'GET',
@@ -90,7 +91,7 @@ function search(){
 							}
 							else{
 								const data = await response.json();
-								displayMsg(data);
+								console.log(displayMsg(data));
 							}
 						})
                     });
@@ -167,6 +168,72 @@ async function iconImg(){
 	}
 	else 
 		displayMsg(data);
+}
+async function notification(){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('http://localhost:81/auth/get_friends/', {
+		method: 'GET',
+		headers:{
+			'Authorization': `Bearer ${access}`,
+			'Content-Type': 'application/json',
+		},
+	});
+
+	if (response.ok) {
+		const data = await response.json();
+		const notificationsDiv = document.getElementById('resultRequest');
+		notificationsDiv.innerHTML = '';
+		if (data.length > 0) {
+			activeNotification();
+            document.getElementById('bold-point').style.display = 'block';
+        }
+		data.forEach(friendRequest => {
+			const friendRequestDiv = document.createElement('div');
+			friendRequestDiv.className = 'request';
+			friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
+
+			notificationsDiv.prepend(friendRequestDiv);
+			accpet(notificationsDiv, friendRequestDiv, friendRequest.id);
+		});
+	} else {
+		console.error('Failed to fetch friend requests:', response.statusText);
+	}
+	
+
+}
+
+function accpet(notificationsDiv, friendRequestDiv, id){
+	const access = getAccessTokenFromCookies('access');
+	const acceptButton = document.querySelector('.accept');
+	acceptButton.addEventListener('click' ,async () =>{
+		console.log('im in')
+		const response = await fetch('http://localhost:81/auth/accept_friend/', {
+			method: 'POST',
+			headers:{
+				'Authorization': `Bearer ${access}`,
+				'Content-Type': 'application/json',
+			},
+			body:JSON.stringify({
+				'friend_id':id,
+			})
+		});
+		const data = await response.json()
+		console.log("data accepted", data)
+		if (response.ok){
+			notificationsDiv.removeChild(friendRequestDiv);
+		}
+	});
+}
+function activeNotification(){
+	document.getElementById('notifications').addEventListener('click', function() {
+		const notificationsDiv = document.getElementById('resultRequest');
+		if (notificationsDiv.style.display === 'none') {
+			notificationsDiv.style.display = 'block';
+		} else {
+			// notificationsDiv.style.display = 'none';
+			document.getElementById('bold-point').style.display = 'none';
+		}
+	});
 }
 // Existing code for dark mode toggle
 function darkMode(){

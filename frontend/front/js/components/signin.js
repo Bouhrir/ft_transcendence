@@ -82,8 +82,8 @@ class SigninComponent extends HTMLElement {
 
             const data = await response.json();
             if (response.ok) {
-                document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
-                document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
+                document.cookie = `access=${data.access}; path=/;`;
+                document.cookie = `refresh=${data.refresh}; path=/;`;
                 await this.check2FAStatus();
                 if (!this.is2FAEnabled)
                     window.location.hash = '#dashboard';
@@ -124,7 +124,7 @@ class SigninComponent extends HTMLElement {
                         }
                         else{
                             errorMessage.textContent = 'failed verification!';
-                            // errorMessage.style.color = 'red';
+                            errorMessage.style.color = 'red';
                         }
 
                     });

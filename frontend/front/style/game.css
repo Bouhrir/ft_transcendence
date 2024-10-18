@@ -10,7 +10,17 @@
     color:white;
     background-size: cover;
     gap :3rem;
-    animation : slideUp 0.8s ease;
+    /* animation : slideUp 0.5s ease; */
+}
+.ping-pong h1{
+    animation : slideUp 0.5s ease;
+}
+.ping-pong p{
+    animation : slideUp 1.2s ease;
+}
+.ai{
+    font-size: 1rem;
+    padding-top: 20%;
 }
 .subping{
     position: relative;
@@ -21,7 +31,9 @@
     backdrop-filter: blur(20px);
     box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation : slideUp 1s ease;
 }
+
 .subping:hover {
     transform: translate(0%, 0%) scale(1.05);
     box-shadow: 0px 0px 40px rgba(0, 0, 0, 1);
@@ -61,6 +73,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 20%;
+    animation : slideUp 0.8s ease;
 }
 
 .player-profile {
@@ -70,8 +84,8 @@
 }
 
 .profile-pic {
-    width: 40%;
-    height: 40%;
+    /* width: 40%;
+    height: 40%; */
     border-radius: 50%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
@@ -101,25 +115,38 @@
 
 .win-message {
     position : absolute;
-    display : flex;
-    justify-content : center;
-    align-items : center;
-    text-align : center;
-    height :100%;
-    width : 100vw;
-    top : 0;
-    left : 0;
-    color : white;
-    font-size : 200px;
-    backdrop-filter : blur(20px);
-    font-family : "celesti";
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8rem;
+    font-family: 'celesti';
+    color: white;
+    text-align: center;
+    margin-top: 10%;
 }
+.score{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 24rem;
+    backdrop-filter: blur(20px);
+    font-family: "celesti";
+    animation: slideUp 0.5s ease;
+}
+
 
 
 .retry-btn {
     position: absolute;
-    top: 80%;
-    left: 50%;
+    top: 72%;
+    left: 49%;
     transform: translate(-50%, -50%);
     background-color: #ff5e57;  /* Vibrant color for visibility */
     color: white;

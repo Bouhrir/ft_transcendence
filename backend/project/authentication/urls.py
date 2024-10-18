@@ -35,6 +35,13 @@ urlpatterns = [
     #edit profile
     path('update_profile/', views.update_profile),
 
+    #add friend
+    path('add_friend/', views.send_friend_request),
+    path('get_friends/', views.get_friend_requests),
+    path('accept_friend/', views.accept_friend_request),
+    path('pending/', views.pending),
+    path('check_friend/', views.check_friend),
+
 
     path('', views.welcome),
 ]

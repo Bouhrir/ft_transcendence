@@ -7,6 +7,8 @@ export async function checkJwt() {
 			'Authorization': `Bearer ${access}`
 		}
 	});
+	const data = await response.json();
+	localStorage.setItem('id', data.id);
 
 	if (response.status === 401) {
 		const refresh = getAccessTokenFromCookies('refresh');

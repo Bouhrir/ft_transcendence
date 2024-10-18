@@ -12,8 +12,7 @@ class SettingComponent extends HTMLElement {
     async connectedCallback() {
         this.innerHTML = `
         <div id="error-message" class="error-message"></div>
-        <div>
-        <div class="whole">
+        <div class="whole" >
             <div class="account-settings">
                 <div class="acc_">
                     <h1>Account Settings</h1>
@@ -31,7 +30,14 @@ class SettingComponent extends HTMLElement {
                     <a class="delete" id="deluser" href="#signin">Delete Account</a>
                 </div>
                 <div class="line_"></div>
-                <div class="acciformation">
+                <div id="qrModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span id="closeModal" class="close">&times;</span>
+                        <h2>Scan the QR Code</h2>
+                        <img id="qrCodeInModal" src="" alt="QR Code">
+                    </div>
+                </div>
+                <div class="acciformation" id="whole">
                         <h1>Personal information</h1>
                         <div class="information_box">
                             <div class="editprof">
@@ -77,14 +83,7 @@ class SettingComponent extends HTMLElement {
                     </div>
                 </div>
         </div>
-        <div id="qrModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span id="closeModal" class="close">&times;</span>
-                <h2>Scan the QR Code</h2>
-                <img id="qrCodeInModal" src="" alt="QR Code">
-            </div>
-        </div>
-    </div>
+       
         `;
 		await checkJwt();
         await this.check2FAStatus();
@@ -208,6 +207,7 @@ class SettingComponent extends HTMLElement {
                     document.body.style.background = '#333'
                     qrModal.style.display = 'block';
                     verificationSection.style.display = 'block';
+                    document.getElementById('whole').style.display = 'none';
                     closeModal.addEventListener('click', () => {
                         qrModal.style.display = 'none';
                     });
