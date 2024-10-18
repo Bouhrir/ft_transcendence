@@ -1,3 +1,4 @@
+import { checkJwt , getAccessTokenFromCookies} from './help.js';
 class MessengerComponent extends HTMLElement {
    async connectedCallback(){
         this.innerHTML = `
@@ -24,33 +25,9 @@ class MessengerComponent extends HTMLElement {
                 </div>
             </div>
         </div>`;
-
-// {/* <div id="chat-container">
-//             <div id="message-display">
-//             <!-- Messages will appear here -->
-//             </div>
-//             <div id="chat-input">
-//                 <input type="text"  id="message" placeholder="Type a message..." />
-//                 <button id="send" type="submit">send</button>
-//             </div>
-//         </div> */}
-        // document.getElementById('send').addEventListener('click', async function(e) {
-        //     e.preventDefault();
-            // console.log(e);
-            // const message = document.getElementById('message').value;
-            // console.log(message);
-            
-            // if (message.trim() !== "") {
-            //     // Send the message through the WebSocket
-            //     socket.send(JSON.stringify({
-            //         'msg': message,
-            //         'snd_id': currentUserId,
-            //         'rec_id': receiverId,
-            //     }));
-            //     document.getElementById('message').value = '';
-            // }
+        await checkJwt();
         
-        const access = getAccessTokenFromCookies();
+        const access = getAccessTokenFromCookies('access');
         let data;
         const response = await fetch('http://localhost:81/auth/me/', {
                 method: 'GET',
@@ -61,7 +38,7 @@ class MessengerComponent extends HTMLElement {
             });
         if (response.ok){
             data = await response.json();;
-            console.log(data.id);
+            // console.log(data.id);
         }
 
 
@@ -83,14 +60,14 @@ class MessengerComponent extends HTMLElement {
             'user2': receiverId,
         }),
         });
-        if(room.ok){
-            const roomData = await room.json();
+        const roomData = await room.json();
+        if(!room.ok){
+            console.log("error");
+            return;
         }
 
-        const roomName = 'gamechata';
-        // data.rec_id
+        const roomName = roomData.id;
 
-        // console.log(currentUserId+ ' '+ currentUserName);
         const socket = new WebSocket('ws://localhost:81/ws/chat/' + roomName + '/');
         socket.onopen = function(e) {
             console.log('Connected to WebSocket');
@@ -105,15 +82,18 @@ class MessengerComponent extends HTMLElement {
             console.log(data.rec_id);
             // console.log("test---------------");
             console.log(data.snd_id);
-            if (data.rec_id === receiverId && data.rec_id === currentUserId) {
-                // Display the message
-                const messageDisplay = document.getElementById('chat_area');
-                messageDisplay.innerHTML += `<p>${data.msg}</p>`;
-                 //const newMessage = document.createElement('p');
-               // newMessage.textContent = data.message;
-                //messageDisplay.appendChild(newMessage);
-                messageDisplay.scrollTop = messageDisplay.scrollHeight;
-            }
+            console.log(data.message);
+            console.log(data.room_id);
+
+            // if (data.rec_id === receiverId && data.rec_id === currentUserId) {
+            //     // Display the message
+            //     const messageDisplay = document.getElementById('chat_area');
+            //     messageDisplay.innerHTML += `<p>${data.msg}</p>`;
+            //      //const newMessage = document.createElement('p');
+            //    // newMessage.textContent = data.message;
+            //     //messageDisplay.appendChild(newMessage);
+            //     messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            // }
         }
         document.getElementById('send').addEventListener('click', function() {
             const message = document.getElementById('message').value;
@@ -125,6 +105,7 @@ class MessengerComponent extends HTMLElement {
                     'msg': message,
                     'snd_id': currentUserId,
                     'rec_id': receiverId,
+                    'room_id' : roomName,
                 }));
                 document.getElementById('message').value = '';
             }
@@ -146,17 +127,7 @@ class MessengerComponent extends HTMLElement {
         }
         
     // });
-    
-    function getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
-    }
+
 }
 
         

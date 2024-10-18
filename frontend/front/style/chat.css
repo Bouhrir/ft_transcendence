@@ -76,7 +76,7 @@
     /* border : 3px solid rgb(0, 0, 255); */
 }
 #message{
-    width: 100%;
+    width: 89%;
     border-style: solid;
     border-color: white;
     color: white;
@@ -98,6 +98,7 @@
     display : flex;
     align-items : center;
     justify-content : start;
+    padding-left: 10px;
     gap: 10px;
     /* border : 3px solid rgb(24, 31, 138) */
 }
@@ -107,12 +108,12 @@
 
 }
 .chat-img p{
-    font-size: 1vw;
-    font-family: 'celesti';
+    font-size: 2rem;
+    font-family: 'Baloo_Bhai_2';
 }
 #send{
     width: 10%;
-    height: 50px;
+    height: 43px;
     border-radius: 50px;
     display: flex;
     justify-content: center;
@@ -124,6 +125,8 @@
     border-style: solid;
     border-color: white;
     color: white;
+    cursor: pointer;
+
     /* border : 3px solid rgb(0, 255, 0); */
 }
 

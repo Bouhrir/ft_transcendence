@@ -2,7 +2,7 @@
 import json
 from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync 
-from .models import Message 
+from .models import Message , Room
 from django.contrib.auth.models import User
 #here we are creating a class that inherits from AsynchronousWebsocketConsumer and we are overriding the connect, disconnect and receive methods
 
@@ -40,27 +40,30 @@ class SomeConsumer(JsonWebsocketConsumer):
         
         message = data_json['msg']
         sender_id = data_json['snd_id']
-        receiver_id = data_json['rec_id']        
+        receiver_id = data_json['rec_id']
+        room_id = data_json['room_id']  
         try:
             sender = User.objects.get(id=sender_id)
             receiver = User.objects.get(id=receiver_id)
+            room_id = Room.object.get(id=room_id)
         except User.DoesNotExist:
             pass
     
-        self.save_message(sender, receiver, message)
+        self.save_message(sender, receiver, message, room_id)
         async_to_sync(self.channel_layer.group_send)(self.room_group_name, {
                 'type': "chat.message",
                 'data': {
                     'msg': message,
                     'snd_id': sender_id,
-                    'rec_id': receiver_id
+                    'rec_id': receiver_id,
+                    'room_id': room_id,
                 }
             })     
     def chat_message(self, event):
         self.send(text_data=json.dumps(event['data']))
     
-    def save_message(self, sende_id, receiver_id, message):
-        Message.objects.create(user_send=sende_id, user_receive=receiver_id, content=message)
+    def save_message(self, sende_id, receiver_id, message, room_id):
+        Message.objects.create(user_send=sende_id, user_receive=receiver_id, content=message, room=room_id)
    
             
 # python3 -m venv .venv  
