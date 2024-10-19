@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('authentication.urls')),
     path('remote/', include('remote.urls')),
     path('chat/', include('chat.urls')),
+    path('tournament/', include('tournament.urls')),
     # path('aut/', include(game.urls)),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

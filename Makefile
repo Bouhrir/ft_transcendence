@@ -3,8 +3,8 @@ NAME = ft_transcendence
 all : $(NAME)
 
 $(NAME):
-	docker-compose down
-	docker-compose up --build
+	docker-compose kill
+	docker-compose up --build -d
 
 build:
 	docker-compose build --no-cache

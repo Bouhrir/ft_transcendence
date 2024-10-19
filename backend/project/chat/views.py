@@ -12,6 +12,19 @@ def main(request):
  
 from django.contrib.auth.models import User
 from .models import Invitation
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_tournament(request):
+    if request.method == 'POST':
+        # Check if the tournament already exists
+        if Tournament.objects.exists():
+            return JsonResponse({'message': 'Tournament already exists'}, status=400)
+
+        # Create a new tournament if one doesn't exist
+        tournament = Tournament.objects.create()
+        return JsonResponse({'message': 'Tournament created successfully', 'tournament_id': tournament.id}, status=201)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

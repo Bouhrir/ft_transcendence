@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-nprb69my43^nmo)#id^%9_gsw7d#2=i&-*yyc16ge--f!bg@*x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5', '10.12.6.8']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5', '10.12.6.8', '10.11.5.9']
 
 ASGI_APPLICATION = 'setup.asgi.application'
 
@@ -63,7 +63,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=500),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
