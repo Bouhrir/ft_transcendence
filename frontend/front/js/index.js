@@ -10,7 +10,7 @@ const routes = {
     'gamebar':'game-bar',
     'game': 'game-component',
     'game-online': 'game-component-online',
-    'tournament':'tournament-component',
+    'tournament':'game-component-online',
     'settings': 'settings-component',
     'profile': 'profile-component'
 };

@@ -82,11 +82,13 @@ class SigninComponent extends HTMLElement {
 
             const data = await response.json();
             if (response.ok) {
-                document.cookie = `access=${data.access}; path=/;`;
-                document.cookie = `refresh=${data.refresh}; path=/;`;
-                await this.check2FAStatus();
-                if (!this.is2FAEnabled)
+                await this.check2FAStatus(username);
+                console.log(this.is2FAEnabled)
+                if (!this.is2FAEnabled){
+                    document.cookie = `access=${data.access}; path=/;`;
+                    document.cookie = `refresh=${data.refresh}; path=/;`;
                     window.location.hash = '#dashboard';
+                }
                 else
                 {
                     const signin = document.getElementById('signin');
@@ -104,29 +106,30 @@ class SigninComponent extends HTMLElement {
                         const verificationCode = document.getElementById('twofaCode').value;
 
                         console.log(verificationCode);
-                        const access = getAccessTokenFromCookies('access');
                         const response = await fetch('http://localhost:81/2fa/verify/', {
                             method: 'POST',
                             headers: {
-                                'Authorization': `Bearer ${access}`,
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                "verification_code": verificationCode
+                                username:username,
+                                "verification_code":verificationCode
                             })
                         });
                         if (response.ok){
-
+                            document.cookie = `access=${data.access}; path=/;`;
+                            document.cookie = `refresh=${data.refresh}; path=/;`;
                             errorMessage.textContent = 'sucess verification!';
                             errorMessage.style.color = 'green';
                             twofaVerifyTab.style.display = 'none';
+                            twofaVerifyTab.remove();
                             window.location.hash = '#dashboard';
                         }
                         else{
+                            // twofaVerifyTab.remove();
                             errorMessage.textContent = 'failed verification!';
                             errorMessage.style.color = 'red';
                         }
-
                     });
                 }
 
@@ -142,16 +145,17 @@ class SigninComponent extends HTMLElement {
         });
     }
 
-    async check2FAStatus() {
-        const access = getAccessTokenFromCookies('access');
+    async check2FAStatus(username) {
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
-                method: 'GET',
+                method: 'POST',
                 mode:'cors',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
-                }
+                },
+                body:JSON.stringify({
+                    username:username
+                })
             });
 
             if (response.ok) {

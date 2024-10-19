@@ -59,12 +59,12 @@ def check_wall_collision(ball):
 def check_paddle_collision(ball, player):
     # player = players["player1"]
     ball_radius = 10
-    canvas_height = 600
-    player_height = 100
-    canvas_width = 800
-    player_width = 10
-    ai_height = 100
-    ai_width = 10
+    canvas_height = 640
+    player_height = 120
+    canvas_width = 1525
+    player_width = 14
+    ai_height = 120
+    ai_width = 14
     player_x = 0 
     ai_x = canvas_width - ai_width
     ball_dx = 5 

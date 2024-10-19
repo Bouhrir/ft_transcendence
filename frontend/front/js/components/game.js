@@ -19,13 +19,26 @@ class GameComponent extends HTMLElement {
 					<p class="ai" >الذكاء الاصطناعي</p>
 				</div>
 			</div>
-			<div class="subping">
+			<div class="subping" id="subping">
 				<div id="countdown"></div>
 				<div id="paddle1" class="paddle"></div>
 				<div id="paddle2" class="paddle"></div>
 				<div id="ball"></div>
 			</div>
-			<div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
+			<div id="TableCustom">
+				<h1>tables</h1>
+				<div class="array">
+				<label for="ballColor">Ball Color:</label>
+				<input type="color" id="ballColor" name="ballColor" value="#c68fe6">
+				
+				<label for="paddleColor">Paddle Color:</label>
+				<input type="color" id="paddleColor" name="paddleColor" value="#1230ae">
+				
+				<label for="tableColor">Table Color:</label>
+				<input type="color" id="tableColor" name="tableColor" value="#6c48c5">
+				</div>
+				<div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
+			</div>
 			<p style="font-size:30px">Press space to start</p>
 		</div>
 		`;
@@ -77,17 +90,9 @@ class GameComponent extends HTMLElement {
 		function checkwinner(score1 , score2) {
 			if (score1 === 5 || score2 === 5) {
 				const score = document.createElement('p');
-				score.style.fontFamily = 'Baloo_bhai_2'
 				score.className = 'score';
 				score.innerHTML = `${score1} - ${score2}`;
 				document.body.appendChild(score);
-
-
-				const div = document.createElement('div');
-				div.className = 'win-message';
-				div.textContent = score1 === 5 ? `${PlayerUser} wins` : 'AI wins';
-				document.body.appendChild(div);
-
 
 				const button = document.createElement('button');
 				button.className = 'retry-btn';
@@ -106,12 +111,12 @@ class GameComponent extends HTMLElement {
 		
 		function movePaddle() {
 			if (keypress['w']) {
-				if (paddle1Y - 9 >= 0) {
+				if (paddle1Y - 11 >= 0) {
 					paddle1Y -= SPEED;
 				}
 			}
 			if (keypress['s']) {
-				if (paddle1Y + 9 <= 100) {
+				if (paddle1Y + 11 <= 100) {
 					paddle1Y += SPEED;
 				}
 			}
@@ -135,6 +140,10 @@ class GameComponent extends HTMLElement {
 			{
 				ball.style.height = '4rem';
 				ball.style.width = '4rem';
+			}
+			if (keypress[' ']){
+				ball.style.height = '2rem';
+				ball.style.width = '2rem';
 			}
 
 
@@ -160,12 +169,12 @@ class GameComponent extends HTMLElement {
 		}
 		function MoveHumanPaddle(){
 			if (keypress['ArrowUp']) {
-				if (paddle2Y - 9 >= 0) {
+				if (paddle2Y - 11 >= 0) {
 					paddle2Y -= SPEED;
 				}
 			}
 			if (keypress['ArrowDown']) {
-				if (paddle2Y + 9 <= 100) {
+				if (paddle2Y + 11 <= 100) {
 					paddle2Y += SPEED;
 				}
 			}
@@ -233,19 +242,27 @@ class GameComponent extends HTMLElement {
 				value--;
 			}, 1000);
 		}
+		function checkTable(){
+			const ballColorInput = document.getElementById('ballColor');
+    		const paddleColorInput = document.getElementById('paddleColor');
+    		const tableColorInput = document.getElementById('tableColor');
+			const table = document.getElementById('subping');
+			
+			ballColorInput.addEventListener('input', () => {
+				ball.style.border = `5px solid ${ballColorInput.value}`;
+				table.style.border = `5px solid ${ballColorInput.value}`;
 
-		// Slowing down the paddle after 10 seconds
-		function slowDownPaddles() {
-			let slowdownInterval = setInterval(() => {
-				if (paddleSpeed1X > 0.5) {
-					paddleSpeed -= 0.1; // Reduce player paddle speed
-				}
-				if (aiSpeed > 0.5) {
-					aiSpeed -= 0.1; // Reduce AI paddle speed
-				}
-			}, 1000); // Reduce speed every second
+			});
+		
+			paddleColorInput.addEventListener('input', () => {
+				paddle1.style.backgroundColor = paddleColorInput.value;
+				paddle2.style.backgroundColor = paddleColorInput.value;
+			});
+		
+			tableColorInput.addEventListener('input', () => {
+				table.style.backgroundColor = tableColorInput.value;
+			});
 		}
-
 		function pingpong() {
 			let check = false;
 			document.addEventListener('keydown', function (e) {
@@ -257,8 +274,10 @@ class GameComponent extends HTMLElement {
 		}
 
 		pingpong();
+		checkTable();
 				
 	}
+
 	async fetchUserData(){
 		const access = getAccessTokenFromCookies('access');
         const player = document.getElementById('playerName');

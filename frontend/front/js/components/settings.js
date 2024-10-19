@@ -85,8 +85,7 @@ class SettingComponent extends HTMLElement {
         </div>
        
         `;
-		await checkJwt();
-        await this.check2FAStatus();
+
         this.fileInput();
         await this.fetchUserData();
         this.setValues()
@@ -148,17 +147,20 @@ class SettingComponent extends HTMLElement {
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
+        await this.check2FAStatus(this.userData.username);
+
     }
-    async check2FAStatus() {
-        const access = getAccessTokenFromCookies('access');
+    async check2FAStatus(username) {
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
-                method: 'GET',
+                method: 'POST',
                 mode:'cors',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
-                }
+                },
+                body:JSON.stringify({
+                    username:username
+                })
             });
 
 
@@ -247,16 +249,15 @@ class SettingComponent extends HTMLElement {
     async handleVerification() {
         const verificationCode = document.getElementById('verificationCode').value;
         const toast = document.getElementById('error-message');
-        const access = getAccessTokenFromCookies('access');
 
         try {
             const response = await fetch('http://localhost:81/2fa/verify/', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    username:this.userData.username,
                     "verification_code": verificationCode
                 })
             });

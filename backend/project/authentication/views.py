@@ -39,10 +39,12 @@ def register_api(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # setup 2fa for the user
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
 def get_2fa_status(request):
-    user = request.user
+    username = request.data.get('username')
+    user = User.objects.get(username=username)
+    print(user)
     profile = UserProfile.objects.get(user=user)
     print(profile.is_2fa_enabled)
     return Response({
@@ -78,10 +80,12 @@ def setup_2fa(request):
     })
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def verify_2fa(request):
     otp = request.data.get('verification_code')
-    user = request.user
+    username = request.data.get('username')
+
+    user = User.objects.get(username=username)
     profile = UserProfile.objects.get(user=user)
 
     totp = pyotp.TOTP(profile.totp_secret)

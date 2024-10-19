@@ -1,8 +1,40 @@
+import { getAccessTokenFromCookies } from "./help.js";
 class GameComponentOnline extends HTMLElement {
-	connectedCallback(){
+	async connectedCallback(){
 		this.innerHTML =`
-		<canvas id="pongGame" width="800" height="600"></canvas>
-        `;
+            <div class="ping-pong">
+            <h1>PING PONG</h1>
+            <div class="scoreboard">
+                <div class="player-profile" id="player1-profile">
+                    <img src="#" alt="Player 1" class="profile-pic" id="playerImg" width=100px height=100px>
+                    <p class="player-name" id="playerName"></p>
+                </div>
+                <div class="score-display">
+                    <span id="score1">0</span> : <span id="score2">0</span>
+                </div>
+                <div class="player-profile" id="player2-profile">
+                    <img id="ai" src="" alt="Player 2" class="profile-pic" width=100px height=100px>
+                    <p class="ai" id="playerName1" ></p>
+                </div>
+            </div>
+            <canvas id="pongGame" width=1525 height=640></canvas>
+            <div id="TableCustom">
+                <h1>tables</h1>
+                <div class="array">
+                <label for="ballColor">Ball Color:</label>
+                <input type="color" id="ballColor" name="ballColor" value="#c68fe6">
+                
+                <label for="paddleColor">Paddle Color:</label>
+                <input type="color" id="paddleColor" name="paddleColor" value="#1230ae">
+                
+                <label for="tableColor">Table Color:</label>
+                <input type="color" id="tableColor" name="tableColor" value="#6c48c5">
+                </div>
+                <div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
+            </div>
+            <p style="font-size:30px">Press space to start</p>
+        </div>
+            `;
         // <a href="#signin">click</a>
         // document.addEventListener('keyup', (e) => {
             
@@ -120,13 +152,14 @@ class GameComponentOnline extends HTMLElement {
         // deleteInvitation("amdouyah")
         
         // let player_id;
-		const canvas = document.getElementById('pongGame');
+            this.fetchUserData();
+		    const canvas = document.getElementById('pongGame');
             const ctx = canvas.getContext('2d');
             let isWebSocketOpen = false;  // Track WebSocket connection state
             
             // Game objects
-            const paddleWidth = 10;
-            const paddleHeight = 100;
+            const paddleWidth = 14;
+            const paddleHeight = 120;
             const ballRadius = 10;
             let playerScore = 0;
             let aiScore = 0;
@@ -161,7 +194,8 @@ class GameComponentOnline extends HTMLElement {
                 dy: 4,
                 color: 'white'
             };
-            const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
+            const gameRoom = 'gamechat';
+            const ws = new WebSocket(`ws://localhost:81/ws/pong/${gameRoom}/`);
             ws.onopen = function() {
                 console.log("remote WebSocket is open now.");
                 // const data = {
@@ -225,18 +259,21 @@ class GameComponentOnline extends HTMLElement {
             function drawScore() {
                 ctx.font = '32px Arial';
                 ctx.fillStyle = 'white';
-                ctx.fillText(playerScore, canvas.width / 4, 50);
-                ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
+                document.getElementById('score1').textContent = playerScore;
+                document.getElementById('score2').textContent = aiScore;
+                // ctx.fillText(playerScore, canvas.width / 4, 50);
+                // ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
             }    
 
             // Render game objects
+            
             function render() {
                 // Clear the canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Draw paddles, ball, and scores
-                drawPaddle(player.x, player.y, player.width, player.height, player.color);
-                drawPaddle(ai.x, ai.y, ai.width, ai.height, ai.color);
+                drawPaddle(player.x + 4, player.y, player.width, player.height, player.color);
+                drawPaddle(ai.x - 4, ai.y, ai.width, ai.height, ai.color);
                 drawBall(ball.x, ball.y, ball.radius, ball.color);
                 drawScore();
             }
@@ -254,7 +291,7 @@ class GameComponentOnline extends HTMLElement {
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
-                            room_name: window.gameRoom,
+                            room_name: gameRoom,
                             paddle_dy: -5,
                             player_id: player_id
                         };
@@ -265,7 +302,7 @@ class GameComponentOnline extends HTMLElement {
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
-                            room_name: window.gameRoom,
+                            room_name: gameRoom,
                             paddle_dy: 5,
                             player_id: player_id
                         };
@@ -279,7 +316,7 @@ class GameComponentOnline extends HTMLElement {
                     if (isWebSocketOpen) {
                         const data = {
                             type: 'paddle_movement',
-                            room_name: window.gameRoom,
+                            room_name: gameRoom,
                             paddle_dy: 0,
                             player_id: player_id
                         };
@@ -290,6 +327,25 @@ class GameComponentOnline extends HTMLElement {
             });
             gameLoop();
             // Start the game loop
+	}
+    async fetchUserData(){
+		const access = getAccessTokenFromCookies('access');
+        const player = document.getElementById('playerName');
+        const imgProfile = document.getElementById('playerImg');
+		const response = await fetch('http://localhost:81/auth/me/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            }
+        });
+		if (response.ok){
+			const data = await response.json();
+			player.textContent = data.username;
+			imgProfile.src = data.image;
+		}
+		else
+			console.log('error : fetch User data');
 	}
 }
 
