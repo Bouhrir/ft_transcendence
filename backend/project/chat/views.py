@@ -31,10 +31,10 @@ def room(request):
             message_data.append({
             'id' : mmssg.id,
             'content' : mmssg.content,
-            'sender' : mmssg.user_send.username,
+            'sender' : mmssg.user_send.id,
             'time' : mmssg.date,
             })
-        return Response({"room_id" : room.id, "message" : message_data}, status=status.HTTP_200_OK)
+        return Response({"room_id" : room.id, "messages" : message_data}, status=status.HTTP_200_OK)
             
     else:
         room = Room.objects.create(user1=user1, user2=user2)

@@ -1,4 +1,4 @@
-import { checkJwt , getAccessTokenFromCookies} from './help.js';
+import { checkJwt , displayMsg, getAccessTokenFromCookies} from './help.js';
 class MessengerComponent extends HTMLElement {
    async connectedCallback(){
         this.innerHTML = `
@@ -44,7 +44,7 @@ class MessengerComponent extends HTMLElement {
 
 
 
-        const currentUserId = data.id;
+        const currentUserId = 97;
         const currentUserName = 'username';
         const receiverId = 94
         const receiverName = 'username';
@@ -67,19 +67,28 @@ class MessengerComponent extends HTMLElement {
         }
 
         const roomName = roomData.room_id;
-        function displaymessage(message, from){
+        
+        function displayoldmessage(roomData){
             const messageDisplay = document.getElementById('chat_area');
-            const newMessage = document.createElement('p');
-            if (from === 'self') {
-                newMessage.textContent = `You: ${message}`;
-                newMessage.style.textAlign = 'right';  // Align sender messages to the right
-            } else {
-                newMessage.textContent = `Other: ${message}`;
-                newMessage.style.textAlign = 'left';  // Align receiver messages to the left
+            const messages = roomData.messages;
+            for(let i = 0; i < messages.lenght; i++){
+                const message = messages[i];
+                if (message.sender == currentUserId){
+                    const newMessage = document.createElement('p')
+                    newMessage.textContent = `You: ${message.content}`
+                    newMessage.className = 'right-para'
+                    messageDisplay.appendChild(newMessage)
+                }
+                else{
+                    const newMessage = document.createElement('p')
+                    newMessage.textContent = `You: ${message.content}`
+                    newMessage.className = 'left-para'
+                    messageDisplay.appendChild(newMessage)
+                }
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
             }
-            messageDisplay.appendChild(newMessage);
-            messageDisplay.scrollTop = messageDisplay.scrollHeight;
         }
+        displayoldmessage(roomData);
 
         
         const socket = new WebSocket('ws://localhost:81/ws/chat/' + roomName + '/');
@@ -135,8 +144,8 @@ class MessengerComponent extends HTMLElement {
                     // newMessage.textContent = `Other: ${message}`;
                     // newMessage.style.textAlign = 'left';  // Align receiver messages to the left
             // }
-            messageDisplay.appendChild(newMessage);
-            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            // messageDisplay.appendChild(newMessage);
+            // messageDisplay.scrollTop = messageDisplay.scrollHeight;
                 }
             }
         document.getElementById('send').addEventListener('click', function() {
@@ -151,20 +160,20 @@ class MessengerComponent extends HTMLElement {
                 document.getElementById('message').value = '';
             }
         });
-        function displaymessage(message, from){
-          const messageDisplay = document.getElementById('message-display');
-            const newMessage = document.createElement('p');
+        // function displaymessage(message, from){
+        //   const messageDisplay = document.getElementById('message-display');
+        //     const newMessage = document.createElement('p');
 
-            if (from === 'self') {
-                newMessage.textContent = `You: ${message}`;
-                newMessage.style.textAlign = 'right';  // Align sender messages to the right
-            } else {
-                newMessage.textContent = `Other: ${message}`;
-                newMessage.style.textAlign = 'left';  // Align receiver messages to the left
-            }
+        //     if (from === 'self') {
+        //         newMessage.textContent = `You: ${message}`;
+        //         newMessage.style.textAlign = 'right';  // Align sender messages to the right
+        //     } else {
+        //         newMessage.textContent = `Other: ${message}`;
+        //         newMessage.style.textAlign = 'left';  // Align receiver messages to the left
+        //     }
 
-            messageDisplay.appendChild(newMessage);
-            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            // messageDisplay.appendChild(newMessage);
+            // messageDisplay.scrollTop = messageDisplay.scrollHeight;
         }
         
     // });
@@ -174,6 +183,6 @@ class MessengerComponent extends HTMLElement {
         
 
         // Define receiverId and receiverName based on your application logic
-}
+// }
 
 customElements.define('messenger-component', MessengerComponent);
