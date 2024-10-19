@@ -118,10 +118,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		self.ball_radius = 10
-		self.canvas_height = 600
-		self.canvas_width = 800
-		self.paddle_height = 100
-		self.paddle_width = 10
+		self.canvas_height = 640
+		self.canvas_width = 1525
+		self.paddle_height = 120
+		self.paddle_width = 14
 		cookie_value = self.scope['cookies'].get('access')
 		# print(cookie_value)
 		if cookie_value:
@@ -262,7 +262,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 			#Ensure paddle stays within canvas bounds
 			self.game_states[self.room_name]["players"]["player1"] = await self.check_paddle_boundaries(self.game_states[self.room_name]["players"]["player1"])
 			self.game_states[self.room_name]["players"]["player2"] = await self.check_paddle_boundaries(self.game_states[self.room_name]["players"]["player2"])
-			if self.game_states[self.room_name]["players"]["player1"]["player_score"] == 2 or self.game_states[self.room_name]["players"]["player1"]["ai_score"] == 2:
+			if self.game_states[self.room_name]["players"]["player1"]["player_score"] == 5 or self.game_states[self.room_name]["players"]["player1"]["ai_score"] == 5:
 				break
 			# await asyncio.gather()
 			await self.send_game_state_to_players(self.game_states[self.room_name])
@@ -300,8 +300,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 		# Player 2 sees the ball with the X-axis mirrored
 		mirrored_ball = game_state['ball'].copy()
-		canvas_width = 800  # Assuming canvas width of 800
-		mirrored_ball['x'] = canvas_width - game_state['ball']['x']
+		# canvas_width = 800  # Assuming canvas width of 800
+		mirrored_ball['x'] = self.canvas_width - game_state['ball']['x']
 
 		game_state_player2 = game_state.copy()
 		game_state_player2['ball'] = mirrored_ball

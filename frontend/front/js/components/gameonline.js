@@ -2,6 +2,7 @@ import { getAccessTokenFromCookies } from "./help.js";
 class GameComponentOnline extends HTMLElement {
 	async connectedCallback(){
 		this.innerHTML =`
+      
             <div class="ping-pong">
             <h1>PING PONG</h1>
             <div class="scoreboard">
@@ -33,6 +34,10 @@ class GameComponentOnline extends HTMLElement {
                 <div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
             </div>
             <p style="font-size:30px">Press space to start</p>
+        </div>
+        <div class="waiting">
+            <div class="waiting-message">waiting for opponent...</div>
+            <button id="leave-button">leave</button>
         </div>
             `;
         // <a href="#signin">click</a>
@@ -153,10 +158,9 @@ class GameComponentOnline extends HTMLElement {
 
         // let player_id;
 
-        const roomName = "123"
         // const roomName = window.localStorage.getItem('roomName');
         // console.log("game_room_in_game: ", roomName)
-        if (!roomName) {
+        if (!window.gameRoom) {
             // Redirect to another page if room_name is missing
             window.location.href = '#dashboard';
             return
@@ -205,7 +209,7 @@ class GameComponentOnline extends HTMLElement {
             color: 'white'
 
         };
-        const ws = new WebSocket(`ws://localhost:81/ws/pong/${roomName}/`);
+        const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
         // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
         ws.onopen = function () {
             console.log("remote WebSocket is open now.");
@@ -231,6 +235,7 @@ class GameComponentOnline extends HTMLElement {
                 console.log(player_id)
             }
             else if (data.action == "game_state") {
+                console.log("receiving data from back")
                 ball.x = data.game_state.ball.x
                 ball.y = data.game_state.ball.y
                 if (data.game_state.players.player1.id == player_id) {
@@ -303,7 +308,7 @@ class GameComponentOnline extends HTMLElement {
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',
-                        room_name: roomName,
+                        room_name: window.gameRoom,
                         paddle_dy: -5,
                         player_id: player_id
                     };
@@ -314,7 +319,7 @@ class GameComponentOnline extends HTMLElement {
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',
-                        room_name: roomName,
+                        room_name: window.gameRoom,
                         paddle_dy: 5,
                         player_id: player_id
                     };
@@ -329,7 +334,7 @@ class GameComponentOnline extends HTMLElement {
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',
-                        room_name: roomName,
+                        room_name: window.gameRoom,
                         paddle_dy: 0,
                         player_id: player_id
                     };
@@ -338,7 +343,9 @@ class GameComponentOnline extends HTMLElement {
                 // player.dy = 0;
             }
         });
-
+        leaveButton.addEventListener('click', (e) => {
+            window.location.href = "#tournament"
+        })
         function gameLoop() {
             render()
             requestAnimationFrame(gameLoop)

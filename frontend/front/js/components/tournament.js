@@ -1,4 +1,3 @@
-
 class TournamentComponent extends HTMLElement {
     // constructor() {
     //     super();
@@ -182,7 +181,7 @@ class TournamentComponent extends HTMLElement {
                 }
                 else if (data.action == "redirect_game") {
                     console.log("games prepared")
-                    // window.gameRoom = data.room
+                    window.gameRoom = data.room
                     // joinButton.style.display = "block"
                     // joinButton.innerText = "PLAY!"
                     // aliasInput.style.display = "none"
@@ -325,7 +324,8 @@ class TournamentComponent extends HTMLElement {
             if (player) {
                 console.log("player_room_name: ", player["room_name"])
                 // window.gameRoom = player["room_name"]
-                window.localStorage.setItem('roomName', player["room_name"]);
+                // window.localStorage.setItem('roomName', player["room_name"]);
+                window.gameRoom = player["room_name"]
                 console.log("status: ", player.status)
                 if(player.status == "waiting") {
                     console.log("waiting")
