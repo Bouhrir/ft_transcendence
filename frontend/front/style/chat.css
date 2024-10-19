@@ -135,10 +135,33 @@
 #message-display {
     flex: 1;
     overflow-y: auto;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     padding: 10px;
     margin-bottom: 10px;
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
+}
+
+.right-para {
+    display: flex;
+    justify-content: start;
+    align-items: right;
+    /* display: flex; */
+    /* flex: 1;
+    overflow-y: auto; */
+    /* text-align: right; */
+    padding: 10px;
+    /* margin-bottom: 10px; */
+}
+.left-para {
+    /* display: flex; */
+    /* flex: 1;
+    overflow-y: auto; */
+    /* text-align: left; */
+    display: flex;
+    justify-content: start;
+    align-items: left;
+    padding: 10px;
+    /* margin-bottom: 10px; */
 }
 
 /*#message-display p {

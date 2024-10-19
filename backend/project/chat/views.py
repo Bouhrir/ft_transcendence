@@ -23,7 +23,8 @@ def room(request):
         return Response({"error": "Invalid Users"}, status=status.HTTP_400_BAD_REQUEST)
 
     room = Room.objects.filter(Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)).first()
-    if room.exists():
+    if room:
+        print(room.id)
         messages = Message.objects.filter(room=room)
         message_data = []
         for mmssg in messages:

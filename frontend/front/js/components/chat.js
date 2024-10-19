@@ -46,7 +46,7 @@ class MessengerComponent extends HTMLElement {
 
         const currentUserId = data.id;
         const currentUserName = 'username';
-        const receiverId = data.id;
+        const receiverId = 94
         const receiverName = 'username';
         const room = await fetch('http://localhost:81/chat/room/', {
             method: 'POST',
@@ -66,15 +66,29 @@ class MessengerComponent extends HTMLElement {
             return;
         }
 
-        const roomName = roomData.id;
+        const roomName = roomData.room_id;
+        function displaymessage(message, from){
+            const messageDisplay = document.getElementById('chat_area');
+            const newMessage = document.createElement('p');
+            if (from === 'self') {
+                newMessage.textContent = `You: ${message}`;
+                newMessage.style.textAlign = 'right';  // Align sender messages to the right
+            } else {
+                newMessage.textContent = `Other: ${message}`;
+                newMessage.style.textAlign = 'left';  // Align receiver messages to the left
+            }
+            messageDisplay.appendChild(newMessage);
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        }
 
+        
         const socket = new WebSocket('ws://localhost:81/ws/chat/' + roomName + '/');
         socket.onopen = function(e) {
             console.log('Connected to WebSocket');
+            console.log("room name: " + roomName);
         }
         socket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
-            console.log("hna");
         }
         socket.onmessage =function(event){
             const data = JSON.parse(event.data);
@@ -82,24 +96,51 @@ class MessengerComponent extends HTMLElement {
             console.log(data.rec_id);
             // console.log("test---------------");
             console.log(data.snd_id);
-            console.log(data.message);
+            // console.log(data.message);
             console.log(data.room_id);
 
-            // if (data.rec_id === receiverId && data.rec_id === currentUserId) {
-            //     // Display the message
-            //     const messageDisplay = document.getElementById('chat_area');
-            //     messageDisplay.innerHTML += `<p>${data.msg}</p>`;
-            //      //const newMessage = document.createElement('p');
-            //    // newMessage.textContent = data.message;
-            //     //messageDisplay.appendChild(newMessage);
-            //     messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            if (data.rec_id === receiverId && data.snd_id === currentUserId) {
+                    // Display the message
+                //     const messageDisplay = document.getElementById('chat_area');
+                //     messageDisplay.innerHTML += `<p>${data.msg}</p>`;
+                //      //const newMessage = document.createElement('p');
+                //    // newMessage.textContent = data.message;
+                //     //messageDisplay.appendChild(newMessage);
+                const messageDisplay = document.getElementById('chat_area');
+                const newMessage = document.createElement('p');
+                // if (from === 'self') {
+                    if (data.snd_id == currentUserId) {
+                        console.log(data.snd_id);
+                        console.log(data.rec_id);
+                        console.log("right");
+                        newMessage.textContent = `You: ${data.msg}`;
+                        newMessage.className = 'right-para';
+                        messageDisplay.appendChild(newMessage);
+                        // messageDisplay.innerHTML += `<p style="text-align: left;">You: ${data.msg}.</p>`;
+                        // messageDisplay.innerHTML += `<p class="right-para"> ${data.msg}</p>`;
+                        
+                        // newMessage.style.textAlign = 'right';  // Align sender messages to the right
+                    }
+                    else if (data.snd_id == receiverId) {
+                        console.log("left");
+                        newMessage.textContent = `You: ${data.msg}`;
+                        newMessage.className = 'left-para';
+                        messageDisplay.appendChild(newMessage);
+                    }
+                
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                // newMessage.textContent = `You: ${message}`;
+                // newMessage.style.textAlign = 'right';  // Align sender messages to the right
+                //  } else {
+                    // newMessage.textContent = `Other: ${message}`;
+                    // newMessage.style.textAlign = 'left';  // Align receiver messages to the left
             // }
-        }
+            messageDisplay.appendChild(newMessage);
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                }
+            }
         document.getElementById('send').addEventListener('click', function() {
-            const message = document.getElementById('message').value;
-            // console.log("hna");
-
-            
+            const message = document.getElementById('message').value;             
             if (message.trim() !== "") {
                 socket.send(JSON.stringify({
                     'msg': message,

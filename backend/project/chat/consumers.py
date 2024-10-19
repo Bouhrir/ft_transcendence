@@ -45,25 +45,25 @@ class SomeConsumer(JsonWebsocketConsumer):
         try:
             sender = User.objects.get(id=sender_id)
             receiver = User.objects.get(id=receiver_id)
-            room_id = Room.object.get(id=room_id)
+            room = Room.objects.get(id=room_id)
         except User.DoesNotExist:
             pass
     
-        self.save_message(sender, receiver, message, room_id)
+        self.save_message(sender, receiver, message, room)
         async_to_sync(self.channel_layer.group_send)(self.room_group_name, {
                 'type': "chat.message",
                 'data': {
                     'msg': message,
                     'snd_id': sender_id,
                     'rec_id': receiver_id,
-                    'room_id': room_id,
+                    'room_id': room.id,
                 }
             })     
     def chat_message(self, event):
         self.send(text_data=json.dumps(event['data']))
     
-    def save_message(self, sende_id, receiver_id, message, room_id):
-        Message.objects.create(user_send=sende_id, user_receive=receiver_id, content=message, room=room_id)
+    def save_message(self, sende_id, receiver_id, message, room):
+        Message.objects.create(user_send=sende_id, user_receive=receiver_id, content=message, room=room)
    
             
 # python3 -m venv .venv  
