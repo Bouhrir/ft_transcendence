@@ -13,42 +13,44 @@ from django.contrib.auth.models import User
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.exceptions import ObjectDoesNotExist
 from remote.models import Game
+from django.contrib.auth.models import AnonymousUser
 
 
 class PongConsumer(AsyncWebsocketConsumer):
 	game_states = {}
 	# dimensions = {}
 	async def initialize_game_state(self, room_name):
-		self.game_states[room_name] = {
-			"ball": {
-				'x': self.canvas_width / 2,
-				'y': self.canvas_height / 2,
-				'dx': 3 * (1 if random.random() > 0.5 else -1),
-				'dy': 3 * (1 if random.random() > 0.5 else -1),
-			},
-			"players": {
-				"player1": {
-					"id": None,
-					"channel_name": None,
-					"player_y": 250,
-					"player_dy": 0,
-					"player_x": 0,
-					"ai_x": self.canvas_width - self.paddle_width,
-					"ai_y": 250,
-					"ai_dy": 0,
-					"player_score": 0,
-					"ai_score": 0,
+		if room_name not in self.game_states:
+			self.game_states[room_name] = {
+				"ball": {
+					'x': self.canvas_width / 2,
+					'y': self.canvas_height / 2,
+					'dx': 3 * (1 if random.random() > 0.5 else -1),
+					'dy': 3 * (1 if random.random() > 0.5 else -1),
 				},
-				"player2": {
-					"id": None,
-					"channel_name": None,
-					"player_y": 250,
-					"player_dy": 0,
-					"ai_y": 250,
-					"ai_dy": 0,
-				}
-			},
-		}
+				"players": {
+					"player1": {
+						"id": None,
+						"channel_name": None,
+						"player_y": 250,
+						"player_dy": 0,
+						"player_x": 0,
+						"ai_x": self.canvas_width - self.paddle_width,
+						"ai_y": 250,
+						"ai_dy": 0,
+						"player_score": 0,
+						"ai_score": 0,
+					},
+					"player2": {
+						"id": None,
+						"channel_name": None,
+						"player_y": 250,
+						"player_dy": 0,
+						"ai_y": 250,
+						"ai_dy": 0,
+					}
+				},
+			}
 	async def check_paddle_boundaries(self, player):
 		if (player["player_y"] < 0):
 			player["player_y"] = 0
@@ -104,7 +106,16 @@ class PongConsumer(AsyncWebsocketConsumer):
 			self.game_states[room_name]["players"]["player2"]["channel_name"] = self.channel_name
 		else:
 			print("room is full")
-			
+		
+	async def player_already_exist(self):
+		if self.player_id == self.game_states[self.room_name]["players"]["player1"]["id"]:
+			self.game_states[self.room_name]["players"]["player1"]["channel_name"] = self.channel_name
+			return True
+		elif self.player_id == self.game_states[self.room_name]["players"]["player2"]["id"]:
+			self.game_states[self.room_name]["players"]["player1"]["channel_name"] = self.channel_name
+			return True
+		return False
+
 	async def connect(self):
 		self.ball_radius = 10
 		self.canvas_height = 600
@@ -131,28 +142,31 @@ class PongConsumer(AsyncWebsocketConsumer):
 		self.player_id = self.scope["user"].id
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = f"pong_{self.room_name}"
+		print(f"room_name: {self.room_name}")
 		try:
-		# Check if the game exists in the database
+			# Check if the game exists in the database
 			game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
-		# If the game is cancelled, inform the player and close the connection
 			if game.status == "cancelled":
+				print("game is cancelled")
 				await self.notify_and_close('no_room')
 				return
-		# You can add additional conditions here if needed (e.g., if the game has already finished)
-
 		except Game.DoesNotExist:
+			print("game doesn't exist")
 			# If the game doesn't exist, inform the player and close the connection
 			await self.notify_and_close('no_room')
 			return
-
-		# print(f"Connecting to room: {self.room_name}")  # Add this to debug
 		if self.room_name not in self.game_states:
 			await self.initialize_game_state(self.room_name)
-		await self.setPlayers(self.room_name)
 		await self.send(text_data=json.dumps({
 			'action': 'new_connection',
 			'player_id': self.scope['user'].id
 		}))
+		# if await self.player_already_exist():
+		# 	# update his channel_name and the group_join
+		# 	await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+		# 	print("player already exist")
+		# 	return
+		await self.setPlayers(self.room_name)
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		if self.game_states[self.room_name]["players"]["player1"]["id"] is not None and self.game_states[self.room_name]["players"]["player2"]["id"] is not None:
 			self.game_started = True
@@ -165,7 +179,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 			)
 			asyncio.create_task(self.game_loop())
 			return
-		asyncio.create_task(self.wait_for_opponent())
+		# asyncio.create_task(self.wait_for_opponent())
 		# await self.wait_for_opponent()
 
 	async def notify_and_close(self, action):
@@ -214,7 +228,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		# room_group_name is not set when you close on the not authenticated user
-		# await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+		if hasattr(self, 'room_group_name'):
+			print("remove player from group")
+			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 		print("disconnect")
 
 # i am either gonna check before giving the other value or just give both the value then check after i will test and then decide
@@ -258,6 +274,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 		await database_sync_to_async(game.set_score)(self.game_states[self.room_name]["players"]["player1"]["id"], self.game_states[self.room_name]["players"]["player1"]["player_score"], self.game_states[self.room_name]["players"]["player1"]["ai_score"])
 		# await database_sync_to_async(game.set_host_score)(3)
 		await database_sync_to_async(game.determine_winner)()
+		# tobe removed
+		# game_winner = await database_sync_to_async(lambda: game.winner)()
+		# print("remote winner: ", game_winner)
 		await database_sync_to_async(game.save)()
 		await self.channel_layer.group_send(
 			self.room_group_name,

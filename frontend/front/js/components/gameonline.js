@@ -1,6 +1,6 @@
 class GameComponentOnline extends HTMLElement {
-	connectedCallback(){
-		this.innerHTML =`
+    connectedCallback() {
+        this.innerHTML = `
 		<canvas id="pongGame" width="800" height="600"></canvas>
         <div class="waiting">
             <div class="waiting-message">waiting for opponent...</div>
@@ -9,7 +9,7 @@ class GameComponentOnline extends HTMLElement {
         `;
         // <a href="#signin">click</a>
         // document.addEventListener('keyup', (e) => {
-            
+
         // });
         // window.location.href = '#signin';
         // function getQueryParams() {
@@ -24,7 +24,7 @@ class GameComponentOnline extends HTMLElement {
         // const roomName = queryParams.room_name;
 
         // if (roomName) {
-            // }
+        // }
         // console.log('Joining room:', window.gameRoom);
         // console.log('Joining room:', window.gameRoom);
         // const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
@@ -96,7 +96,7 @@ class GameComponentOnline extends HTMLElement {
         //     });
         // }
         // // acceptInvitation("amdouyah")
-        
+
         // function deleteInvitation(username) {
         //     fetch('/remote/delete-invitations/', {
         //         method: 'DELETE',
@@ -122,215 +122,217 @@ class GameComponentOnline extends HTMLElement {
         //     });
         // }
         // deleteInvitation("amdouyah")
-        
+
         // let player_id;
-        if (!window.gameRoom) {
+        const roomName = window.localStorage.getItem('roomName');
+        console.log("game_room_in_game: ", roomName)
+        if (!roomName) {
             console.log("test")
             // Redirect to another page if room_name is missing
             window.location.href = '#dashboard';
+            return
         }
-        else {
-		    const canvas = document.getElementById('pongGame');
-            const ctx = canvas.getContext('2d');
-            let isWebSocketOpen = false;  // Track WebSocket connection state
-            
-            // Game objects
-            const leaveButton = document.getElementById('leave-button')
-            const paddleWidth = 10;
-            const paddleHeight = 100;
-            const ballRadius = 10;
-            let playerScore = 0;
-            let aiScore = 0;
-            let isGameRunning = false;
-            let t = 0;
-            let player_id
-            
-            const player = {
-                x: 0,
-                y: canvas.height / 2 - paddleHeight / 2,
-                width: paddleWidth,
-                height: paddleHeight,
-                color: 'white',
-                dy: 0
-            };
-            
-            const ai = {
-                x: canvas.width - paddleWidth,
-                y: canvas.height / 2 - paddleHeight / 2,
-                width: paddleWidth,
-                height: paddleHeight,
-                color: 'white',
-                dy: 0
-            };
-            
-            const ball = {
-                x: canvas.width / 2,
-                y: canvas.height / 2,
-                radius: ballRadius,
-                speed: 5,
-                dx: 5,
-                dy: 4,
-                color: 'white'
-            
-            };
-            console.log(window.gameRoom)
-            const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
-            // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
-            ws.onopen = function() {
-                console.log("remote WebSocket is open now.");
-                // const data = {
-                //     type: 'new_connection',
-                // };
-                // ws.send(JSON.stringify(data));
-                isWebSocketOpen = true;
-            };
+        // else {
+        const canvas = document.getElementById('pongGame');
+        const ctx = canvas.getContext('2d');
+        let isWebSocketOpen = false;  // Track WebSocket connection state
 
-            // Handle WebSocket errors
-            ws.onerror = function(error) {
-                console.error("WebSocket error:", error);
-            };
+        // Game objects
+        const leaveButton = document.getElementById('leave-button')
+        const paddleWidth = 10;
+        const paddleHeight = 100;
+        const ballRadius = 10;
+        let playerScore = 0;
+        let aiScore = 0;
+        let isGameRunning = false;
+        let t = 0;
+        let player_id
 
-            // Handle WebSocket close
-            ws.onclose = function() {
-                isWebSocketOpen = false;
-            };
-            
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                
-                if (data.action == "new_connection") {
-                    console.log("new connection")
-                    player_id = data.player_id
-                    console.log(player_id)
-                }
-                else if (data.action == "game_state") {
-                    ball.x = data.game_state.ball.x
-                    ball.y = data.game_state.ball.y
-                    if (data.game_state.players.player1.id == player_id) {
-                        player.y = data.game_state.players.player1.player_y
-                        ai.y = data.game_state.players.player1.ai_y
-                        playerScore = data.game_state.players.player1.player_score
-                        aiScore = data.game_state.players.player1.ai_score
-                    } else {
-                        player.y = data.game_state.players.player2.player_y
-                        ai.y = data.game_state.players.player2.ai_y
-                        aiScore = data.game_state.players.player1.player_score
-                        playerScore = data.game_state.players.player1.ai_score
-                    }
-                    
-                }
-                else if (data.action == "no_room") {
-                    const view = document.querySelector(".waiting")
-                    view.style.display = "flex"
-                    const message = document.querySelector(".waiting-message")
-                    message.innerText = "game room doesn't exist"
-                }
-                else if (data.action == "start") {
-                    console.log("game starting")
-                    const view = document.querySelector(".waiting")
-                    view.style.display = "none"
-                }
-                else if (data.action == "end") {
-                    const view = document.querySelector(".waiting")
-                    view.style.display = "flex"
-                    const message = document.querySelector(".waiting-message")
-                    message.innerText = "game finished"
-                }
+        const player = {
+            x: 0,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            color: 'white',
+            dy: 0
+        };
+
+        const ai = {
+            x: canvas.width - paddleWidth,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            color: 'white',
+            dy: 0
+        };
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: ballRadius,
+            speed: 5,
+            dx: 5,
+            dy: 4,
+            color: 'white'
+
+        };
+        const ws = new WebSocket(`ws://localhost:81/ws/pong/${roomName}/`);
+        // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
+        ws.onopen = function () {
+            console.log("remote WebSocket is open now.");
+            // const data = {
+            //     type: 'new_connection',
+            // };
+            // ws.send(JSON.stringify(data));
+            isWebSocketOpen = true;
+        };
+
+        // Handle WebSocket errors
+        ws.onerror = function (error) {
+            console.error("WebSocket error:", error);
+        };
+
+        // Handle WebSocket close
+        ws.onclose = function () {
+            isWebSocketOpen = false;
+        };
+
+        ws.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+
+            if (data.action == "new_connection") {
+                console.log("new connection")
+                player_id = data.player_id
+                console.log(player_id)
             }
-
-            function drawPaddle(x, y, width, height, color) {
-                ctx.fillStyle = color;
-                ctx.fillRect(x, y, width, height);
-            }
-
-            function drawBall(x, y, radius, color) {
-                ctx.beginPath();
-                ctx.arc(ball.x, ball.y, radius, 0, Math.PI * 2);
-                ctx.fillStyle = color;
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            function drawScore() {
-                ctx.font = '32px Arial';
-                ctx.fillStyle = 'white';
-                ctx.fillText(playerScore, canvas.width / 4, 50);
-                ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
-            }    
-
-            // Render game objects
-            function render() {
-                // Clear the canvas
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Draw paddles, ball, and scores
-                drawPaddle(player.x, player.y, player.width, player.height, player.color);
-                drawPaddle(ai.x, ai.y, ai.width, ai.height, ai.color);
-                drawBall(ball.x, ball.y, ball.radius, ball.color);
-                drawScore();
-            }
-            // Game loop
-            function gameLoop() {
-                render();
-                requestAnimationFrame(gameLoop);
-            }
-
-            // Keyboard events for player control
-            document.addEventListener('keydown', (e) => {
-                console.log("sending data: ", isWebSocketOpen);
-                if (e.key === 'ArrowUp') {
-                    // player.dy = -5;
-                    if (isWebSocketOpen) {
-                        const data = {
-                            type: 'paddle_movement',
-                            room_name: window.gameRoom,
-                            paddle_dy: -5,
-                            player_id: player_id
-                        };
-                        ws.send(JSON.stringify(data));
-                    }
-                } else if (e.key === 'ArrowDown') {
-                    // player.dy = 5;
-                    if (isWebSocketOpen) {
-                        const data = {
-                            type: 'paddle_movement',
-                            room_name: window.gameRoom,
-                            paddle_dy: 5,
-                            player_id: player_id
-                        };
-                        ws.send(JSON.stringify(data));
-                    }
+            else if (data.action == "game_state") {
+                ball.x = data.game_state.ball.x
+                ball.y = data.game_state.ball.y
+                if (data.game_state.players.player1.id == player_id) {
+                    player.y = data.game_state.players.player1.player_y
+                    ai.y = data.game_state.players.player1.ai_y
+                    playerScore = data.game_state.players.player1.player_score
+                    aiScore = data.game_state.players.player1.ai_score
+                } else {
+                    player.y = data.game_state.players.player2.player_y
+                    ai.y = data.game_state.players.player2.ai_y
+                    aiScore = data.game_state.players.player1.player_score
+                    playerScore = data.game_state.players.player1.ai_score
                 }
-            });
 
-            document.addEventListener('keyup', (e) => {
-                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    if (isWebSocketOpen) {
-                        const data = {
-                            type: 'paddle_movement',
-                            room_name: window.gameRoom,
-                            paddle_dy: 0,
-                            player_id: player_id
-                        };
-                        ws.send(JSON.stringify(data));
-                    }
-                    // player.dy = 0;
-                }
-            });
-            window.isTournament = true
-            leaveButton.addEventListener('click', (e) => {
-                window.location.href = "#tournament"
-                // if (window.isTournament) {
-                    // return
-                    // maybe close the socket
-                // }
-                // console.log('leave button')
-            })
-            gameLoop();
+            }
+            else if (data.action == "no_room") {
+                const view = document.querySelector(".waiting")
+                view.style.display = "flex"
+                const message = document.querySelector(".waiting-message")
+                message.innerText = "game room doesn't exist"
+            }
+            else if (data.action == "start") {
+                console.log("game starting")
+                const view = document.querySelector(".waiting")
+                view.style.display = "none"
+            }
+            else if (data.action == "end") {
+                const view = document.querySelector(".waiting")
+                view.style.display = "flex"
+                const message = document.querySelector(".waiting-message")
+                message.innerText = "game finished"
+            }
         }
-            // Start the game loop
-	}
+
+        function drawPaddle(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, width, height);
+        }
+
+        function drawBall(x, y, radius, color) {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawScore() {
+            ctx.font = '32px Arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText(playerScore, canvas.width / 4, 50);
+            ctx.fillText(aiScore, (3 * canvas.width) / 4, 50);
+        }
+
+        // Render game objects
+        function render() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw paddles, ball, and scores
+            drawPaddle(player.x, player.y, player.width, player.height, player.color);
+            drawPaddle(ai.x, ai.y, ai.width, ai.height, ai.color);
+            drawBall(ball.x, ball.y, ball.radius, ball.color);
+            drawScore();
+        }
+        // Game loop
+        function gameLoop() {
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Keyboard events for player control
+        document.addEventListener('keydown', (e) => {
+            console.log("sending data: ", isWebSocketOpen);
+            if (e.key === 'ArrowUp') {
+                // player.dy = -5;
+                if (isWebSocketOpen) {
+                    const data = {
+                        type: 'paddle_movement',
+                        room_name: roomName,
+                        paddle_dy: -5,
+                        player_id: player_id
+                    };
+                    ws.send(JSON.stringify(data));
+                }
+            } else if (e.key === 'ArrowDown') {
+                // player.dy = 5;
+                if (isWebSocketOpen) {
+                    const data = {
+                        type: 'paddle_movement',
+                        room_name: roomName,
+                        paddle_dy: 5,
+                        player_id: player_id
+                    };
+                    ws.send(JSON.stringify(data));
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                if (isWebSocketOpen) {
+                    const data = {
+                        type: 'paddle_movement',
+                        room_name: roomName,
+                        paddle_dy: 0,
+                        player_id: player_id
+                    };
+                    ws.send(JSON.stringify(data));
+                }
+                // player.dy = 0;
+            }
+        });
+        window.isTournament = true
+        leaveButton.addEventListener('click', (e) => {
+            window.location.href = "#tournament"
+            // if (window.isTournament) {
+            // return
+            // maybe close the socket
+            // }
+            // console.log('leave button')
+        })
+        gameLoop();
+    }
+    // Start the game loop
 }
+// }
 
 customElements.define('game-component-online', GameComponentOnline);
 

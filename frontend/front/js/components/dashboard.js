@@ -160,9 +160,9 @@ class DashboardComponent extends HTMLElement {
         const player1 = document.getElementById('playerIMG1');
         const player2 = document.getElementById('playerIMG2');
         const player3 = document.getElementById('playerIMG3');
-        this.getuser(69, player1);
-        this.getuser(75, player2);
-        this.getuser(70, player3);
+        // this.getuser(69, player1);
+        // this.getuser(75, player2);
+        // this.getuser(70, player3);
       
     }
 	async LastMatches(){

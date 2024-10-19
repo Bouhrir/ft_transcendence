@@ -20,8 +20,8 @@ class Game(models.Model):
 			self.winner = self.host
 		elif self.guest_score > self.host_score:
 			self.winner = self.guest
-		else:
-			self.winner = None  # In case of a tie or no winner
+		# else:
+		# 	self.winner = None  # In case of a tie or no winner
 		self.status = "finished"  # Set the status to finished when winner is determined
 		self.save()
 		# return self.winner

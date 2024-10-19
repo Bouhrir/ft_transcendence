@@ -1213,6 +1213,7 @@ button.join:hover .flech {
 }
 
 #aliasInput {
+    display: none;
     border-style: solid;
     border-color: white;
     color: white;
@@ -1229,6 +1230,7 @@ button.join:hover .flech {
 }
 
 #joinButton {
+    display: none;
     cursor: pointer;
     border-style: solid;
     border-color: white;
