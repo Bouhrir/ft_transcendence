@@ -1,4 +1,6 @@
 import { displayMsg, getAccessTokenFromCookies } from "./help.js";
+let userId;
+
 export async function createNavbar() {
 	const navbar = document.createElement('div');
 	navbar.className = 'navbar';
@@ -47,8 +49,8 @@ export async function createNavbar() {
 	profile();
 	logout();
 	darkMode();
+	await iconImg();
 	notification();
-	iconImg();
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -136,7 +138,6 @@ function logout(){
 	});
 	
 }
-
 // current profile 
 function profile(){
 	const profile = document.getElementById('profile');
@@ -149,8 +150,8 @@ function profile(){
                 'Content-Type': 'application/json',
             }
         });
+		const data = await response.json();
         if (response.ok) {
-			const data = await response.json();
 			window.location.href = `#profile/${data.id}`
 		}
 	});
@@ -165,15 +166,22 @@ async function iconImg(){
 		}
 	});
 	const data = await response.json();
+
 	if (response.ok) {
 		const iconImg = document.getElementById('icon-img');
+		userId = data.id;
+		console.log('icon', userId)
 		iconImg.src = data.image;
 	}
 	else 
 		displayMsg(data);
+	console.log('notif1', userId)
+
 }
 async function notification(){
 	const access = getAccessTokenFromCookies('access');
+	console.log('notif', userId)
+
 	const response = await fetch('http://localhost:81/auth/get_friends/', {
 		method: 'GET',
 		headers:{
@@ -181,22 +189,25 @@ async function notification(){
 			'Content-Type': 'application/json',
 		},
 	});
-
 	if (response.ok) {
 		const data = await response.json();
 		const notificationsDiv = document.getElementById('resultRequest');
 		notificationsDiv.innerHTML = '';
 		if (data.length > 0) {
 			activeNotification();
-            document.getElementById('bold-point').style.display = 'block';
         }
 		data.forEach(friendRequest => {
+			console.log(friendRequest.id , userId)
+			if (friendRequest.id === userId){
+				console.log('herre')
+				return
+			}
 			const friendRequestDiv = document.createElement('div');
 			friendRequestDiv.className = 'request';
 			friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
 
 			notificationsDiv.prepend(friendRequestDiv);
-			accpet(notificationsDiv, friendRequestDiv, friendRequest.id);
+			accept(notificationsDiv, friendRequestDiv, friendRequest.id);
 		});
 	} else {
 		console.error('Failed to fetch friend requests:', response.statusText);
@@ -205,7 +216,7 @@ async function notification(){
 
 }
 
-function accpet(notificationsDiv, friendRequestDiv, id){
+function accept(notificationsDiv, friendRequestDiv, id){
 	const access = getAccessTokenFromCookies('access');
 	const acceptButton = document.querySelector('.accept');
 	acceptButton.addEventListener('click' ,async () =>{
