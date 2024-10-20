@@ -39,10 +39,11 @@ def register_api(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # setup 2fa for the user
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
 def get_2fa_status(request):
-    user = request.user
+    username = request.data.get('username')
+    user = User.objects.get(username=username)
     profile = UserProfile.objects.get(user=user)
     print(profile.is_2fa_enabled)
     return Response({
@@ -78,10 +79,12 @@ def setup_2fa(request):
     })
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def verify_2fa(request):
     otp = request.data.get('verification_code')
-    user = request.user
+    username = request.data.get('username')
+
+    user = User.objects.get(username=username)
     profile = UserProfile.objects.get(user=user)
 
     totp = pyotp.TOTP(profile.totp_secret)
@@ -306,7 +309,129 @@ from django.db.models import Q
 @permission_classes([IsAuthenticated])
 def search_users(request):
     query = request.GET.get('q', '')
-    print(query)
     users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
     user_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
     return Response(user_data, status=status.HTTP_200_OK)
+
+#add friends
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_friend_request(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    friend_profile.friend_requests.add(user_profile)
+    return Response({'message': 'Friend request sent successfully'}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friend_requests(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    friend_requests = user_profile.friend_requests.all()
+    friend_requests_data = [{"id": friend_request.user.id, "username": friend_request.user.username} for friend_request in friend_requests]
+    return Response(friend_requests_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friends_list(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    friends = user_profile.friends.all()
+    if (not friends.exists()):
+        return Response({'message': 'No friends found'}, status=status.HTTP_404_NOT_FOUND)
+    friends_data = [{"id": friend.user.id, "username": friend.user.username} for friend in friends]
+    return Response(friends_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def accept_friend_request(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    if friend_profile in user_profile.friend_requests.all():
+        user_profile.friend_requests.remove(friend_profile)
+        user_profile.friends.add(friend_profile)
+        return Response({'message': 'Friend request accepted'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'No friend request from this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pending(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    try:
+        friend_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
+
+    user_profile = UserProfile.objects.get(user=request.user)
+    if friend_profile in user_profile.friend_requests.all():
+        return Response({'message': 'Friend request pending'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'No friend request from this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def check_friend(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.friends.filter(user=user).exists():
+        return Response({'message': 'This user is a friend'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+
+#game status
+from remote.models import Game
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_game_status(request):
+    user = request.user
+    games = Game.objects.filter(status='finished')
+    if not games.exists():
+        return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
+
+    game_data = [{
+        'winner': game.winner.username if game.winner else None,
+        'host_id': game.host.id,
+        'guest_id': game.guest.id if game.guest else None,
+        'host_score': game.host_score,
+        'guest_score': game.guest_score
+    } for game in games]
+    return Response(game_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_games(request):
+    user = request.user
+    games = Game.objects.filter(host=user, status='finished')
+    if not games.exists():
+        return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    game_data = [{
+        'winner': game.winner.username if game.winner else None,
+        'host_id': game.host.id,
+        'guest_id': game.guest.id if game.guest else None,
+        'host_score': game.host_score,
+        'guest_score': game.guest_score
+    } for game in games]
+    return Response(game_data, status=status.HTTP_200_OK)
+
+

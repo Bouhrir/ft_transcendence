@@ -13,16 +13,20 @@
 /* Modal */
 .modal {
     position: absolute;
-    top: 30%;
-    left: 40%;
+    top: 11%;
+    left: -45%;
     color:white;
     font-family : 'Baloo_Bhai_2';
-    animation: slideUp 0.8s ease;
     transition: transform 0.3s ease-in-out;
+    animation: slideLeft 0.8s ease;
     /* background-color: #333; */
 }
 .modal:hover{
     transform: scale(1.05);
+}
+
+.modal img{
+    box-shadow: 0px 0px 60px rgba(0, 0, 0, 1);
 }
 
 
@@ -83,3 +87,5 @@
     font-family: 'Baloo_Bhai_2';
     background-color: transparent;
 }
+
+

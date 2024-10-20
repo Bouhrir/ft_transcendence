@@ -16,6 +16,8 @@ from django.contrib.auth.models import User
 def room(request):
     id1 = request.data['user1']
     id2 = request.data['user2']
+    
+    
     try:
         user1 = User.objects.get(id=id1)
         user2 = User.objects.get(id=id2)

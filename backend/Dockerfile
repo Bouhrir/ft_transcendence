@@ -13,5 +13,4 @@ RUN python -m venv .env && \
 
 RUN chmod +x script.sh
 
-CMD ["/script.sh"]
-
+ENTRYPOINT ["/script.sh"]

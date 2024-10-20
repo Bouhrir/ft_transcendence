@@ -12,8 +12,7 @@ class SettingComponent extends HTMLElement {
     async connectedCallback() {
         this.innerHTML = `
         <div id="error-message" class="error-message"></div>
-        <div>
-        <div class="whole">
+        <div class="whole" >
             <div class="account-settings">
                 <div class="acc_">
                     <h1>Account Settings</h1>
@@ -31,7 +30,14 @@ class SettingComponent extends HTMLElement {
                     <a class="delete" id="deluser" href="#signin">Delete Account</a>
                 </div>
                 <div class="line_"></div>
-                <div class="acciformation">
+                <div id="qrModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span id="closeModal" class="close">&times;</span>
+                        <h2>Scan the QR Code</h2>
+                        <img id="qrCodeInModal" src="" alt="QR Code">
+                    </div>
+                </div>
+                <div class="acciformation" id="whole">
                         <h1>Personal information</h1>
                         <div class="information_box">
                             <div class="editprof">
@@ -77,17 +83,9 @@ class SettingComponent extends HTMLElement {
                     </div>
                 </div>
         </div>
-        <div id="qrModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span id="closeModal" class="close">&times;</span>
-                <h2>Scan the QR Code</h2>
-                <img id="qrCodeInModal" src="" alt="QR Code">
-            </div>
-        </div>
-    </div>
+       
         `;
-		await checkJwt();
-        await this.check2FAStatus();
+
         this.fileInput();
         await this.fetchUserData();
         this.setValues()
@@ -149,17 +147,20 @@ class SettingComponent extends HTMLElement {
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
+        await this.check2FAStatus(this.userData.username);
+
     }
-    async check2FAStatus() {
-        const access = getAccessTokenFromCookies('access');
+    async check2FAStatus(username) {
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
-                method: 'GET',
+                method: 'POST',
                 mode:'cors',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
-                }
+                },
+                body:JSON.stringify({
+                    username:username
+                })
             });
 
 
@@ -208,6 +209,7 @@ class SettingComponent extends HTMLElement {
                     document.body.style.background = '#333'
                     qrModal.style.display = 'block';
                     verificationSection.style.display = 'block';
+                    // document.getElementById('whole').style.display = 'none';
                     closeModal.addEventListener('click', () => {
                         qrModal.style.display = 'none';
                     });
@@ -247,16 +249,15 @@ class SettingComponent extends HTMLElement {
     async handleVerification() {
         const verificationCode = document.getElementById('verificationCode').value;
         const toast = document.getElementById('error-message');
-        const access = getAccessTokenFromCookies('access');
 
         try {
             const response = await fetch('http://localhost:81/2fa/verify/', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    username:this.userData.username,
                     "verification_code": verificationCode
                 })
             });

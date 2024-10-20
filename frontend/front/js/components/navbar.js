@@ -1,12 +1,12 @@
-import { getAccessTokenFromCookies } from "./help.js";
-export function createNavbar() {
+import { displayMsg, getAccessTokenFromCookies } from "./help.js";
+export async function createNavbar() {
 	const navbar = document.createElement('div');
 	navbar.className = 'navbar';
 	navbar.innerHTML = `
 	<header class="head">
 		<div class="head1">
 		<div class="menu">
-			<button id="darkModeToggle" type="submit"><img src="../../needs/img/logo.svg"></button>
+			<button type="submit"><img src="../../needs/img/logo.svg"></button>
 			<a href="#dashboard">Dashboard</a>
 			<a href="#messenger">Messenger</a>
 			<a href="#gamebar">Game</a>
@@ -21,18 +21,21 @@ export function createNavbar() {
 				</div>
 		</div>
 			<div class="head3">
-				<div class="notification">
-					<form action="index.html">
-						<button id="dark" type="submit"><img src="../../needs/img/Bell_pin_fill.png"></button>
-					</form>
+				<div id="notifications" class="notification">
+					<img src="../../needs/img/Bell_pin_fill.png">
+					<div id="resultRequest" style="display:none"></div>
 				</div>
 				<div class="logout">
 						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
 				</div>
+				<div class="logout">
+						<button id="darkModeToggle" type="submit"><img src="../../svg/darkNight.svg"></button>
+				</div>
 				<div class="profile" id="profile">
-					<button type="submit"><img src="../../needs/img/Rectangle 24.png"></button>
+					<button type="submit"><img id="icon-img" width=5px height=5px src="#"></button>
 				</div>
 			</div>
+		<div id="bold-point" class="bold-point" style="display:none"></div>
 		</header>
     `;
 	
@@ -40,10 +43,12 @@ export function createNavbar() {
 
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
-	logout();
 	search();
 	profile();
+	logout();
 	darkMode();
+	notification();
+	iconImg();
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -52,7 +57,7 @@ function search(){
 	resultsContainer.style.display = 'none';
     searchInput.addEventListener('input', async () => {
         const query = searchInput.value;
-        if (query.length > 2) {
+        if (query.length > 1) {
             try {
                 const response = await fetch(`http://localhost:81/auth/search/?q=${query}`, {
                     method: 'GET',
@@ -86,11 +91,18 @@ function search(){
 							});
 							if (response.ok){
 								window.location.hash = `#profile/${user.id}`;
-								
+							}
+							else{
+								const data = await response.json();
+								console.log(displayMsg(data));
 							}
 						})
                     });
                 }
+				else{
+					const data = await response.json();
+					displayMsg(data);
+				}
             }
             catch (error) {
                 console.error('Can`t search: ', error);
@@ -113,6 +125,7 @@ function logout(){
 				}
 			});
 			if (loggedout.ok) {
+				location.reload();
 				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 			}
@@ -124,6 +137,7 @@ function logout(){
 	
 }
 
+// current profile 
 function profile(){
 	const profile = document.getElementById('profile');
 	const access = getAccessTokenFromCookies('access');
@@ -141,15 +155,98 @@ function profile(){
 		}
 	});
 }
+async function iconImg(){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('http://localhost:81/auth/me/', {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${access}`,
+			'Content-Type': 'application/json',
+		}
+	});
+	const data = await response.json();
+	if (response.ok) {
+		const iconImg = document.getElementById('icon-img');
+		iconImg.src = data.image;
+	}
+	else 
+		displayMsg(data);
+}
+async function notification(){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('http://localhost:81/auth/get_friends/', {
+		method: 'GET',
+		headers:{
+			'Authorization': `Bearer ${access}`,
+			'Content-Type': 'application/json',
+		},
+	});
 
-//dark mode activate
+	if (response.ok) {
+		const data = await response.json();
+		const notificationsDiv = document.getElementById('resultRequest');
+		notificationsDiv.innerHTML = '';
+		if (data.length > 0) {
+			activeNotification();
+            document.getElementById('bold-point').style.display = 'block';
+        }
+		data.forEach(friendRequest => {
+			const friendRequestDiv = document.createElement('div');
+			friendRequestDiv.className = 'request';
+			friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
+
+			notificationsDiv.prepend(friendRequestDiv);
+			accpet(notificationsDiv, friendRequestDiv, friendRequest.id);
+		});
+	} else {
+		console.error('Failed to fetch friend requests:', response.statusText);
+	}
+	
+
+}
+
+function accpet(notificationsDiv, friendRequestDiv, id){
+	const access = getAccessTokenFromCookies('access');
+	const acceptButton = document.querySelector('.accept');
+	acceptButton.addEventListener('click' ,async () =>{
+		console.log('im in')
+		const response = await fetch('http://localhost:81/auth/accept_friend/', {
+			method: 'POST',
+			headers:{
+				'Authorization': `Bearer ${access}`,
+				'Content-Type': 'application/json',
+			},
+			body:JSON.stringify({
+				'friend_id':id,
+			})
+		});
+		const data = await response.json()
+		console.log("data accepted", data)
+		if (response.ok){
+			notificationsDiv.removeChild(friendRequestDiv);
+		}
+	});
+}
+function activeNotification(){
+	document.getElementById('notifications').addEventListener('click', function() {
+		const notificationsDiv = document.getElementById('resultRequest');
+		if (notificationsDiv.style.display === 'none') {
+			notificationsDiv.style.display = 'block';
+		} else {
+			// notificationsDiv.style.display = 'none';
+			document.getElementById('bold-point').style.display = 'none';
+		}
+	});
+}
+// Existing code for dark mode toggle
 function darkMode(){
-	const darkModeToggle = document.querySelector('#darkModeToggle');
+    const darkModeToggle = document.querySelector('#darkModeToggle');
     darkModeToggle.addEventListener('click', toggleDarkMode);
 }
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     
-	const isDarkMode = document.body.classList.contains('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDarkMode);
 }

@@ -5,12 +5,23 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: calc(100vh - 20vh);
+    height: 80vh;
     width: 100%;
     color:white;
     background-size: cover;
     gap :3rem;
-    animation : slideUp 0.8s ease;
+    margin-top: 2%;
+    /* animation : slideUp 0.5s ease; */
+}
+.ping-pong h1{
+    animation : slideUp 0.5s ease;
+}
+.ping-pong p{
+    animation : slideUp 1.2s ease;
+}
+.ai{
+    font-size: 1rem;
+    padding-top: 20%;
 }
 .subping{
     position: relative;
@@ -21,19 +32,16 @@
     backdrop-filter: blur(20px);
     box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation : slideUp 1s ease;
 }
-.subping:hover {
-    transform: translate(0%, 0%) scale(1.05);
-    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1);
-}
+
 
 .paddle{
     position: absolute;
     top:50%;
-    height: 13%;
-    width: 2%;
+    height: 18%;
+    width: 1%;
     background-color: white;
-    /* border: 10px solid white; */
     transform: translateY(-50%);
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -41,11 +49,11 @@
 }
 
 #paddle1{
-    left: 1%;
+    left: 0.5%;
 }
 
 #paddle2 {
-    right: 1%;
+    right: 0.5%;
 }
 
 #ball {
@@ -56,11 +64,15 @@
     width: 2rem;
     border-radius: 50%;
     background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
 }
 .scoreboard {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 20%;
+    animation : slideUp 0.8s ease;
 }
 
 .player-profile {
@@ -70,8 +82,8 @@
 }
 
 .profile-pic {
-    width: 40%;
-    height: 40%;
+    /* width: 40%;
+    height: 40%; */
     border-radius: 50%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
@@ -85,6 +97,7 @@
 .player-name {
 	margin-top : 1rem;
 	font-size: 30px;
+    font-family: 'Bungee';
 }
 
 #countdown {
@@ -97,29 +110,42 @@
     animation: pulseEffect 1s infinite;
 }
 
-
-
 .win-message {
     position : absolute;
-    display : flex;
-    justify-content : center;
-    align-items : center;
-    text-align : center;
-    height :100%;
-    width : 100vw;
-    top : 0;
-    left : 0;
-    color : white;
-    font-size : 200px;
-    backdrop-filter : blur(20px);
-    font-family : "celesti";
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8rem;
+    font-family: 'celesti';
+    color: white;
+    text-align: center;
+    margin-top: 10%;
+
 }
+.score{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 99vh;
+    width: 99vw;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 14rem;
+    backdrop-filter: blur(20px);
+    font-family: 'Bungee';
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
 
 
 .retry-btn {
     position: absolute;
-    top: 80%;
-    left: 50%;
+    top: 72%;
+    left: 49.5%;
     transform: translate(-50%, -50%);
     background-color: #ff5e57;  /* Vibrant color for visibility */
     color: white;
@@ -145,6 +171,65 @@
     transform: translate(-50%, -50%) scale(0.95);  /* Shrink slightly when clicked */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
+
+#gameCostum{
+    font-family: 'Bungee';
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap :1%;
+}
+
+#TableCustom{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    top: 46%;
+    right: 4%;
+    height: 26rem;
+    width: 20rem;
+    animation : slideUp 1s ease;
+    gap: 5%;
+}
+.array{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-size: 1.5rem;
+    font-family: 'Bungee';
+    color: white;
+    text-align: center;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 17rem;
+    height: 24rem;
+}
+.array:hover {
+    transform: translate(0%, 0%) scale(1.05);
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 1);
+}
+#table1:hover{
+    background-color: #ff5e57;
+    cursor: pointer;
+}
+#table2:hover{
+    background-color: #ff5e57;
+    cursor: pointer;
+}
+#table3:hover{
+    background-color: #ff5e57;
+    cursor: pointer;
+}
+
 
 /* Animations */
 @keyframes fadeInDown {
@@ -178,13 +263,13 @@
     }
 }
 
-/* 
+/* online */
 canvas {
-    background-color: #222;
-    display: block;
-    margin: 0 auto;
-    border: 2px solid #fff;
-    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2), 
-                0px 0px 40px rgba(0, 255, 0, 0.2), 
-                0px 0px 80px rgba(255, 255, 255, 0.1);
-} */
+    display: flex;
+    /* border : 500rem solid rgb(255, 255, 255); */
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 7px 7px 31px 7px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation : slideUp 1s ease;
+ }

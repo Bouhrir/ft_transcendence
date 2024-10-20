@@ -1,3 +1,4 @@
+import { displayMsg, getAccessTokenFromCookies } from './help.js';
 class SigninComponent extends HTMLElement {
     constructor() {
         super();
@@ -9,7 +10,7 @@ class SigninComponent extends HTMLElement {
             navbar.remove();
         }
         this.innerHTML = `
-            <div id="error-message" class="error-message"></div>
+            <div id="error-message" class="toaster"></div>
             <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
             </div>
@@ -81,11 +82,13 @@ class SigninComponent extends HTMLElement {
 
             const data = await response.json();
             if (response.ok) {
-                document.cookie = `access=${data.access}; path=/; secure; samesite=strict`;
-                document.cookie = `refresh=${data.refresh}; path=/; secure; samesite=strict`;
-                await this.check2FAStatus();
-                if (!this.is2FAEnabled)
+                await this.check2FAStatus(username);
+                console.log(this.is2FAEnabled)
+                if (!this.is2FAEnabled){
+                    document.cookie = `access=${data.access}; path=/;`;
+                    document.cookie = `refresh=${data.refresh}; path=/;`;
                     window.location.hash = '#dashboard';
+                }
                 else
                 {
                     const signin = document.getElementById('signin');
@@ -103,58 +106,56 @@ class SigninComponent extends HTMLElement {
                         const verificationCode = document.getElementById('twofaCode').value;
 
                         console.log(verificationCode);
-                        const access = this.getAccessTokenFromCookies();
                         const response = await fetch('http://localhost:81/2fa/verify/', {
                             method: 'POST',
                             headers: {
-                                'Authorization': `Bearer ${access}`,
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                "verification_code": verificationCode
+                                username:username,
+                                "verification_code":verificationCode
                             })
                         });
                         if (response.ok){
+                            document.cookie = `access=${data.access}; path=/;`;
+                            document.cookie = `refresh=${data.refresh}; path=/;`;
                             errorMessage.textContent = 'sucess verification!';
                             errorMessage.style.color = 'green';
                             twofaVerifyTab.style.display = 'none';
+                            twofaVerifyTab.remove();
                             window.location.hash = '#dashboard';
                         }
                         else{
+                            // twofaVerifyTab.remove();
                             errorMessage.textContent = 'failed verification!';
                             errorMessage.style.color = 'red';
                         }
-
                     });
                 }
 
             } else {
-                console.log (data);
-                let errorMsg = '';
-
-                for (const field in data) {
-                    if (data.hasOwnProperty(field)) {
-                        if (!data.detail)
-                            errorMsg += `${field}: ${data[field].join(', ')}\n`;
-                        else if(data.detail)
-                            errorMsg = 'error: invalid username or password';
-                    }
-                }
+				let errorMsg = '';
+				if (!data.detail)
+                	errorMsg = displayMsg(data);
+				else
+					errorMsg = 'Invalid username or password';
                 errorMessage.textContent = errorMsg;
+				errorMessage.style.backgroundColor = 'rgba(255, 69, 58, 0.9)';
             }
         });
     }
 
-    async check2FAStatus() {
-        const access = this.getAccessTokenFromCookies();
+    async check2FAStatus(username) {
         try {
             const response = await fetch('http://localhost:81/2fa/status/', {
-                method: 'GET',
+                method: 'POST',
                 mode:'cors',
                 headers: {
-                    'Authorization': `Bearer ${access}`,
                     'Content-Type': 'application/json',
-                }
+                },
+                body:JSON.stringify({
+                    username:username
+                })
             });
 
             if (response.ok) {
@@ -166,16 +167,6 @@ class SigninComponent extends HTMLElement {
         } catch (error) {
             console.error('Error checking 2FA status:', error);
         }
-    }
-    getAccessTokenFromCookies() {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('access=')) {
-                return cookie.substring('access='.length);
-            }
-        }
-        return null;
     }
 }
 customElements.define('signin-component', SigninComponent);

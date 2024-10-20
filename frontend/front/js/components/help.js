@@ -7,6 +7,8 @@ export async function checkJwt() {
 			'Authorization': `Bearer ${access}`
 		}
 	});
+	const data = await response.json();
+	localStorage.setItem('id', data.id);
 
 	if (response.status === 401) {
 		const refresh = getAccessTokenFromCookies('refresh');
@@ -47,7 +49,23 @@ export function getAccessTokenFromCookies(token) {
 	}
 	return null;
 }
-
+export async function getuser(id, player){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('http://localhost:81/auth/getuser/', {
+		method: 'POST',
+		headers:{
+			'Authorization': `Bearer ${access}`,
+			'Content-Type': 'application/json',
+		},
+		body:JSON.stringify({
+		   'id':id
+		})
+	});
+	if (response.ok){
+		const data = await response.json();
+		player.src = data.image;
+	}
+}
 export function displayMsg(data){
 	let Msg = '';
 	for (const field in data) {

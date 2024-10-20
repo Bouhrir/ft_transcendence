@@ -1,5 +1,5 @@
 import { createNavbar } from "./components/navbar.js"
-import { getAccessTokenFromCookies} from './components/help.js'
+import {checkJwt, getAccessTokenFromCookies} from './components/help.js'
 
 const routes = {
     '': 'signin-component',
@@ -15,7 +15,7 @@ const routes = {
     'profile': 'profile-component'
 };
 
-function navigate() {
+async function navigate() {
     const path = window.location.hash.substring(1);
     let page = routes[path] || 'signin-component';
 
@@ -27,6 +27,7 @@ function navigate() {
     console.log(page);
 
     if (page !== 'signin-component' && page !== 'signup-component') {
+        await checkJwt();
         createNavbar();
     }
     if (getAccessTokenFromCookies('refresh')) {
@@ -39,6 +40,14 @@ function navigate() {
     }
 
 }
+//dark mode activate
+function checkAndApplyDarkMode() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+}
+document.addEventListener('DOMContentLoaded', checkAndApplyDarkMode);
 
 window.addEventListener('hashchange', navigate);
 window.addEventListener('DOMContentLoaded', navigate);

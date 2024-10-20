@@ -21,11 +21,11 @@ body {
     flex-direction: center;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 10%;
     height: 100vh;
     padding: 0 100px;
     gap: 11rem;
-    color: white
+    color: white;
 }
 .logop{
     display: flex;
@@ -145,10 +145,12 @@ body {
     60% {
         opacity: 1;
         transform: translateY(10px);  /* Move to original position */
+		width: 21vw;
     }
     0% {
         opacity: 0;
         transform: translateY(-50px);  /* Move to original position */
+		width: 9vw;
     }
 }
 @keyframes slideDownFadeIn {
@@ -225,26 +227,24 @@ body {
 .head1{
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     flex-direction: row;
-    animation: slideRight 0.8s ease;
+    animation: slideRight 1.2s ease;
+    width: 49.5%;
 }
 .head2{
     display: flex;
-    margin-top: 2.7rem;
-    animation: slideRight 0.8s ease;
-    /* flex-direction: row; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    /* margin-right: 1%; */
+    animation: slideRight 1s ease;
+    width: 23%;
+    justify-content: center;
 }
 .head3{
-    margin-left: 4%;
     display: flex;
-    justify-content: space-between;
-    margin-top: 6.3rem;
-    margin-left: 3.8rem;
+    flex-direction: row;
     align-items: center;
+    gap: 6%;
+    justify-content: end;
+    width: 10.5%;
     animation: slideRight 0.8s ease;
 }
 .oppage
@@ -263,12 +263,12 @@ body {
 }
 .head{
     display: flex;
-    align-items: center;
-    /* justify-content: center; */
-    /* margin-top: 10px; */
-    margin-left: 8.2%;
+    align-items: end;
+    justify-content: center;
+    flex-direction: row;
     height: 10vh;
-    /* flex: 1 1; */
+    
+    /* gap: 3.5%; */
 }
 .join:hover{
     background-color: white;
@@ -400,20 +400,15 @@ button.join:hover .flech {
 }
 .menu{
     display: flex;
-    width: 49.8vw;
+    width: 99.5%;
     height: 3.5vh;
-    margin-top: 8%;
-    /* margin-right: 3%; */
     align-items: center;
     font-family: 'Celesti';
     border: 0.5px solid rgba(255, 255, 255, 0.405);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
-    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
     justify-content: space-around;
     border-radius: 12px;
-    margin-left: 0.2vw;
-    margin-right: 1.2%;
 }
 .menu a{
     color: #fff;
@@ -430,7 +425,7 @@ button.join:hover .flech {
 }
 .searchpad input{
     display: flex;
-    width: 21vw;
+    width: 22.5vw;
     height: 3.5vh;
     border: 0.5px solid rgba(255, 255, 255, 0.292);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
@@ -438,7 +433,6 @@ button.join:hover .flech {
     border-radius: 12px;
     font-family: 'Baloo_Bhai_2';
     font-size: 16px;
-    margin-top: 11%;
     outline: none;
     padding: 12px 70px 12px 30px; 
     color: white;
@@ -460,7 +454,7 @@ button.join:hover .flech {
     opacity: 70%;
 
 }
-.notification button{
+.notification {
     display: flex;
     /* margin-top: 30%; */
     justify-content: center;
@@ -469,19 +463,26 @@ button.join:hover .flech {
     height: 3.5vh; 
     border: 0.5px solid rgba(255, 255, 255, 0.292);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
-    backdrop-filter: blur(4px);
-    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
+    /* backdrop-filter: blur(50px); */
     border-radius: 12px;
-}
-.notification button:hover{
-    cursor: pointer;
+    z-index: 1;
 }
 .notification img{
     width: 25px;
+    cursor: pointer;
+}
+.bold-point {
+    position: absolute;
+    top: 6.9%;
+    right: 16.3%;
+    width: 10px;
+    height: 10px;
+    background-color: rgb(11, 237, 109);
+    border-radius: 50%;
+    animation: slideRight 0.8s ease;
 }
 .logout{
     display: flex;
-    margin-left: 2vw;
     justify-content: center;
     align-items: center;
     width: 2vw;
@@ -494,18 +495,25 @@ button.join:hover .flech {
 }
 .profile{
     display: flex;
-    margin-left: 2.5%;
-    margin-left: 2vw;
-    /* border: 0.5px solid white; */
     width: 2vw;
     height: 3.5vh;
-    margin-top: 2%;
 }
 
 @keyframes slideRight {
     0% {
         opacity: 0;
         transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+}
+@keyframes slideLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(10px);
     }
     100% {
         opacity: 1;
@@ -582,9 +590,9 @@ button.join:hover .flech {
     flex-direction: row;
     /* margin: 0 auto; */
     justify-content: center;
-    align-items: center;
+    align-items: start;
     width: 100vw;
-    height: 84vh;
+    height: 90vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
@@ -601,7 +609,7 @@ button.join:hover .flech {
     display: flex;
     /* margin-left: 6%; */
     width: 17%;
-    height: 95vh;
+    height: 81vh;
     align-items: center;
 
     justify-content: center;
@@ -616,18 +624,27 @@ button.join:hover .flech {
     padding-top: 30px;
     margin-top: 10px;
     border: 0.5px solid rgba(255, 255, 255, 0.292);
-    /* font-family: ; */
     width: 17vw;
     height: 81vh; 
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
     border-radius: 10px;
-    font-family: 'Baloo_Bhai_2';
+    font-family: 'bungee';
     outline: none;
     color: white;
     flex-direction: column;
     animation : slideUp 0.5s ease;
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.match-list::-webkit-scrollbar {
+    display: none;
+}
+
+.match-list h3{
+    justify-content: center;
+    display: flex;
 }
 .match-red-card{
     display: flex;
@@ -651,14 +668,28 @@ button.join:hover .flech {
     align-items: center;
     justify-content: center;
 }
+.match-orange{
+    display: flex;
+    margin-top: 5px;
+    margin-left: 20px;
+    background: linear-gradient(to left,rgba(255, 64, 64, 0.200),rgba(255, 0, 0, 0));
+    width: 16vw;
+    height: 6vh;
+    border-right: rgb(255, 115, 0) solid 4px;
+    align-items: center;
+    justify-content: center;
+}
+.match-orange img{
+    border-radius: 10%;
+}
 .rate{
-    font-size: 2vh;
+    font-size: 1.5vh;
     margin-right: 10px;
     margin-left: 10px;
     color: rgb(72, 255, 0);
 }
 .rate1{
-    font-size: 2vh;
+    font-size: 1.5vh;
     margin-left: 10px;
     margin-right: 10px;
     color: rgb(255, 0, 0);
@@ -723,7 +754,7 @@ button.join:hover .flech {
     border-radius: 15px;
     border-radius: 7px;
     justify-content: center;
-    border-right: orangered solid 7px;
+    /* border-right: orangered solid 7px; */
     border-bottom: orangered solid 7px;
 }
 .level-card{
@@ -737,7 +768,7 @@ button.join:hover .flech {
     border-radius: 7px;
     align-items: center;
     justify-content: center;
-    border-right: orangered solid 2px;
+    /* border-right: orangered solid 2px; */
     border-bottom: orangered solid 2px;
     transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
 
@@ -1196,6 +1227,9 @@ button.join:hover .flech {
     height: 43%;
     border-radius: 20px;
     animation: slideUp 1s ease;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
 }
 .av-img{
     border: 2px solid white;
@@ -1217,6 +1251,7 @@ button.join:hover .flech {
 }
 
 #aliasInput {
+    display: none;
     border-style: solid;
     border-color: white;
     color: white;
@@ -1233,6 +1268,7 @@ button.join:hover .flech {
 }
 
 #joinButton {
+    display: none;
     cursor: pointer;
     border-style: solid;
     border-color: white;
@@ -1343,12 +1379,28 @@ button.join:hover .flech {
 
 /* dark mode */
 body.dark-mode {
-    background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
-    color: #fff;
+	background-image: linear-gradient(to right, #222 0%, #333 50%, #333 100%);
+	color: #fff;
+	animation: darkIn 0.5s ease-in-out forwards;	
 }
 
 body.dark-mode .navbar a {
-    color: #ddd;
+	color: #ddd;
+}
+
+.dark-mode #darkModeToggle img {
+    content: url('../../svg/darkLight.svg');
+	animation: darkIn 0.5s ease-in-out forwards;	
+}
+
+@keyframes darkIn {
+	100%{
+		opacity: 1;
+
+	}
+	0% {
+		opacity: 0;
+	}
 }
 
 
@@ -1366,11 +1418,45 @@ body.dark-mode .navbar a {
     animation: slideDown 0.4s ease-in-out;
     padding: 12px 70px 12px 30px; 
     color: white;
+	
+}
+#resultRequest {
+    position: absolute;
+    top: 2.9%;
+    z-index: 1;
+    width: 15vw;
+    border: 0.5px solid rgba(255, 255, 255, 0.292);
+    background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
+    border-radius: 12px;
+    font-family: 'Baloo_Bhai_2';
+    font-size: 16px;
+    margin-top: 113px;
+    margin-right: 232px;
+    animation:  0.4s ease-in-out;
+    padding: 12px 70px 12px 30px; 
+    color: white;
+    backdrop-filter: blur(15px);
+    animation: slideDownFadeIn 0.8 ease forwards;
+}
+.request{
+    border-bottom: 0.5px solid #dee2e6;
+    padding: 0.5em 0;
+	cursor: pointer;
+}
+.request p {
+    color: whitesmoke;
+    margin-bottom: 0;
+}
+.request span {
+    font-size: 1.2em;
+    margin-bottom: 0.2em;
+    color:rgb(0,200,0);
 }
 
 .user-result {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 0.5px solid #dee2e6;
     padding: 0.5em 0;
+	cursor: pointer;
 }
 
 .user-result h2 {
@@ -1379,6 +1465,49 @@ body.dark-mode .navbar a {
 }
 
 .user-result p {
-    color: #6c757d;
+    color: #383e44;
     margin-bottom: 0;
+}
+
+/* Base styles for the toaster */
+.toaster {
+    position: fixed;
+    top: 20px;
+    left: 90%;
+    color: white;
+    padding: 15px 15px;
+	margin: 15px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    opacity: 0;
+    /* visibility: hidden; */
+    transform: translateY(-30px);  /* Start position (slightly off-screen) */
+    z-index: 1000;
+    
+    /* Animation timing (total duration of 5 seconds) */
+    animation: slideInFadeOut 5s ease-in-out forwards;
+}
+
+/* Define the slide in and fade out animation */
+@keyframes slideInFadeOut {
+    0% {
+        opacity: 0;
+        visibility: visible;
+        transform: translateX(30px);  /* Slide in from top */
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(0);  /* Toaster fully visible */
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(0);  /* Toaster still visible */
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(30px);  /* Slide out and fade out */
+        visibility: hidden;
+    }
 }
