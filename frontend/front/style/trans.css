@@ -227,26 +227,24 @@ body {
 .head1{
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     flex-direction: row;
-    animation: slideRight 0.8s ease;
+    animation: slideRight 1.2s ease;
+    width: 49.5%;
 }
 .head2{
     display: flex;
-    margin-top: 2.7rem;
-    animation: slideRight 0.8s ease;
-    /* flex-direction: row; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    /* margin-right: 1%; */
+    animation: slideRight 1s ease;
+    width: 23%;
+    justify-content: center;
 }
 .head3{
-    margin-left: 4%;
     display: flex;
-    justify-content: space-between;
-    margin-top: 6.3rem;
-    margin-left: 3.8rem;
+    flex-direction: row;
     align-items: center;
+    gap: 6%;
+    justify-content: end;
+    width: 10.5%;
     animation: slideRight 0.8s ease;
 }
 .oppage
@@ -265,12 +263,12 @@ body {
 }
 .head{
     display: flex;
-    align-items: center;
-    /* justify-content: center; */
-    /* margin-top: 10px; */
-    margin-left: 8.2%;
+    align-items: end;
+    justify-content: center;
+    flex-direction: row;
     height: 10vh;
-    /* flex: 1 1; */
+    
+    /* gap: 3.5%; */
 }
 .join:hover{
     background-color: white;
@@ -402,20 +400,15 @@ button.join:hover .flech {
 }
 .menu{
     display: flex;
-    width: 49.8vw;
+    width: 99.5%;
     height: 3.5vh;
-    margin-top: 8%;
-    /* margin-right: 3%; */
     align-items: center;
     font-family: 'Celesti';
     border: 0.5px solid rgba(255, 255, 255, 0.405);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
-    /* border: 0.5px solid rgba(255, 85, 0, 0.406); */
     justify-content: space-around;
     border-radius: 12px;
-    margin-left: 0.2vw;
-    margin-right: 1.2%;
 }
 .menu a{
     color: #fff;
@@ -432,7 +425,7 @@ button.join:hover .flech {
 }
 .searchpad input{
     display: flex;
-    width: 21vw;
+    width: 22.5vw;
     height: 3.5vh;
     border: 0.5px solid rgba(255, 255, 255, 0.292);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
@@ -440,7 +433,6 @@ button.join:hover .flech {
     border-radius: 12px;
     font-family: 'Baloo_Bhai_2';
     font-size: 16px;
-    margin-top: 11%;
     outline: none;
     padding: 12px 70px 12px 30px; 
     color: white;
@@ -491,7 +483,6 @@ button.join:hover .flech {
 }
 .logout{
     display: flex;
-    margin-left: 2vw;
     justify-content: center;
     align-items: center;
     width: 2vw;
@@ -504,12 +495,8 @@ button.join:hover .flech {
 }
 .profile{
     display: flex;
-    margin-left: 2.5%;
-    margin-left: 2vw;
-    /* border: 0.5px solid white; */
     width: 2vw;
     height: 3.5vh;
-    margin-top: 2%;
 }
 
 @keyframes slideRight {
@@ -603,9 +590,9 @@ button.join:hover .flech {
     flex-direction: row;
     /* margin: 0 auto; */
     justify-content: center;
-    align-items: center;
+    align-items: start;
     width: 100vw;
-    height: 84vh;
+    height: 90vh;
     overflow: hidden;
     /* flex: 1 1; */
 }
@@ -622,7 +609,7 @@ button.join:hover .flech {
     display: flex;
     /* margin-left: 6%; */
     width: 17%;
-    height: 95vh;
+    height: 81vh;
     align-items: center;
 
     justify-content: center;
@@ -642,12 +629,22 @@ button.join:hover .flech {
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
     border-radius: 10px;
-    font-family: 'Baloo_Bhai_2';
+    font-family: 'bungee';
     outline: none;
     color: white;
     flex-direction: column;
     animation : slideUp 0.5s ease;
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.match-list::-webkit-scrollbar {
+    display: none;
+}
+
+.match-list h3{
+    justify-content: center;
+    display: flex;
 }
 .match-red-card{
     display: flex;
@@ -671,14 +668,28 @@ button.join:hover .flech {
     align-items: center;
     justify-content: center;
 }
+.match-orange{
+    display: flex;
+    margin-top: 5px;
+    margin-left: 20px;
+    background: linear-gradient(to left,rgba(255, 64, 64, 0.200),rgba(255, 0, 0, 0));
+    width: 16vw;
+    height: 6vh;
+    border-right: rgb(255, 115, 0) solid 4px;
+    align-items: center;
+    justify-content: center;
+}
+.match-orange img{
+    border-radius: 10%;
+}
 .rate{
-    font-size: 2vh;
+    font-size: 1.5vh;
     margin-right: 10px;
     margin-left: 10px;
     color: rgb(72, 255, 0);
 }
 .rate1{
-    font-size: 2vh;
+    font-size: 1.5vh;
     margin-left: 10px;
     margin-right: 10px;
     color: rgb(255, 0, 0);
@@ -743,7 +754,7 @@ button.join:hover .flech {
     border-radius: 15px;
     border-radius: 7px;
     justify-content: center;
-    border-right: orangered solid 7px;
+    /* border-right: orangered solid 7px; */
     border-bottom: orangered solid 7px;
 }
 .level-card{
@@ -757,7 +768,7 @@ button.join:hover .flech {
     border-radius: 7px;
     align-items: center;
     justify-content: center;
-    border-right: orangered solid 2px;
+    /* border-right: orangered solid 2px; */
     border-bottom: orangered solid 2px;
     transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
 
@@ -1375,6 +1386,11 @@ body.dark-mode {
 
 body.dark-mode .navbar a {
 	color: #ddd;
+}
+
+.dark-mode #darkModeToggle img {
+    content: url('../../svg/darkLight.svg');
+	animation: darkIn 0.5s ease-in-out forwards;	
 }
 
 @keyframes darkIn {

@@ -41,6 +41,11 @@ urlpatterns = [
     path('accept_friend/', views.accept_friend_request),
     path('pending/', views.pending),
     path('check_friend/', views.check_friend),
+    path('get_friends_list/', views.get_friends_list),
+
+    #get game finished
+    path('get_game_status/', views.get_game_status),
+    path('get_user_games/', views.get_user_games),
 
 
     path('', views.welcome),

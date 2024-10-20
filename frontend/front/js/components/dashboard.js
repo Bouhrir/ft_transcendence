@@ -1,4 +1,4 @@
-import { checkJwt , getAccessTokenFromCookies} from './help.js';
+import { checkJwt , getAccessTokenFromCookies, getuser} from './help.js';
 
 class DashboardComponent extends HTMLElement {
     async connectedCallback() {
@@ -20,7 +20,7 @@ class DashboardComponent extends HTMLElement {
                     </div>
                 </div>
                 <div class="matches">
-                    <h2>Matches<br><strong class="win">10</strong> - <strong class="lose">5</strong></h2>
+                    <h2>LAST MATCH<br><strong id="Score1"></strong> - <strong id="Score2"></strong></h2>
                 </div>
             </div>
             <div class="cards">
@@ -81,26 +81,9 @@ class DashboardComponent extends HTMLElement {
                 <h3 class="platinuim">platinuim</h3>
             </div>
         </div>
-        <div class="last-matches">
-            <div class="match-list">
-                <div class="match-txt">
-                    <h3>Last Matches</h3>
-                    <a href="#">view all matches</a>
-                </div>
-                <div class="match-green-card">
-                    <img src="#" width=60px height=60px>
-                    <p class="rate1">5</p>
-                    <p> - </p>
-                    <p class="rate">10</p>
-                    <img src="#" width=60px height=60px>
-                </div>
-                <div class="match-red-card">
-                    <img src="#" width=60px height=60px>
-                    <p class="rate1">10</p>
-                    <p> - </p>
-                    <p class="rate">5</p>
-                    <img src="#" width=60px height=60px>
-                </div>
+        <div class="match-list">
+            <h3>Last Matches</h3>
+            <div id="match-list">
             </div>
         </div>
     </div>
@@ -137,36 +120,103 @@ class DashboardComponent extends HTMLElement {
             console.error('Failed to fetch user data:', response.statusText);
         }
     }
-    async getuser(id, player){
+
+    async fetchFriendsData(){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/getuser/', {
-            method: 'POST',
+        const response = await fetch('http://localhost:81/auth/get_friends_list/', {
+            method: 'GET',
             headers:{
                 'Authorization': `Bearer ${access}`,
                 'Content-Type': 'application/json',
             },
-            body:JSON.stringify({
-               'id':id
-            })
         });
         if (response.ok){
-            const data = await response.json();
-            player.src = data.image;
+            const data = await response.json()
+            console.log(data)
         }
-    }
-
-    async fetchFriendsData(){
-        const player1 = document.getElementById('playerIMG1');
-        const player2 = document.getElementById('playerIMG2');
-        const player3 = document.getElementById('playerIMG3');
-        // this.getuser(69, player1);
-        // this.getuser(75, player2);
-        // this.getuser(70, player3);
+        else
+        {
+            console.log('no such friends')
+        }
       
     }
 	async LastMatches(){
-		//fetch last matches
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/get_game_status/', {
+            method: 'GET',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok){
+            const data = await response.json();
+            this.fillList(data);
+            this.fillLast(data);
+        }
+        else{
+            const matchesContainer = document.getElementById('match-list');
+            matchesContainer.textContent = 'No such matches';
+
+        }
 	}
+    fillList(data) {
+        const matchesContainer = document.getElementById('match-list');
+        matchesContainer.innerHTML = '';
+    
+        data.forEach(element => {
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match-orange';
+    
+            const img1 = document.createElement('img');
+            img1.width = 60;
+            img1.height = 60;
+            getuser(element.host_id, img1);
+            matchDiv.appendChild(img1);
+
+            let rate = ''
+            let rate1 = ''
+            if (element.host_score > element.guest_score)
+            {
+                rate = 'rate'
+                rate1 = 'rate1'
+            }
+            else 
+            {
+                rate = 'rate1'
+                rate1 = 'rate'
+            }
+            
+            const score1 = document.createElement('p');
+            score1.className = rate;
+            score1.textContent = element.host_score;
+            matchDiv.appendChild(score1);
+            
+            const under = document.createElement('p');
+            under.textContent = '-';
+            matchDiv.appendChild(under);
+            
+            const score2 = document.createElement('p');
+            score2.className = rate1;
+            score2.textContent = element.guest_score;
+            matchDiv.appendChild(score2);
+
+            const img2 = document.createElement('img');
+            img2.width = 60;
+            img2.height = 60;
+            getuser(element.guest_id, img2);
+            matchDiv.appendChild(img2);
+    
+            matchesContainer.appendChild(matchDiv);
+        });
+    }
+    fillLast(data){
+        const score1 = document.getElementById('Score1');
+        const score2 = document.getElementById('Score2');
+
+        score1.textContent = data[0].host_score
+        score2.textContent = data[0].guest_score
+    }
     
 }
 

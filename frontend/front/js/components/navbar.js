@@ -6,7 +6,7 @@ export async function createNavbar() {
 	<header class="head">
 		<div class="head1">
 		<div class="menu">
-			<button id="darkModeToggle" type="submit"><img src="../../needs/img/logo.svg"></button>
+			<button type="submit"><img src="../../needs/img/logo.svg"></button>
 			<a href="#dashboard">Dashboard</a>
 			<a href="#messenger">Messenger</a>
 			<a href="#gamebar">Game</a>
@@ -27,6 +27,9 @@ export async function createNavbar() {
 				</div>
 				<div class="logout">
 						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
+				</div>
+				<div class="logout">
+						<button id="darkModeToggle" type="submit"><img src="../../svg/darkNight.svg"></button>
 				</div>
 				<div class="profile" id="profile">
 					<button type="submit"><img id="icon-img" width=5px height=5px src="#"></button>

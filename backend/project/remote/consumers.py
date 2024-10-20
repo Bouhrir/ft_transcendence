@@ -89,8 +89,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def reset_ball(self):
 		return {
-				'x': 400,
-				'y': 300,
+				'x': self.canvas_width / 2,
+				'y': self.canvas_height / 2,
 				'dx': 3 * (1 if random.random() > 0.5 else -1),
 				'dy': 3 * (1 if random.random() > 0.5 else -1),
 		}

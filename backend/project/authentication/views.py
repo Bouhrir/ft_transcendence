@@ -44,7 +44,6 @@ def register_api(request):
 def get_2fa_status(request):
     username = request.data.get('username')
     user = User.objects.get(username=username)
-    print(user)
     profile = UserProfile.objects.get(user=user)
     print(profile.is_2fa_enabled)
     return Response({
@@ -147,7 +146,6 @@ def update_profile(request):
 @permission_classes([IsAuthenticated])
 def me(request):
     user = request.user
-    print(user)
     userImg = UserProfile.objects.get(user=user).image
     imageData = base64.b64encode(userImg.read()).decode('utf-8')
     return Response({
@@ -338,6 +336,14 @@ def get_friend_requests(request):
     friend_requests_data = [{"id": friend_request.user.id, "username": friend_request.user.username} for friend_request in friend_requests]
     return Response(friend_requests_data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friends_list(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    friends = user_profile.friends.all()
+    friends_data = [{"id": friend.user.id, "username": friend.user.username} for friend in friends]
+    return Response(friends_data, status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accept_friend_request(request):
@@ -386,3 +392,44 @@ def check_friend(request):
         return Response({'message': 'This user is a friend'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+
+#game status
+from remote.models import Game
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_game_status(request):
+    user = request.user
+    games = Game.objects.filter(status='finished')
+    if not games.exists():
+        return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
+
+    game_data = [{
+        'winner': game.winner.username if game.winner else None,
+        'host_id': game.host.id,
+        'guest_id': game.guest.id if game.guest else None,
+        'host_score': game.host_score,
+        'guest_score': game.guest_score
+    } for game in games]
+    return Response(game_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_games(request):
+    user = request.user
+    games = Game.objects.filter(host=user, status='finished')
+    if not games.exists():
+        return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    game_data = [{
+        'winner': game.winner.username if game.winner else None,
+        'host_id': game.host.id,
+        'guest_id': game.guest.id if game.guest else None,
+        'host_score': game.host_score,
+        'guest_score': game.guest_score
+    } for game in games]
+    return Response(game_data, status=status.HTTP_200_OK)
+
+

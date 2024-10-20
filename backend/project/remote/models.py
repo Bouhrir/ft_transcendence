@@ -11,9 +11,6 @@ class Game(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	room_name = models.CharField(max_length=50, unique=True, default="default")  # Add room_name here
 
-	def __str__(self):
-		return f"Room: {self.id} - {self.player1} vs {self.player2 or 'Waiting for player'}"
-
 	# Method to determine the winner based on scores
 	def determine_winner(self):
 		if self.host_score > self.guest_score:
@@ -48,6 +45,7 @@ class Game(models.Model):
 
 	def set_winner(self, winner):
 		setattr(self, 'winner', winner)
+
 
 
 	# def score_game(self, player_id, score1, score2):
