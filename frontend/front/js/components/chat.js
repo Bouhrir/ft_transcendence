@@ -20,30 +20,58 @@ class MessengerComponent extends HTMLElement {
         
         const access = getAccessTokenFromCookies();
 
-        async function sendInvitation(inviteeUsername) {
+        async function sendInvitation(inviteeId) {
             try {
                 const response = await fetch('/chat/send-invitation/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Bearer ${access}`
+                        'Authorization': `Bearer ${access}` // Ensure 'access' is defined
                     },
-                    body: `invitee_username=${inviteeUsername}`
+                    body: `invitee_id=${inviteeId}`
                 });
         
-                // Check if the response is ok (status in the range 200-299)
+                // Handle non-OK responses (status outside the 200-299 range)
                 if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.statusText);
+                    const errorData = await response.json();
+                    throw new Error(`Error ${response.status}: ${errorData.error}`);
                 }
+        
                 const data = await response.json(); // Parse the JSON response
-                return data; // Return the parsed data
+                return data; // Successfully return the parsed data
+        
             } catch (error) {
-                console.error('Error:', error);
-                return null; // Or handle the error as needed
+                // Handle network or JSON parsing errors
+                console.error('Error:', error.message);
+                return null; // Return null or handle the error as needed
             }
         }
-
-        // sendInvitation("zaz")
+        
+        async function acceptInvitation(inviterId) {
+            try {
+                const response = await fetch('/chat/accept-invitation/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${access}` // Make sure 'access' is defined
+                    },
+                    body: `inviter_id=${inviterId}`
+                });
+        
+                // Handle non-OK responses (status outside the 200-299 range)
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Error ${response.status}: ${errorData.error}`);
+                }
+                const data = await response.json(); // Try parsing JSON response
+                return data; // Successfully return the parsed data
+        
+            } catch (error) {
+                // Handle network or parsing errors
+                console.error('Error:', error.message);
+                return null; // Return null or handle the error as needed
+            }
+        }
         
         function deleteInvitation(username) {
             fetch('/chat/delete-invitations/', {
@@ -112,20 +140,39 @@ class MessengerComponent extends HTMLElement {
             const message = messageInputDom.value;
             // check if it's a command, if not broadcast it
             if (message === "/invite") {
-                let invite = await sendInvitation("zaz")
-                console.log(invite)
-                window.gameRoom = invite.room_name
-                window.location.href = `#game`;
+                let invite = await sendInvitation(113)
+                if (invite) {
+                    console.log("invitation sent:", invite)
+                    ws.send(JSON.stringify({
+                        'message': "do you want to play against me?"
+                    }));
+                    window.gameRoom = invite.room_name
+                    window.location.href = `#game-online`;
+                } else {
+                    ws.send(JSON.stringify({
+                        'message': "you can't send this invitation"
+                    }));
+                }
+            } else if (message === "/accept") {
+                let invite = await acceptInvitation(114)
+                if (invite) {
+                    console.log("invitation accept:", invite)
+                    window.gameRoom = invite.room_name
+                    window.location.href = `#game-online`;
+                } else {
+                    ws.send(JSON.stringify({
+                        'message': "invitation not found"
+                    }));
+                }
             } else {
                 ws.send(JSON.stringify({
                     'message': message
                 }));
             }
-            // return
-            // console.log("sending")
-            // messageInputDom.value = '';
         };
     }
 }
+// inviter 114
+// invitee 113
 
 customElements.define('messenger-component', MessengerComponent);

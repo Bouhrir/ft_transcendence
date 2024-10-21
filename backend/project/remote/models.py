@@ -10,9 +10,8 @@ class Game(models.Model):
 	winner = models.ForeignKey(User, related_name='winner', on_delete=models.CASCADE, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	room_name = models.CharField(max_length=50, unique=True, default="default")  # Add room_name here
+	type = models.CharField(max_length=30, default='game')
 
-	def __str__(self):
-		return f"Room: {self.id} - {self.player1} vs {self.player2 or 'Waiting for player'}"
 
 	# Method to determine the winner based on scores
 	def determine_winner(self):
@@ -20,9 +19,9 @@ class Game(models.Model):
 			self.winner = self.host
 		elif self.guest_score > self.host_score:
 			self.winner = self.guest
-		# else:
-		# 	self.winner = None  # In case of a tie or no winner
-		self.status = "finished"  # Set the status to finished when winner is determined
+		else:
+			print("no winner detected")
+		self.status = "finished"
 		self.save()
 		# return self.winner
 
@@ -41,6 +40,10 @@ class Game(models.Model):
 		elif self.guest and self.guest.id == player_id:
 			self.host_score = ai_score
 			self.guest_score = player_score
+		self.save()
+
+	def set_status(self, status):
+		self.status = status
 
 	def set_guest_score(self, guest_score):
 		# self.guest_score = guest_score

@@ -127,38 +127,10 @@ class TournamentComponent extends HTMLElement {
                 // console.log(ele)
             }
         }
-
-        // function backFromGame() {
-        //     if (window.isTournament) {
-        //         console.log("back from game!!!")
-        //         if (window.isWebSocketOpen) {
-        //             const data = {
-        //                 type: 'back',
-        //                 // player_id: player_id,
-        //                 // alias: alias
-        //             };
-        //             window.ws.send(JSON.stringify(data));
-        //         }
-        //         window.isTournament = false
-        //         joinButton.style.display = "none"
-        //         aliasInput.style.display = "none"
-        //     }
-        //     // maybe make it false again
-        // }
-        // backFromGame()
-        // let ws = window.localStorage.getItem('tournamentSocket');
-
-        // console.log("websock: ", ws)
-
-        // if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
-            // console.log("establishing a new connection")
-            // console.log("opened: ", ws)
-            // window.localStorage.setItem('tournamentSocket', ws);
-            // }
-            
+            // maybe i can add in single page that i don't re open the socket
             const ws = new WebSocket('ws://localhost:81/ws/tournament/');
             ws.onopen = function() {
-                // console.log("tournament WebSocket is open now.");
+                console.log("tournament WebSocket is open now.");
                 isWebSocketOpen = true;
             };
             
@@ -177,14 +149,6 @@ class TournamentComponent extends HTMLElement {
                 if (data.action == "new_connection") {
                     player_id = data.player_id
                     console.log("new tournament connection: ", player_id)
-                    status(data.games)
-                }
-                else if (data.action == "redirect_game") {
-                    console.log("games prepared")
-                    window.gameRoom = data.room
-                    // joinButton.style.display = "block"
-                    // joinButton.innerText = "PLAY!"
-                    // aliasInput.style.display = "none"
                 }
                 else if (data.action == "cancelled") {
                     joinButton.style.display = "none"
@@ -261,12 +225,8 @@ class TournamentComponent extends HTMLElement {
         });
 
         async function setPlayer(player, playerElement, scoreElement) {
-            if (!playerElement || !scoreElement) {
-                console.error("Player or score element is not found in the DOM.");
+            if (!playerElement || !scoreElement || !player) {
                 return;
-            }
-            if (!player) {
-                return
             }
             getAvatar(player["id"], playerElement)
             scoreElement.innerHTML = `${player["score"]}`
@@ -286,33 +246,26 @@ class TournamentComponent extends HTMLElement {
             console.log("winner: ", winner)
             getAvatar(winner["id"], winnerPlayer)
             winnerPlayer.style.border = "3px solid rgb(255, 215, 0)";
-            // winningMsg.style.color = `rgb(255, 215, 0)`
         }
 
         function getPlayer(games, id) {
-            // if (round == "semis") {
-                for (let player of games["final"]) {
-                    if (player.id === id) {  // Replace targetId with the ID you're checking against
-                        return player;
-                    }
+            for (let player of games["final"]) {
+                if (player.id === id) {
+                    return player;
                 }
-                for (let player of games["first_semis"]) {
-                    if (player.id === id) {  // Replace targetId with the ID you're checking against
-                        return player;
-                    }
+            }
+            for (let player of games["first_semis"]) {
+                if (player.id === id) {
+                    return player;
                 }
-                for (let player of games["second_semis"]) {
-                    if (player.id === id) {  // Replace targetId with the ID you're checking against
-                        return player;
-                    }
+            }
+            for (let player of games["second_semis"]) {
+                if (player.id === id) {
+                    return player;
                 }
-            // } else {
-            // }
+            }
         }
-            
-        // function getPlayerStatus(player) {
 
-        // }
 
         function status(games) {
             const first_semis = games.first_semis
@@ -322,18 +275,14 @@ class TournamentComponent extends HTMLElement {
             const player = getPlayer(games, player_id)
             console.log("game_status:", games["status"])
             if (player) {
-                console.log("player_room_name: ", player["room_name"])
-                // window.gameRoom = player["room_name"]
-                // window.localStorage.setItem('roomName', player["room_name"]);
-                window.gameRoom = player["room_name"]
                 console.log("status: ", player.status)
                 if(player.status == "waiting") {
                     console.log("waiting")
-                    // joinButton.innerText = "waiting!"
                     joinButton.style.display = "none"
                     aliasInput.style.display = "none"
                 } else if(player.status == "ready") {
                     console.log("ready")
+                    window.gameRoom = player["room_name"]
                     joinButton.style.display = "block"
                     joinButton.innerText = "PLAY!"
                     aliasInput.style.display = "none"
@@ -341,7 +290,6 @@ class TournamentComponent extends HTMLElement {
                     console.log("active")
                     joinButton.style.display = "none"
                     aliasInput.style.display = "none"
-                    // joinButton.innerText = "PLAY!"
                 }
             } else if (games["status"] == "ongoing") {
                 aliasInput.style.display = "none"
@@ -351,28 +299,13 @@ class TournamentComponent extends HTMLElement {
                 aliasInput.style.display = "block"
                 joinButton.innerText = "JOIN!"
             } 
-            if(games["status"] == "finished") {
+            if (games["status"] == "finished") {
                 console.log("game finished")
                 joinButton.innerText = "RESET!"
                 joinButton.style.display = "block"
                 aliasInput.style.display = "none"
                 // joinButton.innerText = "PLAY!"
-            }
-                // get the picture of the player
-            // if the tournament is ongoing or the player joined the tournament
-            // if (games["status"] == "ongoing") {
-            //     aliasInput.style.display = "none"
-            //     joinButton.style.display = "none"
-            // } else if (games["status"] == "finished") {
-            //     joinButton.style.display = "block"
-            //     joinButton.innerText = "RESET!"
-            // }
-            // } else if (games["status"] == "pending") {
-            //     joinButton.style.display = "block"
-            //     joinButton.innerText = "JOIN!"
-            //     aliasInput.style.display = "block"
-            // }
-            
+            }            
             console.log("first_semis: ", first_semis)
             console.log("second_semis: ", second_semis)
             console.log("final: ", final)
@@ -391,65 +324,6 @@ class TournamentComponent extends HTMLElement {
         //         window.ws.close(); // Optionally close the WebSocket
         //     }
         // });
-        
-        
-        
-                    
-
-
-        
-
-        // async function createTournament() {
-        //     try {
-        //         const response = await fetch('/tournament/create_tournament/', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 'Authorization': `Bearer ${accessToken}` // Include token if needed
-        //             }
-        //         });
-        
-        //         const data = await response.json();
-        
-        //         if (response.ok) {
-        //             console.log('Tournament created:', data);
-        //         } else {
-        //             console.log('Error:', data.message);
-        //         }
-        //     } catch (error) {
-        //         console.error('Error creating tournament:', error);
-        //     }
-        //     await progress()
-        // }
-        // // Call the function to create the tournament
-        // createTournament();
-        
-
-        // async function progress() {
-        //     try {
-        //         const response = await fetch('/tournament/progress/', {
-        //             method: 'GET',
-        //             headers: {
-        //                 'Content-Type': 'application/x-www-form-urlencoded',
-        //                 'Authorization': `Bearer ${access}`
-        //             },
-        //         });
-        
-        //         // Check if the response is ok (status in the range 200-299)
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok: ' + response.statusText);
-        //         }
-        //         const data = await response.json(); // Parse the JSON response
-        //         return data; // Return the parsed data
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //         return null; // Or handle the error as needed
-        //     }
-        // }
-        
-        // function joinTournament() {
-
-        // }
     }
 }
 

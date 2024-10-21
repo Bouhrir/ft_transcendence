@@ -14,7 +14,7 @@ class Invitation(models.Model):
     inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_sent')
     invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_received')
     room_name = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, default='pending')  # e.g., pending, accepted
+    status = models.CharField(max_length=20, default='pending')  # e.g., pending, accepted, cancelled
 
     def __str__(self):
         return f"Invitation from {self.inviter} to {self.invitee} for {self.room_name} (Status: {self.status})"
