@@ -16,8 +16,6 @@ from django.contrib.auth.models import User
 def room(request):
     id1 = request.data['user1']
     id2 = request.data['user2']
-    
-    
     try:
         user1 = User.objects.get(id=id1)
         user2 = User.objects.get(id=id2)
@@ -36,11 +34,11 @@ def room(request):
             'sender' : mmssg.user_send.id,
             'time' : mmssg.date,
             })
-        return Response({"room_id" : room.id, "messages" : message_data}, status=status.HTTP_200_OK)
+        return Response({"room_id" : room.id, "messages" : message_data, "bol": True} ,status=status.HTTP_200_OK)
             
     else:
         room = Room.objects.create(user1=user1, user2=user2)
-        return Response({"room_id": room.id}, status=status.HTTP_201_CREATED)
+        return Response({"room_id": room.id, "bol": False}, status=status.HTTP_201_CREATED)
 
     # return render(request, 'chat/test.html')
 
