@@ -70,6 +70,7 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 10px;
+    overflow-y: auto;
     /* border : 3px solid rgb(0, 0, 0); */
 }
 
@@ -155,18 +156,15 @@
     /* background-color: #f9f9f9; */
 }
 
-.right-para {
+.right-para, .left-para {
     display: flex;
     justify-content: start;
-    align-items: right;
+    align-items: center;
     padding: 10px;
-
+    margin-bottom: 5px;
 }
-.left-para {
-    display: flex;
-    justify-content: start;
-    align-items: left;
-    padding: 10px;
+.right-para {
+    justify-content: flex-end;
 }
 
 
