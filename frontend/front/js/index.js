@@ -18,7 +18,6 @@ const routes = {
 async function navigate() {
     const path = window.location.hash.substring(1);
     let page = routes[path] || 'signin-component';
-
     if (path.startsWith('profile')) {
         const userId = path.split('/')[1]; 
         page = 'profile-component';

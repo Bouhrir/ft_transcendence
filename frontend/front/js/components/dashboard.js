@@ -91,6 +91,7 @@ class DashboardComponent extends HTMLElement {
         await this.fetchUserData();
         await this.fetchFriendsData();
 		await this.LastMatches();
+        await this.myMatch()
         // this.checkAuth();
     }
 
@@ -152,7 +153,6 @@ class DashboardComponent extends HTMLElement {
         if (response.ok){
             const data = await response.json();
             this.fillList(data);
-            this.fillLast(data);
         }
         else{
             const matchesContainer = document.getElementById('match-list');
@@ -160,6 +160,20 @@ class DashboardComponent extends HTMLElement {
 
         }
 	}
+    async myMatch(){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/get_user_games/', {
+            method: 'GET',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok){
+            const data = await response.json();
+            this.fillLast(data);
+        }
+    }
     fillList(data) {
         const matchesContainer = document.getElementById('match-list');
         matchesContainer.innerHTML = '';

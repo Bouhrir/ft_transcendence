@@ -50,7 +50,7 @@ export async function createNavbar() {
 	logout();
 	darkMode();
 	await iconImg();
-	notification();
+	notification()
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -127,9 +127,9 @@ function logout(){
 				}
 			});
 			if (loggedout.ok) {
-				location.reload();
 				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+				location.reload();
 			}
 		}
 		catch (error) {
@@ -170,19 +170,16 @@ async function iconImg(){
 	if (response.ok) {
 		const iconImg = document.getElementById('icon-img');
 		userId = data.id;
-		console.log('icon', userId)
 		iconImg.src = data.image;
 	}
 	else 
 		displayMsg(data);
-	console.log('notif1', userId)
 
 }
 async function notification(){
 	const access = getAccessTokenFromCookies('access');
-	console.log('notif', userId)
 
-	const response = await fetch('http://localhost:81/auth/get_friends/', {
+	const response = await fetch('http://localhost:81/auth/get_friends_request/', {
 		method: 'GET',
 		headers:{
 			'Authorization': `Bearer ${access}`,
@@ -195,20 +192,15 @@ async function notification(){
 		notificationsDiv.innerHTML = '';
 		if (data.length > 0) {
 			activeNotification();
-        }
-		data.forEach(friendRequest => {
-			console.log(friendRequest.id , userId)
-			if (friendRequest.id === userId){
-				console.log('herre')
-				return
-			}
-			const friendRequestDiv = document.createElement('div');
-			friendRequestDiv.className = 'request';
-			friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
+			data.forEach(friendRequest => {
+				const friendRequestDiv = document.createElement('div');
+				friendRequestDiv.className = 'request';
+				friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
 
-			notificationsDiv.prepend(friendRequestDiv);
-			accept(notificationsDiv, friendRequestDiv, friendRequest.id);
-		});
+				notificationsDiv.prepend(friendRequestDiv);
+				accept(notificationsDiv, friendRequestDiv, friendRequest.id);
+			});
+		}
 	} else {
 		console.error('Failed to fetch friend requests:', response.statusText);
 	}
@@ -239,12 +231,13 @@ function accept(notificationsDiv, friendRequestDiv, id){
 	});
 }
 function activeNotification(){
+	document.getElementById('bold-point').style.display = 'block';
 	document.getElementById('notifications').addEventListener('click', function() {
 		const notificationsDiv = document.getElementById('resultRequest');
 		if (notificationsDiv.style.display === 'none') {
 			notificationsDiv.style.display = 'block';
 		} else {
-			// notificationsDiv.style.display = 'none';
+			notificationsDiv.style.display = 'none';
 			document.getElementById('bold-point').style.display = 'none';
 		}
 	});
