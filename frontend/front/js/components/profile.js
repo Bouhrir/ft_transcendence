@@ -27,7 +27,7 @@ class ProfileComponent extends HTMLElement {
                 <h1>MATCHE</h1>
                 <h3>W  /  L</h3>
                 <p class="Score">
-                    <span id="Score1">10</span> - <span id="Score2">0</span>
+                    <span id="Score1"></span> - <span id="Score2"></span>
                 </p>
             </div>
         </div>
@@ -74,7 +74,7 @@ class ProfileComponent extends HTMLElement {
                         addFriendButton.style.display = 'none'
                         const pendingButton = document.createElement('div');
                         pendingButton.className = 'join';
-                        pendingButton.textContent = 'Pending';
+                        pendingButton.textContent = 'PENDING';
                         addFriendButton.parentNode.appendChild(pendingButton);
                     }
                 });
@@ -127,6 +127,7 @@ class ProfileComponent extends HTMLElement {
                 const pendingButton = document.createElement('div');
                 pendingButton.className = 'join';
                 pendingButton.textContent = 'Pending';
+                
                 addFriendButton.parentNode.appendChild(pendingButton);
             } else {
                 console.error('Failed to send friend request:', response.statusText);

@@ -326,6 +326,7 @@ def send_friend_request(request):
 
     user_profile = UserProfile.objects.get(user=request.user)
     friend_profile.friend_requests.add(user_profile)
+
     return Response({'message': 'Friend request sent successfully'}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -333,7 +334,7 @@ def send_friend_request(request):
 def get_friend_requests(request):
     user_profile = UserProfile.objects.get(user=request.user)
     friend_requests = user_profile.friend_requests.all()
-    friend_requests_data = [{"id": friend_request.user.id, "username": friend_request.user.username} for friend_request in friend_requests]
+    friend_requests_data = [{"id": fr.user.id, "username": fr.user.username} for fr in friend_requests]
     return Response(friend_requests_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -344,6 +345,8 @@ def get_friends_list(request):
     if (not friends.exists()):
         return Response({'message': 'No friends found'}, status=status.HTTP_404_NOT_FOUND)
     friends_data = [{"id": friend.user.id, "username": friend.user.username} for friend in friends]
+    if not friends_data:
+        return Response({'message': 'You have no friends.'}, status=status.HTTP_404_NOT_FOUND)
     return Response(friends_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -370,14 +373,18 @@ def accept_friend_request(request):
 @permission_classes([IsAuthenticated])
 def pending(request):
     friend_id = request.data.get('friend_id')
-    user = User.objects.get(id=friend_id)
+    
+    if not friend_id:
+        return Response({'error': 'Friend ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
+        user = User.objects.get(id=friend_id)
         friend_profile = UserProfile.objects.get(user=user)
-    except UserProfile.DoesNotExist:
-        return Response({'error': 'User not found'}, status= status.HTTP_404_NOT_FOUND)
-
-    user_profile = UserProfile.objects.get(user=request.user)
-    if friend_profile in user_profile.friend_requests.all():
+        user_profile = User.objects.get(id=request.user.id)
+    except UserProfile.DoesNotExist or User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    print(friend_profile.friend_requests.all())
+    if friend_profile.friend_requests.filter(user=user_profile).exists():
         return Response({'message': 'Friend request pending'}, status=status.HTTP_200_OK)
     else:
         return Response({'error': 'No friend request from this user'}, status=status.HTTP_400_BAD_REQUEST)

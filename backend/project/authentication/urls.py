@@ -37,7 +37,7 @@ urlpatterns = [
 
     #add friend
     path('add_friend/', views.send_friend_request),
-    path('get_friends/', views.get_friend_requests),
+    path('get_friends_request/', views.get_friend_requests),
     path('accept_friend/', views.accept_friend_request),
     path('pending/', views.pending),
     path('check_friend/', views.check_friend),
