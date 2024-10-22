@@ -24,11 +24,12 @@ class MessengerComponent extends HTMLElement {
                     </div>
                     <div id="chat_area">
                     </div>
-                    <div id="input_area">
-                        <input type="text"  id="message" placeholder="Type a message..." />
-                        <button id="send" type="submit">send</button>
-
-                    </div>
+                    <form id="chat">
+                        <div id="input_area">
+                            <input type="text"  id="message" placeholder="Type a message..." />
+                            <button id="send" type="submit">send</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>`;
@@ -48,7 +49,7 @@ class MessengerComponent extends HTMLElement {
         }
         await this.fetchFriendsData()
 
-        document.getElementById('send').addEventListener('click', () => this.sendMessage()); 
+        document.getElementById('chat').addEventListener('click', () => this.sendMessage()); 
 
     }
 
@@ -153,7 +154,7 @@ class MessengerComponent extends HTMLElement {
         if (response.ok) {
             const data = await response.json()
             const archive = document.getElementById('archive');
-            // document.getElementById('main-part').innerHTML = '';
+
             document.getElementById('chat_area').innerHTML = '';
 
 
