@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .chat-container {
+        display: flex;
+        height: 100vh;
+        background: linear-gradient(to bottom right, #ff4b2b, #8B0000);
+        color: white;
+    }
+    
+    .left-sidebar {
+        width: 25%;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+    }
+    
+    .main-content {
+        display: flex;
+        width: 75%;
+    }
+    
+    .chat-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    
+    .chat-input {
+        display: flex;
+        padding: 10px 0;
+    }
+    
+    .chat-input input {
+        flex-grow: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    
+    .chat-input button {
+        margin-left: 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        background-color: #ff4b2b;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .right-sidebar {
+        width: 200px;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+    }
+</style>
+<body>
+    <div class="chat-container">
+        <div class="left-sidebar">
+            <!-- Content for left sidebar -->
+            <h2>Messages (15)</h2>
+            <!-- Add more elements for the message list -->
+        </div>
+        
+        <div class="main-content">
+            <div class="chat-area">
+                <!-- Main chat area content -->
+                <div class="chat-messages">
+                    <!-- Chat messages will go here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Write your message...">
+                    <button>Send</button>
+                </div>
+            </div>
+            
+            <div class="right-sidebar">
+                <!-- Content for right sidebar -->
+                <h3>Online Friends</h3>
+                <!-- Add more elements for the online friends list -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

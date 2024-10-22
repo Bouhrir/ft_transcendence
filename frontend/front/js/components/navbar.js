@@ -1,4 +1,6 @@
-import { displayMsg, getAccessTokenFromCookies } from "./help.js";
+import { displayMsg, getAccessTokenFromCookies, checkJwt } from "./help.js";
+
+
 export async function createNavbar() {
 	const navbar = document.createElement('div');
 	navbar.className = 'navbar';
@@ -6,7 +8,7 @@ export async function createNavbar() {
 	<header class="head">
 		<div class="head1">
 		<div class="menu">
-			<button id="darkModeToggle" type="submit"><img src="../../needs/img/logo.svg"></button>
+			<button type="submit"><img src="../../needs/img/logo.svg"></button>
 			<a href="#dashboard">Dashboard</a>
 			<a href="#messenger">Messenger</a>
 			<a href="#gamebar">Game</a>
@@ -28,6 +30,9 @@ export async function createNavbar() {
 				<div class="logout">
 						<button  id="logout" type="submit"><img src="../../svg/logout.svg"></button>
 				</div>
+				<div class="logout">
+						<button id="darkModeToggle" type="submit"><img src="../../svg/darkNight.svg"></button>
+				</div>
 				<div class="profile" id="profile">
 					<button type="submit"><img id="icon-img" width=5px height=5px src="#"></button>
 				</div>
@@ -40,12 +45,13 @@ export async function createNavbar() {
 
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
+	await checkJwt();
 	search();
 	profile();
 	logout();
 	darkMode();
-	notification();
 	iconImg();
+	notification()
 }
 function search(){
 	const searchInput = document.getElementById('searchInput');
@@ -122,9 +128,9 @@ function logout(){
 				}
 			});
 			if (loggedout.ok) {
-				location.reload();
 				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
+				location.reload();
 			}
 		}
 		catch (error) {
@@ -133,7 +139,6 @@ function logout(){
 	});
 	
 }
-
 // current profile 
 function profile(){
 	const profile = document.getElementById('profile');
@@ -146,8 +151,8 @@ function profile(){
                 'Content-Type': 'application/json',
             }
         });
+		const data = await response.json();
         if (response.ok) {
-			const data = await response.json();
 			window.location.href = `#profile/${data.id}`
 		}
 	});
@@ -162,39 +167,40 @@ async function iconImg(){
 		}
 	});
 	const data = await response.json();
+
 	if (response.ok) {
 		const iconImg = document.getElementById('icon-img');
 		iconImg.src = data.image;
 	}
 	else 
 		displayMsg(data);
+
 }
 async function notification(){
 	const access = getAccessTokenFromCookies('access');
-	const response = await fetch('http://localhost:81/auth/get_friends/', {
+
+	const response = await fetch('http://localhost:81/auth/get_friends_request/', {
 		method: 'GET',
 		headers:{
 			'Authorization': `Bearer ${access}`,
 			'Content-Type': 'application/json',
 		},
 	});
-
 	if (response.ok) {
 		const data = await response.json();
 		const notificationsDiv = document.getElementById('resultRequest');
 		notificationsDiv.innerHTML = '';
 		if (data.length > 0) {
 			activeNotification();
-            document.getElementById('bold-point').style.display = 'block';
-        }
-		data.forEach(friendRequest => {
-			const friendRequestDiv = document.createElement('div');
-			friendRequestDiv.className = 'request';
-			friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
+			data.forEach(friendRequest => {
+				const friendRequestDiv = document.createElement('div');
+				friendRequestDiv.className = 'request';
+				friendRequestDiv.innerHTML = `<p><span>${friendRequest.username}</span> has sent you a friend request <button class="accept" id="accept">accept</button></p>`;
 
-			notificationsDiv.prepend(friendRequestDiv);
-			accpet(notificationsDiv, friendRequestDiv, friendRequest.id);
-		});
+				notificationsDiv.prepend(friendRequestDiv);
+				accept(notificationsDiv, friendRequestDiv, friendRequest.id);
+			});
+		}
 	} else {
 		console.error('Failed to fetch friend requests:', response.statusText);
 	}
@@ -202,7 +208,7 @@ async function notification(){
 
 }
 
-function accpet(notificationsDiv, friendRequestDiv, id){
+function accept(notificationsDiv, friendRequestDiv, id){
 	const access = getAccessTokenFromCookies('access');
 	const acceptButton = document.querySelector('.accept');
 	acceptButton.addEventListener('click' ,async () =>{
@@ -225,12 +231,13 @@ function accpet(notificationsDiv, friendRequestDiv, id){
 	});
 }
 function activeNotification(){
+	document.getElementById('bold-point').style.display = 'block';
 	document.getElementById('notifications').addEventListener('click', function() {
 		const notificationsDiv = document.getElementById('resultRequest');
 		if (notificationsDiv.style.display === 'none') {
 			notificationsDiv.style.display = 'block';
 		} else {
-			// notificationsDiv.style.display = 'none';
+			notificationsDiv.style.display = 'none';
 			document.getElementById('bold-point').style.display = 'none';
 		}
 	});

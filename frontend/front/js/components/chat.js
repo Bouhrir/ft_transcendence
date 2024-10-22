@@ -1,178 +1,222 @@
+import { checkJwt, displayMsg, getAccessTokenFromCookies, getuser } from './help.js';
 class MessengerComponent extends HTMLElement {
-    connectedCallback(){
-        this.innerHTML = `
-            <div id="chat-log"></div>
-            <input id="chat-message-input" type="text" size="100">
-            <input id="chat-message-submit" type="button" value="Send">
-        `;
-        // window.gameRoom = ""
-        function getAccessTokenFromCookies() {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith('access=')) {
-                    return cookie.substring('access='.length);
-                }
-            }
-            return null;
-        }
-
-        
-        const access = getAccessTokenFromCookies();
-
-        async function sendInvitation(inviteeId) {
-            try {
-                const response = await fetch('/chat/send-invitation/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Bearer ${access}` // Ensure 'access' is defined
-                    },
-                    body: `invitee_id=${inviteeId}`
-                });
-        
-                // Handle non-OK responses (status outside the 200-299 range)
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Error ${response.status}: ${errorData.error}`);
-                }
-        
-                const data = await response.json(); // Parse the JSON response
-                return data; // Successfully return the parsed data
-        
-            } catch (error) {
-                // Handle network or JSON parsing errors
-                console.error('Error:', error.message);
-                return null; // Return null or handle the error as needed
-            }
-        }
-        
-        async function acceptInvitation(inviterId) {
-            try {
-                const response = await fetch('/chat/accept-invitation/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Bearer ${access}` // Make sure 'access' is defined
-                    },
-                    body: `inviter_id=${inviterId}`
-                });
-        
-                // Handle non-OK responses (status outside the 200-299 range)
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Error ${response.status}: ${errorData.error}`);
-                }
-                const data = await response.json(); // Try parsing JSON response
-                return data; // Successfully return the parsed data
-        
-            } catch (error) {
-                // Handle network or parsing errors
-                console.error('Error:', error.message);
-                return null; // Return null or handle the error as needed
-            }
-        }
-        
-        function deleteInvitation(username) {
-            fetch('/chat/delete-invitations/', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${access}`
-                },
-                body: JSON.stringify({ invitee_username: username })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        console.error('Error response:', errorData);
-                        throw new Error('Network response was not ok: ' + response.statusText);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('result: ', data);
-                // Redirect or join the room using the room_name
-                // window.location.href = `/game?room_name=${data.room_name}`; // Navigate to the game page
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-        // deleteInvitation("zaz")
-
-        const roomName = "your_room_name";  // Replace with your room name
-        const ws = new WebSocket('ws://localhost:81/ws/chat/');
-        ws.onopen = function() {
-            console.log("Chat WebSocket is open now.");
-            // isWebSocketOpen = true;
-        };
-
-        // Handle WebSocket errors
-        ws.onerror = function(error) {
-            console.error("Chat WebSocket error:", error);
-        };
-
-        // Handle WebSocket close
-        ws.onclose = function() {
-            // isWebSocketOpen = false;
-        };
-
-        ws.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            console.log("received data: ", data.message)
-            const messagesList = document.querySelector('#chat-log')
-            const newMessageItem = document.createElement('p');
-            newMessageItem.textContent = data.message;
-            messagesList.appendChild(newMessageItem);
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // Enter key
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-        // deleteInvitation("zaz")
-        document.querySelector('#chat-message-submit').onclick = async function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            // check if it's a command, if not broadcast it
-            if (message === "/invite") {
-                let invite = await sendInvitation(113)
-                if (invite) {
-                    console.log("invitation sent:", invite)
-                    ws.send(JSON.stringify({
-                        'message': "do you want to play against me?"
-                    }));
-                    window.gameRoom = invite.room_name
-                    window.location.href = `#game-online`;
-                } else {
-                    ws.send(JSON.stringify({
-                        'message': "you can't send this invitation"
-                    }));
-                }
-            } else if (message === "/accept") {
-                let invite = await acceptInvitation(114)
-                if (invite) {
-                    console.log("invitation accept:", invite)
-                    window.gameRoom = invite.room_name
-                    window.location.href = `#game-online`;
-                } else {
-                    ws.send(JSON.stringify({
-                        'message': "invitation not found"
-                    }));
-                }
-            } else {
-                ws.send(JSON.stringify({
-                    'message': message
-                }));
-            }
-        };
+    constructor() {
+        super();
+        this.data = null;
+        this.currentUserId = null;
+        this.receiverId = null;
+        this.receiverName = null;
+        this.roomData = null;
+        this.socket = null;
     }
+
+
+    async connectedCallback() {
+        this.innerHTML = `
+        <div id="chat-container">
+            <div class="chat">
+                <div id="left_side">
+                    <h1>Friends</h1>
+                    <div id="archive"></div>
+                </div>
+                <div id="main_part">
+                    <div id="chat_header">
+                    </div>
+                    <div id="chat_area">
+                    </div>
+                    <form id="chat">
+                        <div id="input_area">
+                            <input type="text"  id="message" placeholder="Type a message..." />
+                            <button id="send" type="submit">send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>`;
+
+        const access = getAccessTokenFromCookies('access');
+        // let data;
+        const response = await fetch('http://localhost:81/auth/me/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            this.data = await response.json();;
+            this.currentUserId = this.data.id;
+        }
+        await this.fetchFriendsData()
+
+        document.getElementById('chat').addEventListener('click', () => this.sendMessage()); 
+
+    }
+
+
+    async clickRoom() {
+        const access = getAccessTokenFromCookies('access');
+        const room = await fetch('http://localhost:81/chat/room/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify({
+                'user1': this.currentUserId,
+                'user2': this.receiverId,
+            }),
+        });
+        if (room.ok) {
+            this.roomData = await room.json();
+
+            if (this.roomData.bol) {
+                const messageDisplay = document.getElementById('chat_area');
+                const messages = this.roomData.messages;
+                for (let i = 0; i < messages.length; i++) {
+                    const message = messages[i];
+                    const newMessage = document.createElement('div')
+
+                    if (message.sender == this.currentUserId) {
+                        newMessage.classList.add ('right-para')
+                        newMessage.textContent = ` ${message.content}`
+                    }
+                    else {
+                        newMessage.textContent = `${message.content}`
+                        newMessage.classList.add ('left-para')
+                    }
+                    messageDisplay.appendChild(newMessage)
+                    messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                }
+                this.intialws();
+            }
+        }
+        else{
+            console.log("Error fetching room");
+        }
+    }
+    
+    intialws(){
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.close();
+        }
+        this.socket = new WebSocket('ws://localhost:81/ws/chat/' + this.roomData.room_id + '/');
+        this.socket.onopen = () => {
+            console.log('Connected to WebSocket');
+        }
+        this.socket.onclose =  () => {
+            console.log('Chat socket closed');
+        }
+        this.socket.onmessage = (event) => {
+            const data = JSON.parse(event.data)
+            const messageDisplay = document.getElementById('chat_area');
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message-display';
+
+            if (data.snd_id === this.currentUserId) {
+                newMessage.classList.add ('right-para')
+                newMessage.textContent = `${data.msg}`;
+            }
+            else{
+                newMessage.classList.add ('left-para')
+                newMessage.textContent = `${data.msg}`;
+            }
+            messageDisplay.appendChild(newMessage);
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        }
+    } 
+
+    sendMessage() {
+        const message = document.getElementById('message').value;
+        console.log(message)
+
+        if (message.trim() !== "") {
+            this.socket.send(JSON.stringify({
+                'msg': message,
+                'snd_id': this.currentUserId,
+                'rec_id': this.receiverId,
+                'room_id': this.roomData.room_id,
+            }));
+            document.getElementById('message').value = '';
+        }
+    }
+    
+    async fetchFriendsData() {
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('http://localhost:81/auth/get_friends_list/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            const data = await response.json()
+            const archive = document.getElementById('archive');
+
+            document.getElementById('chat_area').innerHTML = '';
+
+
+            data.forEach(e => {
+                const chater = document.createElement('div');
+                chater.className = 'chat-img';
+
+                const img = document.createElement('img');
+                img.className = 'img-pic';
+                getuser(e.id, img);
+                img.width = 70;
+                img.height = 70;
+                chater.appendChild(img);
+
+
+                const p = document.createElement('p');
+                p.textContent = e.username;
+                chater.appendChild(p);
+
+
+                archive.appendChild(chater);
+
+                chater.addEventListener('click', () => {
+                    console.log("clicked on room")
+                    document.getElementById('chat_area').innerHTML = '';
+                    this.receiverId = e.id;
+                    this.receiverName = e.username;
+                    const chatHeader = document.getElementById('chat_header');
+                    chatHeader.style.borderBottom = '0.5px solid rgb(255, 255, 255)';
+                    chatHeader.style.borderBottomLeftRadius = '20px';
+                    chatHeader.style.borderBottomRightRadius = '20px';
+                    chatHeader.innerHTML = '';
+                    const header = document.createElement('div');
+                    header.className = 'chat-img1';
+                    const img = document.createElement('img');
+                    img.className = 'img-pic';
+                    getuser(this.receiverId, img);
+                    img.width = 70;
+                    img.height = 70;
+                    const p = document.createElement('h5');
+                    p.textContent = e.username;
+                    header.appendChild(img);
+                    header.appendChild(p);
+                    chatHeader.appendChild(header);
+                    this.clickRoom();
+            });
+        });
+
+        }
+        else {
+            console.log('no such friends')
+        }
+
+    }
+
 }
 // inviter 114
 // invitee 113
+
+
+
+// Define receiverId and receiverName based on your application logic
+// }
 
 customElements.define('messenger-component', MessengerComponent);

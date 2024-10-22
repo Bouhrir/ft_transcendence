@@ -15,6 +15,7 @@ from channels.auth import AuthMiddlewareStack
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "setup.settings")
 import django
 django.setup()
+
 from remote.routing import websocket_urlpatterns as remote_websocket_urlpatterns
 from chat.routing import websocket_urlpatterns as chat_websocket_urlpatterns
 from tournament.routing import websocket_urlpatterns as tournament_websocket_urlpatterns

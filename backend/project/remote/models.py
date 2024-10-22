@@ -12,7 +12,6 @@ class Game(models.Model):
 	room_name = models.CharField(max_length=50, unique=True, default="default")  # Add room_name here
 	type = models.CharField(max_length=30, default='game')
 
-
 	# Method to determine the winner based on scores
 	def determine_winner(self):
 		if self.host_score > self.guest_score:
@@ -51,6 +50,7 @@ class Game(models.Model):
 
 	def set_winner(self, winner):
 		setattr(self, 'winner', winner)
+
 
 
 	# def score_game(self, player_id, score1, score2):
