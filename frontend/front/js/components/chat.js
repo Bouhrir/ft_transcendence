@@ -97,7 +97,7 @@ class MessengerComponent extends HTMLElement {
     }
     
     intialws(){
-        if (this.socket) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.close();
         }
         this.socket = new WebSocket('ws://localhost:81/ws/chat/' + this.roomData.room_id + '/');
@@ -105,7 +105,7 @@ class MessengerComponent extends HTMLElement {
             console.log('Connected to WebSocket');
         }
         this.socket.onclose =  () => {
-            console.error('Chat socket closed unexpectedly');
+            console.log('Chat socket closed');
         }
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data)
@@ -128,6 +128,7 @@ class MessengerComponent extends HTMLElement {
 
     sendMessage() {
         const message = document.getElementById('message').value;
+        console.log(message)
 
         if (message.trim() !== "") {
             this.socket.send(JSON.stringify({
@@ -176,6 +177,7 @@ class MessengerComponent extends HTMLElement {
                 archive.appendChild(chater);
 
                 chater.addEventListener('click', () => {
+                    console.log("clicked on room")
                     document.getElementById('chat_area').innerHTML = '';
                     this.receiverId = e.id;
                     this.receiverName = e.username;

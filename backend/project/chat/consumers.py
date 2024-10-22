@@ -24,12 +24,13 @@ class SomeConsumer(JsonWebsocketConsumer):
         # if user.is_authenticated:
         #     self.connections.add(user.id)  # Add user id to the set of connections
         
-    def disconnect(self):
+    def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name,
         )
-        self.connections.remove(self)
+        # if self in self.connections:
+            # self.connections.remove(self)
         # user = self.scope['user']
         # if user.is_authenticated:
         #     self.connections.discard(user.id)  # Remove user from connections
