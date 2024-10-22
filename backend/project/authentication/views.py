@@ -220,7 +220,7 @@ def register_42(user_data):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
-        response = HttpResponseRedirect('http://localhost:81/start/#true')
+        response = HttpResponseRedirect('https://localhost:81/start/#true')
         response.set_cookie(key='refresh', value=str(refresh))
         response.set_cookie(key='access', value=str(access))
         
@@ -247,11 +247,11 @@ def register_42(user_data):
             refresh = RefreshToken.for_user(user)
             access = refresh.access_token
 
-            response = HttpResponseRedirect('http://localhost:81/start/#true')
+            response = HttpResponseRedirect('https://localhost:81/start/#true')
             response.set_cookie(key='refresh', value=str(refresh))
             response.set_cookie(key='access', value=str(access))
             return response
-    return HttpResponseRedirect('http://localhost:81/start/#false10')
+    return HttpResponseRedirect('https://localhost:81/start/#false10')
 
 @api_view(['GET'])
 def LoginIntra(request):
@@ -267,7 +267,7 @@ def callback(request):
     code = request.GET.get('code')  # Corrected from request.get to request.GET.get
 
     if not code:
-        return HttpResponseRedirect('http://localhost:81/start/#false')
+        return HttpResponseRedirect('https://localhost:81/start/#false')
 
     # Step to exchange the authorization code for an access token
     token_url = 'https://api.intra.42.fr/oauth/token'
@@ -283,7 +283,7 @@ def callback(request):
     token_response = requests.post(token_url, data=token_data)
 
     if token_response.status_code != 200:
-        return HttpResponseRedirect('http://localhost:81/start/#false')
+        return HttpResponseRedirect('https://localhost:81/start/#false')
 
     token_json = token_response.json()
     access_token = token_json.get('access_token')
@@ -296,7 +296,7 @@ def callback(request):
         if user_info_response.status_code == 200:
             user_data = user_info_response.json()
             return register_42(user_data)
-    return HttpResponseRedirect('http://localhost:81/start/#false')
+    return HttpResponseRedirect('https://localhost:81/start/#false')
 #logout
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])

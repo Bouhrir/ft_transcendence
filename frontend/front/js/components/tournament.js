@@ -111,7 +111,7 @@ class TournamentComponent extends HTMLElement {
         // se.style.backgroundImage = "url('/needs/img/Rectangle 27.png')"
         async function getAvatar(id, element){
             const access = getAccessTokenFromCookies('access');
-            const response = await fetch('http://localhost:81/auth/getuser/', {
+            const response = await fetch('https://localhost:81/auth/getuser/', {
                 method: 'POST',
                 headers:{
                     'Authorization': `Bearer ${access}`,

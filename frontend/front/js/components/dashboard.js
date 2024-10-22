@@ -91,7 +91,7 @@ class DashboardComponent extends HTMLElement {
         const username = document.getElementById('username');
         const imgProfile = document.getElementById('ProfileImg');
 
-        const response = await fetch('http://localhost:81/auth/me/', {
+        const response = await fetch('https://localhost:81/auth/me/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -123,7 +123,7 @@ class DashboardComponent extends HTMLElement {
         const lvlimg2 = document.getElementById('lvl-img2')
         const lvlimg3 = document.getElementById('lvl-img3')
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_friends_list/', {
+        const response = await fetch('https://localhost:81/auth/get_friends_list/', {
             method: 'GET',
             headers:{
                 'Authorization': `Bearer ${access}`,
@@ -165,7 +165,7 @@ class DashboardComponent extends HTMLElement {
     }
 	async LastMatches(){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_game_status/', {
+        const response = await fetch('https://localhost:81/auth/get_game_status/', {
             method: 'GET',
             headers:{
                 'Authorization': `Bearer ${access}`,
@@ -184,7 +184,7 @@ class DashboardComponent extends HTMLElement {
 	}
     async myMatch(){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_user_games/', {
+        const response = await fetch('https://localhost:81/auth/get_user_games/', {
             method: 'GET',
             headers:{
                 'Authorization': `Bearer ${access}`,

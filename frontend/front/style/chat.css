@@ -107,6 +107,10 @@
     padding-left: 10px;
     gap: 10px;
     border-radius: 15px;
+    animation: slideRight 0.5s ease;
+}
+.chat-img1 img{
+    cursor: pointer;
 }
 
 .chat-img{

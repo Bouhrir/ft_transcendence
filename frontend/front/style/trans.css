@@ -583,6 +583,7 @@ button.join:hover .flech {
 .rank-profile img{
     border-radius: 15px;
 }
+
 .rank-profile h3{
     margin-top: 10px;
     margin-bottom: 10px;
@@ -929,6 +930,7 @@ button.join:hover .flech {
     color: white;
     text-decoration: none;
     font-size: 20px;
+    cursor: pointer;
 }
 .accord a:hover{
     color: rgb(168, 168, 168);
@@ -1379,6 +1381,13 @@ body.dark-mode {
 
 body.dark-mode .navbar a {
 	color: #ddd;
+}
+
+.dark-mode .profilepic img {
+    border-bottom: rgb(37, 32, 32) solid 7px;
+}
+.dark-mode .lvl-card {
+    border-bottom: rgb(37, 32, 32) solid 2px;
 }
 
 .dark-mode #darkModeToggle img {

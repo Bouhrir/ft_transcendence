@@ -10,38 +10,55 @@ class SignupComponent extends HTMLElement {
         <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
         </div>
-        <div class="signupbox" id="signup">
-        <div class="email-txt">
-                <h1 class="wlctxt">CREATE ACCOUNT</h1>
-                <div class="btn42">
-                    <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+        <form id="signup">
+            <div class="signupbox" id="signup">
+                <div class="email-txt">
+                        <h1 class="wlctxt">CREATE ACCOUNT</h1>
+                        <div class="btn42" id="btn42">
+                            <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                        </div>
+                        <div class="line">
+                            <h2 class="or">or</h2>
+                        </div>
+                        <h3>FIRST NAME</h3>
+                            <input id="firstname" type="text" class="email-input" placeholder="Enter your Firt Name" required>
+                        <h3>LAST NAME</h3>
+                            <input id="lastname" type="text" class="email-input" placeholder="Enter your Last Name" required>
+                        <h3>USERNAME</h3>
+                            <input id="username" type="text" class="email-input" placeholder="Enter your Username" required>
+                        <h3>EMAIL</h3>
+                            <input id="email" type="text" class="password-input" placeholder="Enter your Email" required>
+                        <h3>PASSWORD</h3>
+                            <input id="password" type="password" class="password-input" placeholder="Enter your Password" required>
+                        <h3>CONFIRM PASSWORD</h3>
+                            <input id="confirm_password" type="password" class="password-input" placeholder="Enter your Password" required>
+                        
+                        <div class="btnsign"> 
+                            <form>
+                            <button type="submit" class="loginbtn">Sign up</button>
+                            </form>
+                        </div>
+                        <div class="dont">
+                            <h2>Already have an account? <a href="#signin">Sign in<a></h2>
+                        </div>
+                    </div>
                 </div>
-                <div class="line">
-                    <h2 class="or">or</h2>
-                </div>
-                <h3>FIRST NAME</h3>
-                    <input id="firstname" type="text" class="email-input" placeholder="Enter your Firt Name" required>
-                <h3>LAST NAME</h3>
-                    <input id="lastname" type="text" class="email-input" placeholder="Enter your Last Name" required>
-                <h3>USERNAME</h3>
-                    <input id="username" type="text" class="email-input" placeholder="Enter your Username" required>
-                <h3>EMAIL</h3>
-                    <input id="email" type="text" class="password-input" placeholder="Enter your Email" required>
-                <h3>PASSWORD</h3>
-                    <input id="password" type="password" class="password-input" placeholder="Enter your Password" required>
-                <h3>CONFIRM PASSWORD</h3>
-                    <input id="confirm_password" type="password" class="password-input" placeholder="Enter your Password" required>
-                
-                <div class="btnsign"> 
-                    <form>
-                    <button type="submit" class="loginbtn">Sign up</button>
-                    </form>
-                </div>
-                <div class="dont">
-                    <h2>Already have an account? <a href="#signin">Sign in<a></h2>
-                </div>
-            </div>
-        </div>`;
+        </form>`;
+        const btn42 = document.getElementById('btn42');
+        btn42.addEventListener('click', () => {
+            window.location = 'https://localhost:81/auth/intra/';
+        });
+        window.addEventListener('load', () => {
+            const url = new URL(window.location.href);
+            const key = url.hash.slice(1); // This will remove the '#' character
+            if (key === 'true') {
+                window.location.hash = '#dashboard';
+            }
+            if (key === 'false'){
+                console.log('field intra42 Login')
+                window.location.href = '#signin';
+            }
+        });
         const signup = document.getElementById('signup');
         signup.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -59,7 +76,7 @@ class SignupComponent extends HTMLElement {
                 return;
             }
             // Perform fetch to backend (Django server)
-            const response = await fetch('http://localhost:81/auth/sign-up/', {
+            const response = await fetch('https://localhost:81/auth/sign-up/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {

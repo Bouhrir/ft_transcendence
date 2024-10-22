@@ -62,7 +62,7 @@ function search(){
         const query = searchInput.value;
         if (query.length > 1) {
             try {
-                const response = await fetch(`http://localhost:81/auth/search/?q=${query}`, {
+                const response = await fetch(`https://localhost:81/auth/search/?q=${query}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${access}`,
@@ -82,7 +82,7 @@ function search(){
                         `;
                         resultsContainer.appendChild(userElement);
 						userElement.addEventListener('click', async () => {
-							const response = await fetch('http://localhost:81/auth/getuser/', {
+							const response = await fetch('https://localhost:81/auth/getuser/', {
 								method: 'POST',
             					headers:{
                 					'Authorization': `Bearer ${access}`,
@@ -120,7 +120,7 @@ function logout(){
 	logout.addEventListener('click', async () => {
 		const access = getAccessTokenFromCookies('access');
 		try {
-			const loggedout = await fetch('http://localhost:81/auth/logout/', {
+			const loggedout = await fetch('https://localhost:81/auth/logout/', {
 				method: 'DELETE',
 				headers: {
 					'Authorization': `Bearer ${access}`,
@@ -144,7 +144,7 @@ function profile(){
 	const profile = document.getElementById('profile');
 	const access = getAccessTokenFromCookies('access');
 	profile.addEventListener('click', async () => {
-		const response = await fetch('http://localhost:81/auth/me/', {
+		const response = await fetch('https://localhost:81/auth/me/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -159,7 +159,7 @@ function profile(){
 }
 async function iconImg(){
 	const access = getAccessTokenFromCookies('access');
-	const response = await fetch('http://localhost:81/auth/me/', {
+	const response = await fetch('https://localhost:81/auth/me/', {
 		method: 'GET',
 		headers: {
 			'Authorization': `Bearer ${access}`,
@@ -179,7 +179,7 @@ async function iconImg(){
 async function notification(){
 	const access = getAccessTokenFromCookies('access');
 
-	const response = await fetch('http://localhost:81/auth/get_friends_request/', {
+	const response = await fetch('https://localhost:81/auth/get_friends_request/', {
 		method: 'GET',
 		headers:{
 			'Authorization': `Bearer ${access}`,
@@ -213,7 +213,7 @@ function accept(notificationsDiv, friendRequestDiv, id){
 	const acceptButton = document.querySelector('.accept');
 	acceptButton.addEventListener('click' ,async () =>{
 		console.log('im in')
-		const response = await fetch('http://localhost:81/auth/accept_friend/', {
+		const response = await fetch('https://localhost:81/auth/accept_friend/', {
 			method: 'POST',
 			headers:{
 				'Authorization': `Bearer ${access}`,

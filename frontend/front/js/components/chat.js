@@ -36,7 +36,7 @@ class MessengerComponent extends HTMLElement {
 
         const access = getAccessTokenFromCookies('access');
         // let data;
-        const response = await fetch('http://localhost:81/auth/me/', {
+        const response = await fetch('https://localhost:81/auth/me/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -48,7 +48,6 @@ class MessengerComponent extends HTMLElement {
             this.currentUserId = this.data.id;
         }
         await this.fetchFriendsData()
-
         document.getElementById('chat').addEventListener('click', () => this.sendMessage()); 
 
     }
@@ -56,7 +55,7 @@ class MessengerComponent extends HTMLElement {
 
     async clickRoom() {
         const access = getAccessTokenFromCookies('access');
-        const room = await fetch('http://localhost:81/chat/room/', {
+        const room = await fetch('https://localhost:81/chat/room/', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -144,7 +143,7 @@ class MessengerComponent extends HTMLElement {
     
     async fetchFriendsData() {
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_friends_list/', {
+        const response = await fetch('https://localhost:81/auth/get_friends_list/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -199,6 +198,10 @@ class MessengerComponent extends HTMLElement {
                     header.appendChild(img);
                     header.appendChild(p);
                     chatHeader.appendChild(header);
+
+                    img.addEventListener('click', () => {
+                        window.location.hash = `#profile/${e.id}`
+                    });
                     this.clickRoom();
             });
         });

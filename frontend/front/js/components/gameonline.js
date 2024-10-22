@@ -357,7 +357,7 @@ class GameComponentOnline extends HTMLElement {
 		const access = getAccessTokenFromCookies('access');
         const player = document.getElementById('playerName');
         const imgProfile = document.getElementById('playerImg');
-		const response = await fetch('http://localhost:81/auth/me/', {
+		const response = await fetch('https://localhost:81/auth/me/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
