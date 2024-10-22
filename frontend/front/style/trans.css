@@ -567,21 +567,25 @@ button.join:hover .flech {
     color: white;
 }
 .rank-profile{
-    /* display: flex; */
-    /* margin-right: 9px; */
-    /* justify-content: center; */
-    margin-top: 10px;
+    display: flex;
+    justify-content: center;
     border: 0.5px solid rgba(255, 255, 255, 0.292);
-    /* font-family: ; */
     width: 90%;
-    height: 19.6vh; 
+    height: 25%;
+    align-items: center;
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
     backdrop-filter: blur(4px);
     border-radius: 10px;
     font-family: 'Baloo_Bhai_2';
     outline: none;
     color: white;
-
+}
+.rank-profile img{
+    border-radius: 15px;
+}
+.rank-profile h3{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .dashboard{
     display: flex;
@@ -607,17 +611,14 @@ button.join:hover .flech {
 }
 .rank{
     display: flex;
-    /* margin-left: 6%; */
     width: 17%;
-    height: 81vh;
+    height: 90%;
     align-items: center;
-
     justify-content: center;
-    /* margin-right: 40px; */
-    /* border: #fff solid 2px; */
-    /* flex-wrap: wrap; */
     flex-direction: column;
-    animation : slideUp 0.8s ease;
+    gap: 1%;
+    margin-top: 11px;
+    animation: slideUp 0.8s ease;;
 }
 .match-list{
     display: flex;
@@ -762,24 +763,24 @@ button.join:hover .flech {
     justify-content: center;
     align-items: center;
 }
-.lvl-card img{
+.lvl-card {
     display: flex;
     width: 7vw;
     border-radius: 7px;
+
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     /* border-right: orangered solid 2px; */
     border-bottom: orangered solid 2px;
     transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
 
 }
 .lvl-img{
-    margin-top: 10px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    margin-bottom:10px ;
-    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+    transition: transform 0.3s ease;
 }
 .level{
     position: absolute;
@@ -788,15 +789,7 @@ button.join:hover .flech {
     top: 1.5px;
     color: orangered;
 }
-.lvl-card p{
-    display:flex ;
-    font-size: 0.5vw;
-    text-align: center;
-    font-family: 'Baloo_Bhai_2', sans-serif;
-    justify-content: center;
-    /* transition: transform 0.3s ease; Smooth transition for zoom effect */
 
-}
 .lvl-card:hover {
     transition: transform 0.3s ease-in-out;
     transform: scale(1.08); /* Zoom in effect */

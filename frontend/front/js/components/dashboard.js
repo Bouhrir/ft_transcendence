@@ -16,7 +16,6 @@ class DashboardComponent extends HTMLElement {
                     <div>
                         <h1 id="fullName"></h1>
                         <p id="username"></p>
-                        <p>LV9</p>
                     </div>
                 </div>
                 <div class="matches">
@@ -42,43 +41,34 @@ class DashboardComponent extends HTMLElement {
         <div class="rank">
             <div class="rank-profile">
                 <div class="lvl-card">
-                    <div class="lvl-img">
-                        <p class="level">54%</p><img id="playerIMG1" src="#" style="width:190px; height: 180px;">
-                    </div>
-                    <div>
-                        <p>obouhrir</p>
-                        <p>LV9</p>
+                    <div id="lvl-img1" class="lvl-img">
+                        <img id="playerIMG1" src="#" style="width:190px; height: 180px;">
+                        <p id="username1"></p>
                     </div>
                 </div>
             </div>
             <div class="rank-profile">
                 <div class="lvl-card">
-                    <div>
-                        <div class="lvl-img">
-                            <p class="level">54%</p><img id="playerIMG2" src="#" style="width:190px; height: 180px;">
-                        </div>
-                        <p>amdouyah</p>
-                        <p>LV9</p>
+                    <div id="lvl-img2" class="lvl-img">
+                        <img id="playerIMG2" src="#" style="width:190px; height: 180px;">
+                        <p id="username2"></p>
                     </div>
                 </div>
             </div>
             <div class="rank-profile">
                 <div class="lvl-card">
-                    <div class="lvl-img">
-                        <p class="level">54%</p><img id="playerIMG3" src="#" style="width:190px; height: 180px;">
-                    </div>
-                    <div>
-                        <p>amdouyah</p>
-                        <p>LV9</p>
+                    <div id="lvl-img3" class="lvl-img">
+                        <img id="playerIMG3" src="#" style="width:190px; height: 180px;">
+                        <p id="username3"></p>
                     </div>
                 </div>
             </div>
             <div class="rank-profile">
-                <h3 class="HIGHEST">HIGHEST PRICE</h3>
-                <div class="price">
-                    <img src="../../needs/img/platinuim.png">
+                <div class="lvl-img">
+                    <h3 class="HIGHEST">HIGHEST PRICE</h3>
+                    <img src="../../needs/img/platinuim.png" width="200px" height="180px">
+                    <h3 class="platinuim">platinuim</h3>
                 </div>
-                <h3 class="platinuim">platinuim</h3>
             </div>
         </div>
         <div class="match-list">
@@ -121,8 +111,17 @@ class DashboardComponent extends HTMLElement {
             console.error('Failed to fetch user data:', response.statusText);
         }
     }
-
+    checkNoFriend(lvl){
+        lvl.innerHTML = '';
+        lvl.textContent = 'no friend'
+    }
     async fetchFriendsData(){
+        const playerIMG1 = document.getElementById('playerIMG1');
+        const playerIMG2 = document.getElementById('playerIMG2');
+        const playerIMG3 = document.getElementById('playerIMG3');
+        const lvlimg1 = document.getElementById('lvl-img1')
+        const lvlimg2 = document.getElementById('lvl-img2')
+        const lvlimg3 = document.getElementById('lvl-img3')
         const access = getAccessTokenFromCookies('access');
         const response = await fetch('http://localhost:81/auth/get_friends_list/', {
             method: 'GET',
@@ -131,13 +130,36 @@ class DashboardComponent extends HTMLElement {
                 'Content-Type': 'application/json',
             },
         });
+       
         if (response.ok){
             const data = await response.json()
-            console.log(data)
+            
+            if (data[0]){
+                getuser(data[0].id, playerIMG1)
+                document.getElementById('username1').textContent = data[0].username;
+            }
+            else
+                this.checkNoFriend(lvlimg1)
+
+            if (data[1]){
+                getuser(data[1].id, playerIMG2)
+                document.getElementById('username2').textContent = data[1].username;
+            }
+            else
+                this.checkNoFriend(lvlimg2)
+
+            if (data[2]){
+                document.getElementById('username3').textContent = data[2].username;
+                getuser(data[2].id, playerIMG3)
+            }
+            else
+                this.checkNoFriend(lvlimg3)
         }
         else
         {
-            console.log('no such friends')
+            this.checkNoFriend(lvlimg1)
+            this.checkNoFriend(lvlimg2)
+            this.checkNoFriend(lvlimg3)
         }
       
     }

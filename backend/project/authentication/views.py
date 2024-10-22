@@ -343,6 +343,8 @@ def get_friends_list(request):
     user_profile = UserProfile.objects.get(user=request.user)
     friends = user_profile.friends.all()
     friends_data = [{"id": friend.user.id, "username": friend.user.username} for friend in friends]
+    if not friends_data:
+        return Response({'message': 'You have no friends.'}, status=status.HTTP_404_NOT_FOUND)
     return Response(friends_data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

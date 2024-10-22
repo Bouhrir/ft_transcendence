@@ -1,5 +1,5 @@
-import { displayMsg, getAccessTokenFromCookies } from "./help.js";
-let userId;
+import { displayMsg, getAccessTokenFromCookies, checkJwt } from "./help.js";
+
 
 export async function createNavbar() {
 	const navbar = document.createElement('div');
@@ -45,11 +45,12 @@ export async function createNavbar() {
 
 	if (!document.querySelector('.navbar'))
 		document.body.prepend(navbar);
+	await checkJwt();
 	search();
 	profile();
 	logout();
 	darkMode();
-	await iconImg();
+	iconImg();
 	notification()
 }
 function search(){
@@ -169,7 +170,6 @@ async function iconImg(){
 
 	if (response.ok) {
 		const iconImg = document.getElementById('icon-img');
-		userId = data.id;
 		iconImg.src = data.image;
 	}
 	else 

@@ -26,7 +26,6 @@ async function navigate() {
     console.log(page);
 
     if (page !== 'signin-component' && page !== 'signup-component') {
-        await checkJwt();
         createNavbar();
     }
     if (getAccessTokenFromCookies('refresh')) {
