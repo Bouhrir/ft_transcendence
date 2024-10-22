@@ -37,7 +37,7 @@ class GameComponentOnline extends HTMLElement {
         </div>
         <div class="waiting">
             <div class="waiting-message">waiting for opponent...</div>
-            <button id="leave-button">leave</button>
+            <button id="leave-button">cancel</button>
         </div>
             `;
         // <a href="#signin">click</a>
@@ -308,7 +308,8 @@ class GameComponentOnline extends HTMLElement {
         // Keyboard events for player control
         document.addEventListener('keydown', (e) => {
             console.log("sending data: ", isWebSocketOpen);
-            if (e.key === 'ArrowUp') {
+            if (e.key === 'ArrowUp' && !isUpPressed) {
+                isUpPressed = true;
                 // player.dy = -5;
                 if (isWebSocketOpen) {
                     const data = {
@@ -319,7 +320,8 @@ class GameComponentOnline extends HTMLElement {
                     };
                     window.ws.send(JSON.stringify(data));
                 }
-            } else if (e.key === 'ArrowDown') {
+            } else if (e.key === 'ArrowDown' && !isDownPressed) {
+                isDownPressed = true;
                 // player.dy = 5;
                 if (isWebSocketOpen) {
                     const data = {
@@ -333,9 +335,22 @@ class GameComponentOnline extends HTMLElement {
                 }
             }
         });
-
+        let isUpPressed = false;
+        let isDownPressed = false;
         document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            if (e.key === 'ArrowUp' && isUpPressed) {
+                isUpPressed = false;
+                if (isWebSocketOpen) {
+                    const data = {
+                        type: 'paddle_movement',
+                        room_name: window.gameRoom,
+                        paddle_dy: 0,
+                        player_id: player_id
+                    };
+                    window.ws.send(JSON.stringify(data));
+                }
+            } else if (e.key === 'ArrowDown' && isDownPressed) {
+                isDownPressed = false;
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',
@@ -358,6 +373,7 @@ class GameComponentOnline extends HTMLElement {
                     window.ws.send(JSON.stringify(data));
                 }
             }
+            // when the game start i should change leave into cancel
             window.location.href = "#tournament"
         })
         function gameLoop() {

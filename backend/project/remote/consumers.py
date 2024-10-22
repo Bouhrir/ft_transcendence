@@ -14,14 +14,17 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.exceptions import ObjectDoesNotExist
 from remote.models import Game
 from django.contrib.auth.models import AnonymousUser
+from chat.models import Invitation
 
 
 class PongConsumer(AsyncWebsocketConsumer):
 	game_states = {}
 	# dimensions = {}
-	async def initialize_game_state(self, room_name):
+	async def initialize_game_state(self, room_name, type):
 		if room_name not in self.game_states:
 			self.game_states[room_name] = {
+				#set the type if tournament or game
+				"type": type,
 				"ball": {
 					'x': self.canvas_width / 2,
 					'y': self.canvas_height / 2,
@@ -69,9 +72,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if (ball['y'] + self.ball_radius > self.canvas_height or ball['y'] - self.ball_radius < 0):
 			ball['dy'] *= -1
 		# ball collision with paddles
-		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height):
+		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height and ball['x'] - self.ball_radius < 0):
 			ball['dx'] *= -1
-		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height):
+		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height and ball['x'] + self.ball_radius > 0):
 			ball['dx'] *= -1
 		# Ball goes off the screen
 		if (ball['x'] - self.ball_radius < 0):
@@ -144,13 +147,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.notify_and_close('no_room')
 			return
 		if self.room_name not in self.game_states:
-			await self.initialize_game_state(self.room_name)
+			await self.initialize_game_state(self.room_name, game.type)
+		await self.setPlayers(self.room_name)
+		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		await self.send(text_data=json.dumps({
 			'action': 'new_connection',
 			'player_id': self.scope['user'].id
 		}))
-		await self.setPlayers(self.room_name)
-		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		if self.game_states[self.room_name]["players"]["player1"]["id"] is not None and self.game_states[self.room_name]["players"]["player2"]["id"] is not None:
 			self.game_started = True
 			await self.channel_layer.group_send(
@@ -164,8 +167,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 			)
 			asyncio.create_task(self.game_loop())
 			return
-		# asyncio.create_task(self.wait_for_opponent())
-		# await self.wait_for_opponent()
 
 	async def notify_and_close(self, action):
 		await self.send(text_data=json.dumps({
@@ -213,6 +214,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		# room_group_name is not set when you close on the not authenticated user
+		if self.game_states[self.room_name]["players"]["player2"]["id"] is None and self.game_states[self.room_name]["type"] == "game":
+			await self.remove_invitation_game()
 		if self.player_id == self.game_states[self.room_name]["players"]["player1"]["id"]:
 			self.game_states[self.room_name]["players"]["player1"]["connected"] = False
 		elif self.player_id == self.game_states[self.room_name]["players"]["player2"]["id"]:
@@ -226,16 +229,33 @@ class PongConsumer(AsyncWebsocketConsumer):
 	async def receive(self, text_data):
 		data = json.loads(text_data)
 		if data["type"] == "paddle_movement":
+			print(f"receiving data from{data['player_id']}")
 			room_name = data["room_name"]
 			if data["player_id"] == self.game_states[room_name]["players"]["player1"]["id"]:
+				# self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
+				# self.game_states[room_name]["players"]["player2"]["ai_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
-				self.game_states[room_name]["players"]["player2"]["ai_dy"] = data["paddle_dy"]
 			else:
-				self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
+				# self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
+				# self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
 		if data["type"] == "leave":
 			print("leaving the game")
+			if self.game_states[self.room_name]["type"] == "game":
+				print("game type")
+				await self.remove_invitation_game()
+				# set the game as cancelled and remove the invitation
+				print("leaving game")
+			else:
+				# remove the player and set him as a loser
+				print("leaving tournament game")
 			await self.close()
+
+	async def remove_invitation_game(self):
+		# game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
+		invitation = await database_sync_to_async(Invitation.objects.get)(room_name=self.room_name)
+		invitation.status = "cancelled"
+		await database_sync_to_async(invitation.save)()
 
 	async def game_loop(self):
 		await asyncio.sleep(2)
@@ -255,8 +275,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			self.game_states[self.room_name]['ball']['y'] += self.game_states[self.room_name]['ball']['dy']
 			self.game_states[self.room_name]["players"]["player1"]["player_y"] += self.game_states[self.room_name]["players"]["player1"]["player_dy"]
 			self.game_states[self.room_name]["players"]["player1"]["ai_y"] += self.game_states[self.room_name]["players"]["player1"]["ai_dy"]
-			self.game_states[self.room_name]["players"]["player2"]["player_y"] += self.game_states[self.room_name]["players"]["player2"]["player_dy"]
-			self.game_states[self.room_name]["players"]["player2"]["ai_y"] += self.game_states[self.room_name]["players"]["player2"]["ai_dy"]
+			# self.game_states[self.room_name]["players"]["player2"]["player_y"] += self.game_states[self.room_name]["players"]["player2"]["player_dy"]
+			# self.game_states[self.room_name]["players"]["player2"]["ai_y"] += self.game_states[self.room_name]["players"]["player2"]["ai_dy"]
 			self.game_states[self.room_name]['ball'] = await self.check_ball_collisions(self.game_states[self.room_name]['ball'], self.game_states[self.room_name]['players']["player1"])
 			#Ensure paddle stays within canvas bounds
 			self.game_states[self.room_name]["players"]["player1"] = await self.check_paddle_boundaries(self.game_states[self.room_name]["players"]["player1"])
@@ -266,10 +286,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 			# await asyncio.gather()
 			await self.send_game_state_to_players(self.game_states[self.room_name])
 			await asyncio.sleep(1/60)
-		print(f'player_id: {self.game_states[self.room_name]["players"]["player1"]["id"]}')
-		print(f"room_name: {self.room_name}")
-		print(f'first_player_score: {self.game_states[self.room_name]["players"]["player1"]["player_score"]}')
-		print(f'second_player_score: {self.game_states[self.room_name]["players"]["player1"]["ai_score"]}')
+		# print(f'player_id: {self.game_states[self.room_name]["players"]["player1"]["id"]}')
+		# print(f"room_name: {self.room_name}")
+		# print(f'first_player_score: {self.game_states[self.room_name]["players"]["player1"]["player_score"]}')
+		# print(f'second_player_score: {self.game_states[self.room_name]["players"]["player1"]["ai_score"]}')
 		game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
 		await database_sync_to_async(game.set_score)(self.game_states[self.room_name]["players"]["player1"]["id"], self.game_states[self.room_name]["players"]["player1"]["player_score"], self.game_states[self.room_name]["players"]["player1"]["ai_score"])
 		await database_sync_to_async(game.determine_winner)()
@@ -298,6 +318,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		mirrored_ball['x'] = self.canvas_width - game_state['ball']['x']
 		game_state_player2 = game_state.copy()
 		game_state_player2['ball'] = mirrored_ball
+		game_state_player2["players"]["player2"]["player_y"] = game_state["players"]["player1"]["ai_y"]
+		game_state_player2["players"]["player2"]["ai_y"] = game_state["players"]["player1"]["player_y"]
 		await self.channel_layer.send(
 			game_state['players']['player2']['channel_name'],
 			{

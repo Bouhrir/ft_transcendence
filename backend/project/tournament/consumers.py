@@ -289,12 +289,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		semis1 = await database_sync_to_async(Game.objects.create)(
 			host_id=self.games["first_semis"][0]["id"],
 			guest_id=self.games["first_semis"][1]["id"],
-			room_name=room_name1
+			room_name=room_name1,
+			type="tournament"
 		)
 		semis2 = await database_sync_to_async(Game.objects.create)(
 			host_id=self.games["second_semis"][0]["id"],
 			guest_id=self.games["second_semis"][1]["id"],
-			room_name=room_name2
+			room_name=room_name2,
+			type="tournament"
 		)
 		self.games["first_semis"][0]["room_name"] = room_name1
 		self.games["first_semis"][1]["room_name"] = room_name1
@@ -335,7 +337,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		final = await database_sync_to_async(Game.objects.create)(
 			host_id=self.games["final"][0]["id"],
 			guest_id=self.games["final"][1]["id"],
-			room_name=room_name
+			room_name=room_name,
+			type="tournament"
 		)
 		self.games["final"][0]["room_name"] = room_name
 		self.games["final"][1]["room_name"] = room_name
