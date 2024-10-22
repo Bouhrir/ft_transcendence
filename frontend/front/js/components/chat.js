@@ -67,7 +67,6 @@ class MessengerComponent extends HTMLElement {
                 'user2': this.receiverId,
             }),
         });
-        // console.log(this.roomData.room_id);
         if (room.ok) {
             this.roomData = await room.json();
 
@@ -89,8 +88,8 @@ class MessengerComponent extends HTMLElement {
                     messageDisplay.appendChild(newMessage)
                     messageDisplay.scrollTop = messageDisplay.scrollHeight;
                 }
+                this.intialws();
             }
-            this.intialws();
         }
         else{
             console.log("Error fetching room");
@@ -98,6 +97,9 @@ class MessengerComponent extends HTMLElement {
     }
     
     intialws(){
+        if (this.socket) {
+            this.socket.close();
+        }
         this.socket = new WebSocket('ws://localhost:81/ws/chat/' + this.roomData.room_id + '/');
         this.socket.onopen = () => {
             console.log('Connected to WebSocket');
