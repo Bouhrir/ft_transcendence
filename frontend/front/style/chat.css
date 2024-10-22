@@ -185,15 +185,9 @@
 }
 
 .right-para {
-    /* display: flex;
-    justify-content: start;
-    align-items: right;
-    padding: 10px; */
-
 
     background-color: rgba(93, 93, 93, 1);
     align-self: flex-end;
-    /* background-color: #d1f1ff; Light blue for sender */
     margin-left: auto;
     margin-right: 10px; /* Space from the edge */
     text-align: right;
