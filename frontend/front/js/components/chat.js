@@ -20,8 +20,9 @@ class MessengerComponent extends HTMLElement {
                     <div id="archive"></div>
                 </div>
                 <div id="main_part">
+                    <div id="chat_header">
+                    </div>
                     <div id="chat_area">
-
                     </div>
                     <div id="input_area">
                         <input type="text"  id="message" placeholder="Type a message..." />
@@ -75,15 +76,15 @@ class MessengerComponent extends HTMLElement {
                 const messages = this.roomData.messages;
                 for (let i = 0; i < messages.length; i++) {
                     const message = messages[i];
-                    const newMessage = document.createElement('p')
+                    const newMessage = document.createElement('div')
 
                     if (message.sender == this.currentUserId) {
-                        newMessage.textContent = `You: ${message.content}`
-                        newMessage.className = 'right-para'
+                        newMessage.classList.add ('right-para')
+                        newMessage.textContent = ` ${message.content}`
                     }
                     else {
-                        newMessage.textContent = `${this.receiverName}: ${message.content}`
-                        newMessage.className = 'left-para'
+                        newMessage.textContent = `${message.content}`
+                        newMessage.classList.add ('left-para')
                     }
                     messageDisplay.appendChild(newMessage)
                     messageDisplay.scrollTop = messageDisplay.scrollHeight;
@@ -107,15 +108,16 @@ class MessengerComponent extends HTMLElement {
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data)
             const messageDisplay = document.getElementById('chat_area');
-            const newMessage = document.createElement('p');
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message-display';
 
-            if (data.rec_id === this.receiverId && data.snd_id === this.currentUserId) {
-                newMessage.textContent = `You: ${data.msg}`;
-                newMessage.className = 'left-para';
+            if (data.snd_id === this.currentUserId) {
+                newMessage.classList.add ('right-para')
+                newMessage.textContent = `${data.msg}`;
             }
-            else if (data.snd_id == this.receiverId) {
-                newMessage.textContent = `You: ${data.msg}`;
-                newMessage.className = 'right-para';
+            else{
+                newMessage.classList.add ('left-para')
+                newMessage.textContent = `${data.msg}`;
             }
             messageDisplay.appendChild(newMessage);
             messageDisplay.scrollTop = messageDisplay.scrollHeight;
@@ -148,6 +150,9 @@ class MessengerComponent extends HTMLElement {
         if (response.ok) {
             const data = await response.json()
             const archive = document.getElementById('archive');
+            // document.getElementById('main-part').innerHTML = '';
+            document.getElementById('chat_area').innerHTML = '';
+
 
             data.forEach(e => {
                 const chater = document.createElement('div');
@@ -172,6 +177,23 @@ class MessengerComponent extends HTMLElement {
                     document.getElementById('chat_area').innerHTML = '';
                     this.receiverId = e.id;
                     this.receiverName = e.username;
+                    const chatHeader = document.getElementById('chat_header');
+                    chatHeader.style.borderBottom = '0.5px solid rgb(255, 255, 255)';
+                    chatHeader.style.borderBottomLeftRadius = '20px';
+                    chatHeader.style.borderBottomRightRadius = '20px';
+                    chatHeader.innerHTML = '';
+                    const header = document.createElement('div');
+                    header.className = 'chat-img1';
+                    const img = document.createElement('img');
+                    img.className = 'img-pic';
+                    getuser(this.receiverId, img);
+                    img.width = 70;
+                    img.height = 70;
+                    const p = document.createElement('h5');
+                    p.textContent = e.username;
+                    header.appendChild(img);
+                    header.appendChild(p);
+                    chatHeader.appendChild(header);
                     this.clickRoom();
             });
         });
