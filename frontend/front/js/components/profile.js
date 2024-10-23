@@ -14,7 +14,6 @@ class ProfileComponent extends HTMLElement {
                     <img id="ProfileImg" class="ProfileImg"></img>
                     <h1 id="FullName" ></h1>
                     <p id="UserName"></p>
-                    <p>LVL 9</p>
 					<div id="addFriends" class="AddFriends">
 						<a class="join"> Add Friends<span class="flech">→</span></a>
 						<a href="#messenger" class="join">Message<span class="flech">→</span></a>
@@ -44,7 +43,7 @@ class ProfileComponent extends HTMLElement {
         
         const userId = window.location.hash.split('/')[1];
         console.log(userId)
-        const response = await fetch('http://localhost:81/auth/getuser/', {
+        const response = await fetch('https://localhost:81/auth/getuser/', {
             method: 'POST',
             headers:{
                 'Authorization': `Bearer ${access}`,
@@ -85,7 +84,7 @@ class ProfileComponent extends HTMLElement {
     }
     async chekcIsFriend(userId){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/check_friend/', {
+        const response = await fetch('https://localhost:81/auth/check_friend/', {
             method: 'POST',
             headers:{
                 'Authorization': `Bearer ${access}`,
@@ -111,7 +110,7 @@ class ProfileComponent extends HTMLElement {
         const access = getAccessTokenFromCookies('access');
         addFriendButton.addEventListener('click', async () => {
     
-            const response = await fetch('http://localhost:81/auth/add_friend/', {
+            const response = await fetch('https://localhost:81/auth/add_friend/', {
                 method: 'POST',
                 headers:{
                     'Authorization': `Bearer ${access}`,
@@ -136,7 +135,7 @@ class ProfileComponent extends HTMLElement {
     }
     async pending(userId){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/pending/', {
+        const response = await fetch('https://localhost:81/auth/pending/', {
             method: 'POST',
             headers:{
                 'Authorization': `Bearer ${access}`,
@@ -154,7 +153,7 @@ class ProfileComponent extends HTMLElement {
     
     async LastMatches(){
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_user_games/', {
+        const response = await fetch('https://localhost:81/auth/get_user_games/', {
             method: 'GET',
             headers:{
                 'Authorization': `Bearer ${access}`,

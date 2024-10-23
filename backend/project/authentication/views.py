@@ -220,7 +220,7 @@ def register_42(user_data):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
-        response = HttpResponseRedirect('http://localhost:81/start/#true')
+        response = HttpResponseRedirect('https://localhost:81/start/#true')
         response.set_cookie(key='refresh', value=str(refresh))
         response.set_cookie(key='access', value=str(access))
         
@@ -247,17 +247,17 @@ def register_42(user_data):
             refresh = RefreshToken.for_user(user)
             access = refresh.access_token
 
-            response = HttpResponseRedirect('http://localhost:81/start/#true')
+            response = HttpResponseRedirect('https://localhost:81/start/#true')
             response.set_cookie(key='refresh', value=str(refresh))
             response.set_cookie(key='access', value=str(access))
             return response
-    return HttpResponseRedirect('http://localhost:81/start/#false10')
+    return HttpResponseRedirect('https://localhost:81/start/#false10')
 
 @api_view(['GET'])
 def LoginIntra(request):
     # Redirect the user to the 42 API for authentication
     auth_url = (
-        'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c2d8175ca10c11077651ebdd5fec416379865ae11fbf864cb4e5cc19093221c7&redirect_uri=http%3A%2F%2Flocalhost%3A81%2Fauth%2Fcallback%2F&response_type=code'
+        'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82649c71bbe7f51574fa53213b20b08f6f6f5f3599154a87c432e0de1071b36b&redirect_uri=https%3A%2F%2Flocalhost%3A81%2Fauth%2Fcallback%2F&response_type=code'
     )
     return HttpResponseRedirect(auth_url)
 
@@ -265,9 +265,8 @@ def LoginIntra(request):
 def callback(request):
     # Get the authorization code from the query parameters
     code = request.GET.get('code')  # Corrected from request.get to request.GET.get
-
     if not code:
-        return HttpResponseRedirect('http://localhost:81/start/#false')
+        return HttpResponseRedirect('https://localhost:81/start/#false')
 
     # Step to exchange the authorization code for an access token
     token_url = 'https://api.intra.42.fr/oauth/token'
@@ -278,12 +277,13 @@ def callback(request):
         'redirect_uri': settings.SOCIALACCOUNT_PROVIDERS['intra']['APP']['redirect_uris'],  # You may need to define this in your settings
         'code': code,
     }
-
+    print(f"toekn: {token_data}")  
     # Send a POST request to exchange the code for a token
     token_response = requests.post(token_url, data=token_data)
-
+    print(f"token_response: {token_response}")
+    
     if token_response.status_code != 200:
-        return HttpResponseRedirect('http://localhost:81/start/#false')
+        return HttpResponseRedirect('https://localhost:81/start/#false')
 
     token_json = token_response.json()
     access_token = token_json.get('access_token')
@@ -296,7 +296,7 @@ def callback(request):
         if user_info_response.status_code == 200:
             user_data = user_info_response.json()
             return register_42(user_data)
-    return HttpResponseRedirect('http://localhost:81/start/#false')
+    return HttpResponseRedirect('https://localhost:81/start/#false')
 #logout
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])

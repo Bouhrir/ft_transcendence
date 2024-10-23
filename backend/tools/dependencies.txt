@@ -13,3 +13,6 @@ django-oauth-toolkit
 djangorestframework-oauth
 django-allauth
 psycopg2-binary
+pyOpenSSL
+uvicorn[standard]
+

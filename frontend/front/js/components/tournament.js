@@ -111,7 +111,7 @@ class TournamentComponent extends HTMLElement {
         // se.style.backgroundImage = "url('/needs/img/Rectangle 27.png')"
         async function getAvatar(id, element){
             const access = getAccessTokenFromCookies('access');
-            const response = await fetch('http://localhost:81/auth/getuser/', {
+            const response = await fetch('https://localhost:81/auth/getuser/', {
                 method: 'POST',
                 headers:{
                     'Authorization': `Bearer ${access}`,
@@ -127,8 +127,36 @@ class TournamentComponent extends HTMLElement {
                 // console.log(ele)
             }
         }
-            // maybe i can add in single page that i don't re open the socket
-            const ws = new WebSocket('ws://localhost:81/ws/tournament/');
+
+        // function backFromGame() {
+        //     if (window.isTournament) {
+        //         console.log("back from game!!!")
+        //         if (window.isWebSocketOpen) {
+        //             const data = {
+        //                 type: 'back',
+        //                 // player_id: player_id,
+        //                 // alias: alias
+        //             };
+        //             window.ws.send(JSON.stringify(data));
+        //         }
+        //         window.isTournament = false
+        //         joinButton.style.display = "none"
+        //         aliasInput.style.display = "none"
+        //     }
+        //     // maybe make it false again
+        // }
+        // backFromGame()
+        // let ws = window.localStorage.getItem('tournamentSocket');
+
+        // console.log("websock: ", ws)
+
+        // if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+            // console.log("establishing a new connection")
+            // console.log("opened: ", ws)
+            // window.localStorage.setItem('tournamentSocket', ws);
+            // }
+            
+            const ws = new WebSocket('wss://localhost:81/ws/tournament/');
             ws.onopen = function() {
                 console.log("tournament WebSocket is open now.");
                 isWebSocketOpen = true;

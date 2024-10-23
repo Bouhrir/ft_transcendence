@@ -36,7 +36,7 @@ class MessengerComponent extends HTMLElement {
 
         const access = getAccessTokenFromCookies('access');
         // let data;
-        const response = await fetch('http://localhost:81/auth/me/', {
+        const response = await fetch('https://localhost:81/auth/me/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -138,7 +138,7 @@ class MessengerComponent extends HTMLElement {
 
     async clickRoom() {
         const access = getAccessTokenFromCookies('access');
-        const room = await fetch('http://localhost:81/chat/room/', {
+        const room = await fetch('https://localhost:81/chat/room/', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -196,7 +196,7 @@ class MessengerComponent extends HTMLElement {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.close();
         }
-        this.socket = new WebSocket('ws://localhost:81/ws/chat/' + this.roomData.room_id + '/');
+        this.socket = new WebSocket('wss://localhost:81/ws/chat/' + this.roomData.room_id + '/');
         this.socket.onopen = () => {
             console.log('Connected to WebSocket');
         }
@@ -276,7 +276,7 @@ class MessengerComponent extends HTMLElement {
     
     async fetchFriendsData() {
         const access = getAccessTokenFromCookies('access');
-        const response = await fetch('http://localhost:81/auth/get_friends_list/', {
+        const response = await fetch('https://localhost:81/auth/get_friends_list/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${access}`,
@@ -331,6 +331,10 @@ class MessengerComponent extends HTMLElement {
                     header.appendChild(img);
                     header.appendChild(p);
                     chatHeader.appendChild(header);
+
+                    img.addEventListener('click', () => {
+                        window.location.hash = `#profile/${e.id}`
+                    });
                     this.clickRoom();
             });
         });

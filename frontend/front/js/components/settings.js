@@ -17,7 +17,7 @@ class SettingComponent extends HTMLElement {
                 <div class="acc_">
                     <h1>Account Settings</h1>
                     <div class="accord">
-                        <a href="#profile">Profile</a>
+                        <a id="Profile">Profile</a>
 
                         <a id="2faButton" class="toggle-2fa">Enable 2FA</a>
                         <div id="verificationSection" style="display: none;">
@@ -118,6 +118,7 @@ class SettingComponent extends HTMLElement {
         document.getElementById('verifyButton').addEventListener('click', this.handleVerification.bind(this));
         document.getElementById('save').addEventListener('click', this.handleSave.bind(this));
         document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
+        document.getElementById('Profile').addEventListener('click',  ()=>{window.location.hash = `#profile/${this.userData.id}`});
     }
     setValues() {
         if (this.userData) {
@@ -131,7 +132,7 @@ class SettingComponent extends HTMLElement {
     async fetchUserData() {
         const access = getAccessTokenFromCookies('access');
         try {
-            const response = await fetch('http://localhost:81/auth/me/', {
+            const response = await fetch('https://localhost:81/auth/me/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${access}`,
@@ -152,7 +153,7 @@ class SettingComponent extends HTMLElement {
     }
     async check2FAStatus(username) {
         try {
-            const response = await fetch('http://localhost:81/2fa/status/', {
+            const response = await fetch('https://localhost:81/2fa/status/', {
                 method: 'POST',
                 mode:'cors',
                 headers: {
@@ -194,7 +195,7 @@ class SettingComponent extends HTMLElement {
         console.log(this.is2FAEnabled);
         if (!this.is2FAEnabled) {
             try {
-                const response = await fetch('http://localhost:81/2fa/setup/', {
+                const response = await fetch('https://localhost:81/2fa/setup/', {
                     method: 'GET',
                     mode:'cors',
                     headers: {
@@ -223,7 +224,7 @@ class SettingComponent extends HTMLElement {
             }
         } else {
             try {
-                const response = await fetch('http://localhost:81/2fa/disable/', {
+                const response = await fetch('https://localhost:81/2fa/disable/', {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${access}`,
@@ -251,7 +252,7 @@ class SettingComponent extends HTMLElement {
         const toast = document.getElementById('error-message');
 
         try {
-            const response = await fetch('http://localhost:81/2fa/verify/', {
+            const response = await fetch('https://localhost:81/2fa/verify/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -305,7 +306,7 @@ class SettingComponent extends HTMLElement {
             if (profileImg) {
                 formData.append('image', profileImg);  // Append the file
             }
-            const response = await fetch('http://localhost:81/auth/update_profile/', {
+            const response = await fetch('https://localhost:81/auth/update_profile/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${access}`,
@@ -333,7 +334,7 @@ class SettingComponent extends HTMLElement {
     async deleteuser(){
         // const access = getAccessTokenFromCookies('access');
         // try{
-        //     const deluser = await fetch('http://localhost:81/auth/deluser/', {
+        //     const deluser = await fetch('https://localhost:81/auth/deluser/', {
         //         method : 'DELETE',
         //         header:{
         //             'Authorization': `Bearer ${access}`,

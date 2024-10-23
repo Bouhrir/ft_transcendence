@@ -34,7 +34,7 @@ ASGI_APPLICATION = 'setup.asgi.application'
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+    'uvicorn',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -91,9 +91,22 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:81",  # Frontend development domain
-    "http://localhost:8000",
+    "https://localhost:81",  # Frontend development domain
+    "https://localhost:8000",
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:81',
+    "http://localhost:81",
+]
+
+CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+
 ROOT_URLCONF = 'setup.urls'
 
 TEMPLATES = [
@@ -185,10 +198,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SOCIALACCOUNT_PROVIDERS = {
     'intra': {
         'APP': {
-            'client_id': 'u-s4t2ud-c2d8175ca10c11077651ebdd5fec416379865ae11fbf864cb4e5cc19093221c7',
-            'secret': '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',
+            'client_id': 'u-s4t2ud-82649c71bbe7f51574fa53213b20b08f6f6f5f3599154a87c432e0de1071b36b',
+            'secret': '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',
             'key': '',
-            'redirect_uris': 'http://localhost:81/auth/callback/',
+            'redirect_uris': 'https://localhost:81/auth/callback/',
         },
         'SCOPE': ['public'],  # This is the scope for the API
         'AUTH_PARAMS': {

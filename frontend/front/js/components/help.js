@@ -1,7 +1,7 @@
 // checkJwt
 export async function checkJwt() {
 	const access = getAccessTokenFromCookies('access');
-	const response = await fetch('http://localhost:81/auth/me/', {
+	const response = await fetch('https://localhost:81/auth/me/', {
 		method: 'GET',
 		headers: {
 			'Authorization': `Bearer ${access}`
@@ -12,7 +12,7 @@ export async function checkJwt() {
 
 	if (response.status === 401) {
 		const refresh = getAccessTokenFromCookies('refresh');
-		const refreshResponse = await fetch('http://localhost:81/token/refresh/', {
+		const refreshResponse = await fetch('https://localhost:81/token/refresh/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ export function getAccessTokenFromCookies(token) {
 }
 export async function getuser(id, player){
 	const access = getAccessTokenFromCookies('access');
-	const response = await fetch('http://localhost:81/auth/getuser/', {
+	const response = await fetch('https://localhost:81/auth/getuser/', {
 		method: 'POST',
 		headers:{
 			'Authorization': `Bearer ${access}`,

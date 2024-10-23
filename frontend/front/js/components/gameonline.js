@@ -210,7 +210,7 @@ class GameComponentOnline extends HTMLElement {
             color: 'white'
 
         };
-        window.ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
+        const ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
         // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
         window.ws.onopen = function () {
             console.log("remote WebSocket is open now.");
@@ -387,7 +387,7 @@ class GameComponentOnline extends HTMLElement {
 	    	const access = getAccessTokenFromCookies('access');
             const playerName = document.getElementById('player-name');
             const playerImg = document.getElementById('player-img');
-	    	const response = await fetch('http://localhost:81/auth/me/', {
+	    	const response = await fetch('https://localhost:81/auth/me/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${access}`,
@@ -407,7 +407,7 @@ class GameComponentOnline extends HTMLElement {
             const aiName = document.getElementById('ai-name');
             const aiImg = document.getElementById('ai-img');
             const access = getAccessTokenFromCookies('access');
-            const response = await fetch('http://localhost:81/auth/getuser/', {
+            const response = await fetch('https://localhost:81/auth/getuser/', {
                 method: 'POST',
                 headers:{
                     'Authorization': `Bearer ${access}`,
