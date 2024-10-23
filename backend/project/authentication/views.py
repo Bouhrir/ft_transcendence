@@ -414,13 +414,12 @@ def get_game_status(request):
     games = Game.objects.filter(status='finished')
     if not games.exists():
         return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
-
     game_data = [{
         'winner': game.winner.username if game.winner else None,
         'host_id': game.host.id,
         'guest_id': game.guest.id if game.guest else None,
         'host_score': game.host_score,
-        'guest_score': game.guest_score
+        'guest_score': game.guest_score,
     } for game in games]
     return Response(game_data, status=status.HTTP_200_OK)
 
@@ -428,7 +427,7 @@ def get_game_status(request):
 @permission_classes([IsAuthenticated])
 def get_user_games(request):
     user = request.user
-    games = Game.objects.filter(host=user, status='finished')
+    games = Game.objects.filter(Q(host=user) | Q(guest=user), status='finished')
     if not games.exists():
         return Response({'message': 'No finished games found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -437,7 +436,8 @@ def get_user_games(request):
         'host_id': game.host.id,
         'guest_id': game.guest.id if game.guest else None,
         'host_score': game.host_score,
-        'guest_score': game.guest_score
+        'guest_score': game.guest_score,
+        'type': game.get_player_role(user.id)
     } for game in games]
     return Response(game_data, status=status.HTTP_200_OK)
 

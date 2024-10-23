@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from remote.models import Game
 from django.contrib.auth.models import User
-from .models import Invitation
 from django.db.models import Q
 # from django.http import HttpResponse
 from .models import Message, Room
@@ -13,6 +12,8 @@ from django.views import View
 from django.http import HttpRequest
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from .models import Invitation
+import uuid
 
 
 @api_view(['POST'])

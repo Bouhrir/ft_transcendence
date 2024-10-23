@@ -49,8 +49,90 @@ class MessengerComponent extends HTMLElement {
         }
         await this.fetchFriendsData()
 
-        document.getElementById('chat').addEventListener('click', () => this.sendMessage()); 
+        document.getElementById('chat').addEventListener('click', async () => this.sendMessage()); 
 
+    }
+
+    async sendInvitation(inviteeId) {
+        try {
+            const access = getAccessTokenFromCookies('access');
+            const response = await fetch('/chat/send-invitation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${access}` // Ensure 'access' is defined
+                },
+                body: `invitee_id=${inviteeId}`
+            });
+    
+            // Handle non-OK responses (status outside the 200-299 range)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error ${response.status}: ${errorData.error}`);
+            }
+    
+            const data = await response.json(); // Parse the JSON response
+            return data; // Successfully return the parsed data
+    
+        } catch (error) {
+            // Handle network or JSON parsing errors
+            console.error('Error:', error.message);
+            return null; // Return null or handle the error as needed
+        }
+    }
+    
+    async acceptInvitation(inviterId) {
+        try {
+            const access = getAccessTokenFromCookies('access');
+            const response = await fetch('/chat/accept-invitation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${access}` // Make sure 'access' is defined
+                },
+                body: `inviter_id=${inviterId}`
+            });
+    
+            // Handle non-OK responses (status outside the 200-299 range)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error ${response.status}: ${errorData.error}`);
+            }
+            const data = await response.json(); // Try parsing JSON response
+            return data; // Successfully return the parsed data
+    
+        } catch (error) {
+            // Handle network or parsing errors
+            console.error('Error:', error.message);
+            return null; // Return null or handle the error as needed
+        }
+    }
+
+    async isTournamentGameAvailable(id) {
+        try {
+            const access = getAccessTokenFromCookies('access');
+            const response = await fetch('/remote/get-game/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${access}` // Make sure 'access' is defined
+                },
+                body: `receiver_id=${id}`
+            });
+    
+            // Handle non-OK responses (status outside the 200-299 range)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error ${response.status}: ${errorData.error}`);
+            }
+            // const data = await response.json(); // Try parsing JSON response
+            return true; // Successfully return the parsed data
+    
+        } catch (error) {
+            // Handle network or parsing errors
+            console.error('Error:', error.message);
+            return false; // Return null or handle the error as needed
+        }
     }
 
 
@@ -89,6 +171,18 @@ class MessengerComponent extends HTMLElement {
                     messageDisplay.appendChild(newMessage)
                     messageDisplay.scrollTop = messageDisplay.scrollHeight;
                 }
+                this.isTournamentGameAvailable(this.receiverId).then(tournamentGame => {
+                    if (tournamentGame) {
+                        const newMessage = document.createElement('div')
+                        newMessage.textContent = `you have a tournament game now!!!`
+                        newMessage.classList.add ('left-para')
+                        messageDisplay.appendChild(newMessage)
+                        messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                    }
+                })           
+                this.intialws();
+            }
+            else{
                 this.intialws();
             }
         }
@@ -98,6 +192,7 @@ class MessengerComponent extends HTMLElement {
     }
     
     intialws(){
+        console.log("testing")
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.close();
         }
@@ -117,28 +212,65 @@ class MessengerComponent extends HTMLElement {
             if (data.snd_id === this.currentUserId) {
                 newMessage.classList.add ('right-para')
                 newMessage.textContent = `${data.msg}`;
+                // if (data.msg === "do you want to play against me?") {
+                //     newMessage.style.fontFamily = "bungee";
+                // }
             }
             else{
                 newMessage.classList.add ('left-para')
                 newMessage.textContent = `${data.msg}`;
+                console.log("data-msg:", data.msg)
+                // if (data.msg === "do you want to play against me?") {
+                //     newMessage.style.fontFamily = "bungee";
+                // }
             }
             messageDisplay.appendChild(newMessage);
             messageDisplay.scrollTop = messageDisplay.scrollHeight;
         }
     } 
 
-    sendMessage() {
+    async sendMessage() {
         const message = document.getElementById('message').value;
-        console.log(message)
-
-        if (message.trim() !== "") {
-            this.socket.send(JSON.stringify({
-                'msg': message,
-                'snd_id': this.currentUserId,
-                'rec_id': this.receiverId,
-                'room_id': this.roomData.room_id,
-            }));
-            document.getElementById('message').value = '';
+        // console.log(message)
+        if (message === "/invite") {
+            let invite = await this.sendInvitation(this.receiverId)
+            if (invite) {
+                console.log("invitation sent:", invite)
+                this.socket.send(JSON.stringify({
+                    'msg': "do you want to play against me?",
+                    'snd_id': this.currentUserId,
+                    'rec_id': this.receiverId,
+                    'room_id': this.roomData.room_id,
+                }));
+                window.gameRoom = invite.room_name
+                window.location.href = `#game-online`;
+            } else {
+                this.socket.send(JSON.stringify({
+                    'message': "you can't send this invitation"
+                }));
+            }
+        }
+         else if (message === "/accept") {
+            let invite = await this.acceptInvitation(this.receiverId)
+            if (invite) {
+                console.log("invitation accept:", invite)
+                window.gameRoom = invite.room_name
+                window.location.href = `#game-online`;
+            } else {
+                this.socket.send(JSON.stringify({
+                    'message': "invitation not found"
+                }));
+            } 
+        } else {
+            if (message.trim() !== "") {
+                this.socket.send(JSON.stringify({
+                    'msg': message,
+                    'snd_id': this.currentUserId,
+                    'rec_id': this.receiverId,
+                    'room_id': this.roomData.room_id,
+                }));
+                document.getElementById('message').value = '';
+            }
         }
     }
     

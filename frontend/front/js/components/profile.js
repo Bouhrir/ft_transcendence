@@ -179,10 +179,19 @@ class ProfileComponent extends HTMLElement {
         data.forEach(element => {
             const matchDiv = document.createElement('div');
             matchDiv.className = 'MatchHistory';
-            if (element.host_score > element.guest_score){
-                matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
-                matchDiv.style.borderRight = 'rgb(9, 255, 0) solid 4px'
-            }
+            const type = element.type
+            console.log(element)
+            if (type == "host") {
+                if (element.host_score > element.guest_score){
+                    matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
+                    matchDiv.style.borderRight = 'rgb(9, 255, 0) solid 4px'
+                }
+            } else {
+                if (element.host_score < element.guest_score){
+                    matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
+                    matchDiv.style.borderRight = 'rgb(9, 255, 0) solid 4px'
+                }
+            } 
 
                 
             const img1 = document.createElement('img');

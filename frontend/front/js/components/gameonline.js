@@ -308,8 +308,8 @@ class GameComponentOnline extends HTMLElement {
         // Keyboard events for player control
         document.addEventListener('keydown', (e) => {
             console.log("sending data: ", isWebSocketOpen);
-            if (e.key === 'ArrowUp' && !isUpPressed) {
-                isUpPressed = true;
+            if (e.key === 'ArrowUp') {// && !isUpPressed) {
+                // isUpPressed = true;
                 // player.dy = -5;
                 if (isWebSocketOpen) {
                     const data = {
@@ -320,8 +320,8 @@ class GameComponentOnline extends HTMLElement {
                     };
                     window.ws.send(JSON.stringify(data));
                 }
-            } else if (e.key === 'ArrowDown' && !isDownPressed) {
-                isDownPressed = true;
+            } else if (e.key === 'ArrowDown') {// && !isDownPressed) {
+                // isDownPressed = true;
                 // player.dy = 5;
                 if (isWebSocketOpen) {
                     const data = {
@@ -338,8 +338,8 @@ class GameComponentOnline extends HTMLElement {
         let isUpPressed = false;
         let isDownPressed = false;
         document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowUp' && isUpPressed) {
-                isUpPressed = false;
+            if (e.key === 'ArrowUp'){// && isUpPressed) {
+                // isUpPressed = false;
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',
@@ -349,8 +349,8 @@ class GameComponentOnline extends HTMLElement {
                     };
                     window.ws.send(JSON.stringify(data));
                 }
-            } else if (e.key === 'ArrowDown' && isDownPressed) {
-                isDownPressed = false;
+            } else if (e.key === 'ArrowDown'){// && isDownPressed) {
+                // isDownPressed = false;
                 if (isWebSocketOpen) {
                     const data = {
                         type: 'paddle_movement',

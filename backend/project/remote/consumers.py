@@ -72,9 +72,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if (ball['y'] + self.ball_radius > self.canvas_height or ball['y'] - self.ball_radius < 0):
 			ball['dy'] *= -1
 		# ball collision with paddles
-		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height and ball['x'] - self.ball_radius < 0):
+		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height):
 			ball['dx'] *= -1
-		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height and ball['x'] + self.ball_radius > 0):
+		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height):
 			ball['dx'] *= -1
 		# Ball goes off the screen
 		if (ball['x'] - self.ball_radius < 0):
@@ -233,12 +233,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 			room_name = data["room_name"]
 			if data["player_id"] == self.game_states[room_name]["players"]["player1"]["id"]:
 				# self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
-				# self.game_states[room_name]["players"]["player2"]["ai_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
+				self.game_states[room_name]["players"]["player2"]["ai_dy"] = data["paddle_dy"]
 			else:
-				self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
-				# self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
 				# self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
+				self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
+				self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
 		if data["type"] == "leave":
 			print("leaving the game")
 			if self.game_states[self.room_name]["type"] == "game":
@@ -252,6 +252,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 			await self.close()
 
 	async def remove_invitation_game(self):
+		print("remove invitation")
 		# game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
 		invitation = await database_sync_to_async(Invitation.objects.get)(room_name=self.room_name)
 		invitation.status = "cancelled"
@@ -275,8 +276,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 			self.game_states[self.room_name]['ball']['y'] += self.game_states[self.room_name]['ball']['dy']
 			self.game_states[self.room_name]["players"]["player1"]["player_y"] += self.game_states[self.room_name]["players"]["player1"]["player_dy"]
 			self.game_states[self.room_name]["players"]["player1"]["ai_y"] += self.game_states[self.room_name]["players"]["player1"]["ai_dy"]
-			# self.game_states[self.room_name]["players"]["player2"]["player_y"] += self.game_states[self.room_name]["players"]["player2"]["player_dy"]
-			# self.game_states[self.room_name]["players"]["player2"]["ai_y"] += self.game_states[self.room_name]["players"]["player2"]["ai_dy"]
+			self.game_states[self.room_name]["players"]["player2"]["player_y"] += self.game_states[self.room_name]["players"]["player2"]["player_dy"]
+			self.game_states[self.room_name]["players"]["player2"]["ai_y"] += self.game_states[self.room_name]["players"]["player2"]["ai_dy"]
 			self.game_states[self.room_name]['ball'] = await self.check_ball_collisions(self.game_states[self.room_name]['ball'], self.game_states[self.room_name]['players']["player1"])
 			#Ensure paddle stays within canvas bounds
 			self.game_states[self.room_name]["players"]["player1"] = await self.check_paddle_boundaries(self.game_states[self.room_name]["players"]["player1"])
@@ -318,8 +319,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		mirrored_ball['x'] = self.canvas_width - game_state['ball']['x']
 		game_state_player2 = game_state.copy()
 		game_state_player2['ball'] = mirrored_ball
-		game_state_player2["players"]["player2"]["player_y"] = game_state["players"]["player1"]["ai_y"]
-		game_state_player2["players"]["player2"]["ai_y"] = game_state["players"]["player1"]["player_y"]
+		# game_state_player2["players"]["player2"]["player_y"] = game_state["players"]["player1"]["ai_y"]
+		# game_state_player2["players"]["player2"]["ai_y"] = game_state["players"]["player1"]["player_y"]
 		await self.channel_layer.send(
 			game_state['players']['player2']['channel_name'],
 			{

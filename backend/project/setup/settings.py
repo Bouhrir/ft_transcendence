@@ -126,8 +126,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db',
+        'USER': 'oussama',
+        'PASSWORD': 'password',
+        'HOST': 'db',  # or the service name in your docker-compose file
+        'PORT': '5432',
     }
 }
 

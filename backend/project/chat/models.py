@@ -20,5 +20,5 @@ class Invitation(models.Model):
     room_name = models.CharField(max_length=255)
     status = models.CharField(max_length=20, default='pending')  # e.g., pending, accepted, cancelled
 
-#     def __str__(self):
-#         return f"Invitation from {self.inviter} to {self.invitee} for {self.room_name} (Status: {self.status})"
+    def __str__(self):
+        return f"Invitation from {self.inviter} to {self.invitee} for {self.room_name} (Status: {self.status})"

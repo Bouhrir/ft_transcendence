@@ -15,6 +15,8 @@ services:
       - frontend
 
   backend:
+    depends_on:
+      - db
     build: ./backend
     container_name: backend
     volumes:
@@ -22,6 +24,19 @@ services:
     restart: on-failure
     networks:
       - frontend
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: oussama
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - frontend
 networks:
   frontend:
     driver: bridge
+volumes:
+  postgres_data:
