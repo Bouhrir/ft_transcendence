@@ -48,7 +48,7 @@ class SomeConsumer(JsonWebsocketConsumer):
             receiver = User.objects.get(id=receiver_id)
             room = Room.objects.get(id=room_id)
         except User.DoesNotExist:
-            pass
+            return
     
         self.save_message(sender, receiver, message, room)
         async_to_sync(self.channel_layer.group_send)(self.room_group_name, {

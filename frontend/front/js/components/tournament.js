@@ -156,7 +156,7 @@ class TournamentComponent extends HTMLElement {
             // window.localStorage.setItem('tournamentSocket', ws);
             // }
             
-            const ws = new WebSocket('ws://localhost:81/ws/tournament/');
+            const ws = new WebSocket('wss://localhost:81/ws/tournament/');
             ws.onopen = function() {
                 // console.log("tournament WebSocket is open now.");
                 isWebSocketOpen = true;

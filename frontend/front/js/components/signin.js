@@ -59,7 +59,7 @@ class SigninComponent extends HTMLElement {
                 window.location.hash = '#dashboard';
             }
             if (key === 'false'){
-                console.log('field intra42 Login')
+                console.log('failed intra42 Login')
                 window.location.href = '#signin';
             }
         });

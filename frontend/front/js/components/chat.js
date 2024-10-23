@@ -90,6 +90,9 @@ class MessengerComponent extends HTMLElement {
                 }
                 this.intialws();
             }
+            else{
+                this.intialws();
+            }
         }
         else{
             console.log("Error fetching room");
@@ -100,7 +103,7 @@ class MessengerComponent extends HTMLElement {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             this.socket.close();
         }
-        this.socket = new WebSocket('ws://localhost:81/ws/chat/' + this.roomData.room_id + '/');
+        this.socket = new WebSocket('wss://localhost:81/ws/chat/' + this.roomData.room_id + '/');
         this.socket.onopen = () => {
             console.log('Connected to WebSocket');
         }

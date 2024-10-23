@@ -13,3 +13,4 @@ django-oauth-toolkit
 djangorestframework-oauth
 django-allauth
 pyOpenSSL
+uvicorn[standard]

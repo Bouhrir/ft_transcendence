@@ -257,7 +257,7 @@ def register_42(user_data):
 def LoginIntra(request):
     # Redirect the user to the 42 API for authentication
     auth_url = (
-        'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c2d8175ca10c11077651ebdd5fec416379865ae11fbf864cb4e5cc19093221c7&redirect_uri=http%3A%2F%2Flocalhost%3A81%2Fauth%2Fcallback%2F&response_type=code'
+        'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82649c71bbe7f51574fa53213b20b08f6f6f5f3599154a87c432e0de1071b36b&redirect_uri=https%3A%2F%2Flocalhost%3A81%2Fauth%2Fcallback%2F&response_type=code'
     )
     return HttpResponseRedirect(auth_url)
 
@@ -265,7 +265,6 @@ def LoginIntra(request):
 def callback(request):
     # Get the authorization code from the query parameters
     code = request.GET.get('code')  # Corrected from request.get to request.GET.get
-
     if not code:
         return HttpResponseRedirect('https://localhost:81/start/#false')
 
@@ -278,10 +277,11 @@ def callback(request):
         'redirect_uri': settings.SOCIALACCOUNT_PROVIDERS['intra']['APP']['redirect_uris'],  # You may need to define this in your settings
         'code': code,
     }
-
+    print(f"toekn: {token_data}")  
     # Send a POST request to exchange the code for a token
     token_response = requests.post(token_url, data=token_data)
-
+    print(f"token_response: {token_response}")
+    
     if token_response.status_code != 200:
         return HttpResponseRedirect('https://localhost:81/start/#false')
 

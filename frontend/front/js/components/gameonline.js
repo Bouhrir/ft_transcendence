@@ -209,7 +209,7 @@ class GameComponentOnline extends HTMLElement {
             color: 'white'
 
         };
-        const ws = new WebSocket(`ws://localhost:81/ws/pong/${window.gameRoom}/`);
+        const ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
         // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
         ws.onopen = function () {
             console.log("remote WebSocket is open now.");
