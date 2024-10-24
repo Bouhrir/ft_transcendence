@@ -90,6 +90,7 @@ class SigninComponent extends HTMLElement {
                     document.cookie = `access=${data.access}; path=/;`;
                     document.cookie = `refresh=${data.refresh}; path=/;`;
                     window.location.hash = '#dashboard';
+                    this.set_online();
                 }
                 else
                 {
@@ -146,7 +147,20 @@ class SigninComponent extends HTMLElement {
             }
         });
     }
-
+    async set_online(){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('https://localhost:81/auth/set_online/', {
+            method: 'GET',
+            mode:'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access}`,
+            },
+        });
+        if (response.ok){
+            console.log('set online');
+        }
+    }
     async check2FAStatus(username) {
         try {
             const response = await fetch('https://localhost:81/2fa/status/', {
