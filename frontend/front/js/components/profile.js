@@ -13,12 +13,15 @@ class ProfileComponent extends HTMLElement {
                 <div class="Profile1" id="profile1">
                     <img id="ProfileImg" class="ProfileImg"></img>
                     <h1 id="FullName" ></h1>
-                    <p id="UserName"></p>
+                    <div class="on">
+                        <span class="onlineUser" id="online"></span><p id="UserName"></p>
+                    </div>
 					<div id="addFriends" class="AddFriends">
 						<a class="join"> Add Friends<span class="flech">→</span></a>
 					</div>
                 </div>
                 <div class="LastMatches" id="LastMatches">
+                    <div class="MatchHistory"></div>
                 </div>
             </div>
             <div class="Matche">
@@ -56,8 +59,17 @@ class ProfileComponent extends HTMLElement {
             const data = await response.json();
 
             fullName.textContent = data.first_name + ' ' + data.last_name;
-            await this.check_online(data.id);
             username.textContent = data.username;
+            this.check_online(data.id).then(online => {
+                const status = document.getElementById('online');
+                if (online){
+
+                    status.style.backgroundColor = 'rgb(11, 237, 109)';
+                }
+                else {
+                    status.style.backgroundColor = 'rgb(237, 11, 11)';
+                }
+            })
             imgProfile.src = data.image;
             if (userId === localStorage.getItem('id'))
             {
@@ -182,12 +194,10 @@ class ProfileComponent extends HTMLElement {
             })
         });
         if (response.ok){
-            const data = await response.json();
-            if (data.is_online){
-                const fullName = document.getElementById('FullName');
-                fullName.style.color = 'rgb(0, 255, 0)';
-                fullName.textContent = fullName.textContent + ' (online)';
-            }
+            return true
+        }
+        else{
+            return false
         }
     }
     async LastMatches(){
@@ -217,8 +227,8 @@ class ProfileComponent extends HTMLElement {
         data.forEach(element => {
             const matchDiv = document.createElement('div');
             matchDiv.className = 'MatchHistory';
+           
             const type = element.type
-            console.log(element)
             if (type == "host") {
                 if (element.host_score > element.guest_score){
                     matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
@@ -229,9 +239,12 @@ class ProfileComponent extends HTMLElement {
                     matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
                     matchDiv.style.borderRight = 'rgb(9, 255, 0) solid 4px'
                 }
-            } 
+            }
+            const date = document.createElement('span');
+            date.className = 'Date';
+            date.textContent = element.created_at.slice(0, 10);
+            matchDiv.appendChild(date);
 
-                
             const img1 = document.createElement('img');
             img1.width = 70;
             img1.height = 70;
@@ -262,7 +275,7 @@ class ProfileComponent extends HTMLElement {
             getuser(element.guest_id, img2);
             matchDiv.appendChild(img2);
     
-            matchesContainer.appendChild(matchDiv);
+            matchesContainer.prepend(matchDiv);
         });
     }
     fillLast(data){

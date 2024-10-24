@@ -31,9 +31,7 @@ class SigninComponent extends HTMLElement {
                         </div>
                     </div>
                     <div>
-                        <form action="#dashboard">
-                            <button type="submit" class="loginbtn">Sign in</button>
-                        </form>
+                        <button type="submit" class="loginbtn">Sign in</button>
                     </div>
                     <div class="line">
                         <h2 class="or">or</h2>
@@ -49,7 +47,8 @@ class SigninComponent extends HTMLElement {
 
         const signin = document.getElementById('signin');
         const btn42 = document.getElementById('btn42');
-        btn42.addEventListener('click', () => {
+        btn42.addEventListener('click', (e) => {
+            e.preventDefault();
             window.location = 'https://localhost:81/auth/intra/';
         });
         window.addEventListener('load', () => {
@@ -57,6 +56,7 @@ class SigninComponent extends HTMLElement {
             const key = url.hash.slice(1); // This will remove the '#' character
             if (key === 'true') {
                 window.location.hash = '#dashboard';
+                this.set_online();
             }
             if (key === 'false'){
                 console.log('failed intra42 Login')

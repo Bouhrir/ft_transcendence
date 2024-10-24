@@ -456,14 +456,12 @@ button.join:hover .flech {
 }
 .notification {
     display: flex;
-    /* margin-top: 30%; */
     justify-content: center;
     align-items: center;
     width: 2vw;
     height: 3.5vh; 
     border: 0.5px solid rgba(255, 255, 255, 0.292);
     background: linear-gradient(rgba(255, 255, 255, 0.215), rgba(255, 255, 255, 0));
-    /* backdrop-filter: blur(50px); */
     border-radius: 12px;
     z-index: 1;
 }

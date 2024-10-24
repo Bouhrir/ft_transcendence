@@ -413,9 +413,8 @@ def set_online(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def check_online(request):
-    friend_id = request.data.get('friend_id')
+    friend_id = request.data.get('id')
     user = User.objects.get(id=friend_id)
-    
     user_profile = UserProfile.objects.get(user=user)
     if user_profile.is_online:
         return Response({'message': 'This user is online'}, status=status.HTTP_200_OK)
@@ -436,10 +435,11 @@ def offline(request):
 def block(request):
     friend_id = request.data.get('friend_id')
     user = User.objects.get(id=friend_id)
+    friend = UserProfile.objects.get(user=user);
     
     user_profile = UserProfile.objects.get(user=request.user)
-    if user_profile.friends.filter(user=user).exists():
-        user_profile.friends.remove(user.id)
+    if user_profile.friends.filter(user=friend.user).exists():
+        user_profile.friends.remove(friend)
         return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)
@@ -476,6 +476,7 @@ def get_user_games(request):
         'winner': game.winner.username if game.winner else None,
         'host_id': game.host.id,
         'guest_id': game.guest.id if game.guest else None,
+        'created_at': game.created_at,
         'host_score': game.host_score,
         'guest_score': game.guest_score,
         'type': game.get_player_role(user.id)

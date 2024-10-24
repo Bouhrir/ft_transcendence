@@ -10,12 +10,12 @@ class SignupComponent extends HTMLElement {
         <div class="logop">
             <img src="../../needs/img/logo.svg" class="oplogo">
         </div>
-        <form id="signup">
+        <div id="signup">
             <div class="signupbox" id="signup">
                 <div class="email-txt">
                         <h1 class="wlctxt">CREATE ACCOUNT</h1>
                         <div class="btn42" id="btn42">
-                            <button type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
+                            <button  type="submit" class="logo42"><img src="../../needs/img/42logo.svg"></button>
                         </div>
                         <div class="line">
                             <h2 class="or">or</h2>
@@ -33,19 +33,18 @@ class SignupComponent extends HTMLElement {
                         <h3>CONFIRM PASSWORD</h3>
                             <input id="confirm_password" type="password" class="password-input" placeholder="Enter your Password" required>
                         
-                        <div class="btnsign"> 
-                            <form>
+                        <form class="btnsign"> 
                             <button type="submit" class="loginbtn">Sign up</button>
-                            </form>
-                        </div>
+                        </form>
                         <div class="dont">
                             <h2>Already have an account? <a href="#signin">Sign in<a></h2>
                         </div>
                     </div>
                 </div>
-        </form>`;
+        </div>`;
         const btn42 = document.getElementById('btn42');
-        btn42.addEventListener('click', () => {
+        btn42.addEventListener('click', (e) => {
+            e.preventDefault();
             window.location = 'https://localhost:81/auth/intra/';
         });
         window.addEventListener('load', () => {

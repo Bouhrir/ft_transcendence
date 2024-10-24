@@ -6,7 +6,6 @@ class gameBar extends HTMLElement {
             <p id="gameOnline" class="gameLine"><a href="#tournament">TOURNAMENT<a/></p>
        </div>
        `;
-        
     }
 }
 customElements.define('game-bar', gameBar);

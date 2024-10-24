@@ -197,3 +197,27 @@
     color: white;
 }
 
+.onlineUser {
+    display: flex;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.on{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    gap: 1%;
+    width: 40%;
+    font-family: 'Baloo_Bhai_2';
+}
+
+.Date{
+    font-size: 0.5rem;
+    font-family: 'Bungee';
+    position: absolute;
+    right: 7%;
+}
