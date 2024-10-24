@@ -133,16 +133,15 @@ class PongConsumer(AsyncWebsocketConsumer):
 		self.player_id = self.scope["user"].id
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = f"pong_{self.room_name}"
-		# print(f"room_name: {self.room_name}")
 		try:
 			# Check if the game exists in the database
 			game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
+			## i should check this again, i don't think i should check if it's cancelled, because i won't cancel it##
 			if game.status == "cancelled":
 				print("game is cancelled")
 				await self.notify_and_close('no_room')
 				return
 		except Game.DoesNotExist:
-			print("game doesn't exist")
 			# If the game doesn't exist, inform the player and close the connection
 			await self.notify_and_close('no_room')
 			return
@@ -174,45 +173,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 			'player_id': self.scope['user'].id
 		}))
 		await self.close()
-	
-	async def wait_for_opponent(self):
-		start_time = asyncio.get_event_loop().time()
-		while True:
-			print("waiting")
-			elapsed_time = asyncio.get_event_loop().time() - start_time
-			if self.game_states[self.room_name]["players"]["player2"]["id"] is not None:
-				print("game started")
-				return
-			if elapsed_time >= 5:
-				print("endgame")
-				try:
-					game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
-					game.status = "cancelled"
-					player1_id = self.game_states[self.room_name]["players"]["player1"]["id"]
-					host_id = await database_sync_to_async(lambda: game.host.id)()
-					guest_id = await database_sync_to_async(lambda: game.guest.id)()
-					if player1_id == host_id:
-						game.winner = game.host
-						game.host
-					elif player1_id == guest_id:
-						game.winner = game.guest
-					await database_sync_to_async(game.set_score)(self.player_id, 3, 0)
-					await database_sync_to_async(game.save)()
-				except ObjectDoesNotExist:
-					print(f"Game with room name {self.room_name} does not exist.")
-				await self.channel_layer.send(
-					self.game_states[self.room_name]['players']['player1']['channel_name'],
-					{
-						'type': 'state',
-						'action': 'end'
-					}
-				)
-				return
-			await asyncio.sleep(0.5)
-			
-		# wait for opponent, if game starts stop waiting, if not
 
 	async def disconnect(self, close_code):
+		# i should set the game to finished if the connection is disconnected
 		# room_group_name is not set when you close on the not authenticated user
 		if self.game_states[self.room_name]["players"]["player2"]["id"] is None and self.game_states[self.room_name]["type"] == "game":
 			await self.remove_invitation_game()
@@ -240,16 +203,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 				self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
 		if data["type"] == "leave":
-			print("leaving the game")
-			if self.game_states[self.room_name]["type"] == "game":
-				print("game type")
-				await self.remove_invitation_game()
-				# set the game as cancelled and remove the invitation
-				print("leaving game")
-			else:
-				# remove the player and set him as a loser
-				print("leaving tournament game")
 			await self.close()
+			print("leaving the game")
 
 	async def remove_invitation_game(self):
 		print("remove invitation")
@@ -287,16 +242,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 			# await asyncio.gather()
 			await self.send_game_state_to_players(self.game_states[self.room_name])
 			await asyncio.sleep(1/60)
-		# print(f'player_id: {self.game_states[self.room_name]["players"]["player1"]["id"]}')
-		# print(f"room_name: {self.room_name}")
-		# print(f'first_player_score: {self.game_states[self.room_name]["players"]["player1"]["player_score"]}')
-		# print(f'second_player_score: {self.game_states[self.room_name]["players"]["player1"]["ai_score"]}')
 		game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
 		await database_sync_to_async(game.set_score)(self.game_states[self.room_name]["players"]["player1"]["id"], self.game_states[self.room_name]["players"]["player1"]["player_score"], self.game_states[self.room_name]["players"]["player1"]["ai_score"])
 		await database_sync_to_async(game.determine_winner)()
 		# await database_sync_to_async(game.save)()
-		wini = await database_sync_to_async(lambda: game.winner)()
-		print(f"winner: {wini}")
+		# wini = await database_sync_to_async(lambda: game.winner)()
+		# print(f"winner: {wini}")
 		await self.channel_layer.group_send(
 			self.room_group_name,
 			{

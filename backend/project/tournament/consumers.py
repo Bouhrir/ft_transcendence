@@ -38,15 +38,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	}
 
 	async def is_already_in_tournament(self):
-		rounds = ['first_semis', 'second_semis', 'final']
-	
+		rounds = ['final', 'first_semis', 'second_semis']
 		for round_name in rounds:
 			for player in self.games[round_name]:
 				if player['id'] == self.player_id:
-					# print("player already in tourney")
 					player['channel_name'] = self.channel_name
 					return
-		# print("new player in tourney")
 
 	async def connect(self):
 		cookie_value = self.scope['cookies'].get('access')
@@ -61,10 +58,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			self.scope['user'] = AnonymousUser()
 
 		if self.scope['user'].is_authenticated:
-			# print(self.scope['user'])
 			await self.accept() # Accept the WebSocket connection
 		else:
-			print("not auth")
 			await self.close() # Close connection if not authenticated
 			return
 		self.player_id = self.scope["user"].id  # Identify player
@@ -73,7 +68,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 		await self.is_already_in_tournament()
-		#if player already in the games i should update it's channel_name
 		await self.send(text_data=json.dumps({
 			"action": "new_connection",
 			"player_id": self.player_id,
@@ -81,8 +75,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.notify_game_status()
 		
 	async def disconnect(self, close_code):
-		await self.channel_layer.group_discard("global_room", self.channel_name)
-		# in disconnect you should check what you will be removing before deconnecting
+		if hasattr(self, 'global_room'):
+			await self.channel_layer.group_discard("global_room", self.channel_name)
 		print("disconnect")
 
 	async def receive(self, text_data):
@@ -97,8 +91,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 					"result": None,
 					"score": 0
 				})
-			else:
-				print("full room")
 		if data["type"] == "play":
 			print("change to active")
 			if self.games["round"] == "semis":
@@ -131,21 +123,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		round_group = self.games[round]
 		for player in round_group:
 			await self.channel_layer.group_discard(round, player["channel_name"])
-
-	# async def is_semis_finished(self):
-	# 	if self.games["round"] != "semis":
-	# 		return
-	# 	first_semis = False
-	# 	second_semis = False
-	# 	if self.games["first_semis"][0]["status"] == "finished" and self.games["first_semis"][1]["status"] == "finished":
-	# 		first_semis = True
-	# 	if self.games["second_semis"][0]["status"] == "finished" and self.games["second_semis"][1]["status"] == "finished":
-	# 		second_semis = True
-	# 	# Check second_semis
-	# 	if first_semis == True and second_semis == True:
-	# 		# task = asyncio.create_task(self.launch_finals())
-	# 		self.games["round"] = "final"
-	# 		await self.launch_finals()
 
 	async def change_action(self, player_id, status, stages):
 		# Iterate over the provided stages
@@ -231,9 +208,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			self.games["second_semis"][0]["score"] = await database_sync_to_async(semis2.get_player_score)(self.games["second_semis"][0]["id"])
 			self.games["second_semis"][1]["score"] = await database_sync_to_async(semis2.get_player_score)(self.games["second_semis"][1]["id"])
 		
-		#maybe here i should get the score and the winner and the loser so i can display it in the front, just do it inside the condition maybe 
 		await self.notify_game_status()
-		#send update to users globally maybe
 	
 	async def check_if_joined(self, round, room_name):
 		print(f"check timeout for {round}")
@@ -250,36 +225,20 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			await database_sync_to_async(game.save)()
 
 	async def check_semis_status(self, room_name1, room_name2):
-		start_time = asyncio.get_event_loop().time()
-		check_timeout = False
-		#maybe do a variable so you check the timeout once
 		while True:
-			# elapsed_time = asyncio.get_event_loop().time() - start_time
-			# if elapsed_time >= 5 and check_timeout == False:
-			# 	check_timeout = True
-			# 	await self.check_if_joined("first_semis", room_name1)
-			# 	await self.check_if_joined("second_semis", room_name2)
-				# check if at least one of them joined if both have not you should consider the game cancelled and you should send an update to remove the play button
 			try:
 				semis1 = await database_sync_to_async(Game.objects.get)(room_name=room_name1)
 				semis2 = await database_sync_to_async(Game.objects.get)(room_name=room_name2)
 
 				# Check if both games have finished
-				if (semis1.status == "finished" or semis1.status == "cancelled") and (semis2.status == "finished" or semis2.status == "cancelled"):
-					# if semis1.status == "cancelled":
-						# await self.change_action(self.games["first_semis"][0]["id"], "finished", ["first_semis"])
-						# await self.change_action(self.games["first_semis"][1]["id"], "finished", ["first_semis"])
-					# if semis2.status == "cancelled":
-						# await self.change_action(self.games["second_semis"][0]["id"], "finished", ["second_semis"])
-						# await self.change_action(self.games["second_semis"][1]["id"], "finished", ["second_semis"])
-					# here i should be knowing the winner from the remote module and i should send the update
+				if (semis1.status == "finished" and semis2.status == "finished"):
+					print("semis games finished")
 					await self.determine_semis_winners(room_name1, room_name2)
 					await self.launch_finals()
-					print("games finished")
 					return
 			except ObjectDoesNotExist:
 				print("Game not found. Waiting for game creation...")
-			await asyncio.sleep(0.5)
+			await asyncio.sleep(1)
 
 	async def launch_semis(self):
 		print("launching semis")
@@ -308,31 +267,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.change_action(self.games["second_semis"][1]["id"], "ready", ["first_semis", "second_semis"])
 		await self.notify_game_status()
 		task = asyncio.create_task(self.check_semis_status(room_name1, room_name2))
-		# await self.check_semis_status(room_name1, room_name2)
-		# await task
+
 	async def set_only_winner(self):
 		self.games["final"][0]["result"] = "winner"
 		self.games["final"][0]["score"] = 3
 
 	async def launch_finals(self):
 		print("launching finals")
-		# await asyncio.sleep(10)
-		# if len(self.games["final"]) == 0:
-		# 	print("nobody won")
-		# 	await self.channel_layer.group_send(
-		# 		"global_room",
-		# 		{
-		# 			"type": "nobody_won",
-		# 		}
-		# 	)
-		# 	# nobody qualified so nobody won, so just reset that i think
-		# 	return
-		# elif len(self.games["final"]) == 1:
-		# 	print("one winner")
-		# 	await self.set_only_winner()
-		# 	await self.notify_game_status()
-		# 	# the winner is already set
-		# 	return
 		room_name = f"room_{uuid.uuid4().hex}"
 		final = await database_sync_to_async(Game.objects.create)(
 			host_id=self.games["final"][0]["id"],
@@ -345,7 +286,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.change_action(self.games["final"][0]["id"], "ready", ["final"])
 		await self.change_action(self.games["final"][1]["id"], "ready", ["final"])
 		asyncio.create_task(self.check_final_status(room_name))
-		# await self.check_final_status(room_name)
 
 	async def determine_final_winner(self, room_name):
 		print("determine final winner")
@@ -354,8 +294,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		print(final_winner)
 		if final_winner is not None:
 			print("final_winner")
-			self.games["final"][0]["score"] = await database_sync_to_async(final.get_player_score)(self.games["final"][0]["id"])
-			self.games["final"][1]["score"] = await database_sync_to_async(final.get_player_score)(self.games["final"][1]["id"])
 			if final_winner.id == self.games["final"][0]["id"]:
 				self.games["final"][0]["result"] = "winner"
 				self.games["final"][1]["result"] = "loser"
@@ -364,24 +302,18 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				self.games["final"][1]["result"] = "winner"
 				self.games["final"][0]["result"] = "loser"
 				self.games["winner"] = self.games["final"][1]
+			self.games["final"][0]["score"] = await database_sync_to_async(final.get_player_score)(self.games["final"][0]["id"])
+			self.games["final"][1]["score"] = await database_sync_to_async(final.get_player_score)(self.games["final"][1]["id"])
 		self.games["status"] = "finished"
+		await self.notify_game_status()	
 
 	async def check_final_status(self, room_name):
 		print("check_final_status")
-		start_time = asyncio.get_event_loop().time()
-		check_timeout = False
 		while True:
-			# elapsed_time = asyncio.get_event_loop().time() - start_time
-			# if elapsed_time >= 5 and check_timeout == False:
-			# 	check_timeout = True
-			# 	await self.check_if_joined("final", room_name)
-				# check if at least one of them joined if both have not you should consider the game cancelled and you should send an update to remove the play button
 			try:
 				final = await database_sync_to_async(Game.objects.get)(room_name=room_name)
-				# Check if both games have finished
-				if (final.status == "finished" or final.status == "cancelled"):
+				if (final.status == "finished"):
 					await self.determine_final_winner(room_name)
-					await self.notify_game_status()			
 					return
 			except ObjectDoesNotExist:
 				print("Game not found. Waiting for game creation...")
@@ -392,14 +324,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			"action": "status",
 			"games": event["games"]
 		}))
-	async def cancelled(self, event):
-		await self.send(text_data=json.dumps({
-			"action": "cancelled",
-		}))
-	async def nobody_won(self, event):
-		await self.send(text_data=json.dumps({
-			"action": "nobody_won",
-		}))
+
 	async def reset(self, event):
 		print("the end")
 		await self.send(text_data=json.dumps({

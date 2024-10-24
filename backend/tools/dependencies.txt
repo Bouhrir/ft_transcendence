@@ -15,4 +15,4 @@ django-allauth
 psycopg2-binary
 pyOpenSSL
 uvicorn[standard]
-
+channels_redis

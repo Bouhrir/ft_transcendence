@@ -20,11 +20,9 @@ def get_game(request):
 		sender = User.objects.get(id=sender_id)
 		receiver = User.objects.get(id=receiver_id)
 		existing_game = Game.objects.filter(Q(host=sender, guest=receiver) | Q(guest=sender, host=receiver),status='waiting').last()
-		# print(existing_game)
 		if existing_game:
 			return Response({'status': 'success', 'game_id': existing_game.id}, status=status.HTTP_200_OK)
 		else:
 			return Response({'error': 'No active game found.'}, status=status.HTTP_404_NOT_FOUND)
 	except User.DoesNotExist:
 		return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
-		# return Response({'status': 'success'}, status=status.HTTP_200_OK)

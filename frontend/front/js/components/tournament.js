@@ -108,7 +108,6 @@ class TournamentComponent extends HTMLElement {
         const winnerPlayer = document.getElementById("winner-player")
         const winningMsg = document.getElementById("winning-msg")
         
-        // se.style.backgroundImage = "url('/needs/img/Rectangle 27.png')"
         async function getAvatar(id, element){
             const access = getAccessTokenFromCookies('access');
             const response = await fetch('https://localhost:81/auth/getuser/', {
@@ -124,97 +123,60 @@ class TournamentComponent extends HTMLElement {
             if (response.ok){
                 const data = await response.json();
                 element.src = data.image;
-                // console.log(ele)
             }
         }
-
-        // function backFromGame() {
-        //     if (window.isTournament) {
-        //         console.log("back from game!!!")
-        //         if (window.isWebSocketOpen) {
-        //             const data = {
-        //                 type: 'back',
-        //                 // player_id: player_id,
-        //                 // alias: alias
-        //             };
-        //             window.ws.send(JSON.stringify(data));
-        //         }
-        //         window.isTournament = false
-        //         joinButton.style.display = "none"
-        //         aliasInput.style.display = "none"
-        //     }
-        //     // maybe make it false again
-        // }
-        // backFromGame()
-        // let ws = window.localStorage.getItem('tournamentSocket');
-
-        // console.log("websock: ", ws)
-
-        // if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
-            // console.log("establishing a new connection")
-            // console.log("opened: ", ws)
-            // window.localStorage.setItem('tournamentSocket', ws);
-            // }
             
-            const ws = new WebSocket('wss://localhost:81/ws/tournament/');
-            ws.onopen = function() {
-                console.log("tournament WebSocket is open now.");
-                isWebSocketOpen = true;
-            };
-            
-            // Handle WebSocket errors
-            ws.onerror = function(error) {
-                console.error("Chat WebSocket error:", error);
-            };
-            
-            // Handle WebSocket close
-            ws.onclose = function() {
-                console.log("closing websocket")
-                isWebSocketOpen = false;
-            };
-            ws.onmessage = function(e) {
-                const data = JSON.parse(e.data);
-                if (data.action == "new_connection") {
-                    player_id = data.player_id
-                    console.log("new tournament connection: ", player_id)
-                }
-                else if (data.action == "cancelled") {
-                    joinButton.style.display = "none"
-                }
-                else if (data.action == "status") {
-                    status(data.games)
-                }
-                else if (data.action == "nobody_won") {
-                    winningMsg.innerText = "nobody won"
-                }
-                else if (data.action == "reset") {
-                    console.log("finished tourn")
-                    joinButton.style.display = "block"
-                    aliasInput.style.display = "block"
-                    // joinButton.innerText = "JOIN!"
-                    resetPlayer(semisFirstPlayer, semisFirstPlayerScore)
-                    resetPlayer(semisSecondPlayer, semisSecondPlayerScore)
-                    resetPlayer(semisThirdPlayer, semisThirdPlayerScore)
-                    resetPlayer(semisFourthPlayer, semisFourthPlayerScore)
-                    resetPlayer(finalFirstPlayer, finalFirstPlayerScore)
-                    resetPlayer(finalSecondPlayer, finalSecondPlayerScore)
-                    winnerPlayer.removeAttribute('src');
-                    winnerPlayer.style.color = 'white'
-                    winnerPlayer.style.border = "3px solid rgb(255, 255, 255)";
-                    status(data.games)
-                    // location.reload();
-                }
+        const ws = new WebSocket('wss://localhost:81/ws/tournament/');
+        ws.onopen = function() {
+            console.log("tournament WebSocket is open now.");
+            isWebSocketOpen = true;
+        };
+        
+        // Handle WebSocket errors
+        ws.onerror = function(error) {
+            console.error("Chat WebSocket error:", error);
+        };
+        
+        // Handle WebSocket close
+        ws.onclose = function() {
+            console.log("closing websocket")
+            isWebSocketOpen = false;
+        };
+
+        ws.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.action == "new_connection") {
+                player_id = data.player_id
+                console.log("new tournament connection: ", player_id)
             }
-        // }
+            else if (data.action == "status") {
+                status(data.games)
+            }
+            else if (data.action == "reset") {
+                console.log("finished tourn")
+                joinButton.style.display = "block"
+                aliasInput.style.display = "block"
+                resetPlayer(semisFirstPlayer, semisFirstPlayerScore)
+                resetPlayer(semisSecondPlayer, semisSecondPlayerScore)
+                resetPlayer(semisThirdPlayer, semisThirdPlayerScore)
+                resetPlayer(semisFourthPlayer, semisFourthPlayerScore)
+                resetPlayer(finalFirstPlayer, finalFirstPlayerScore)
+                resetPlayer(finalSecondPlayer, finalSecondPlayerScore)
+                winnerPlayer.removeAttribute('src');
+                winnerPlayer.style.color = 'white'
+                winnerPlayer.style.border = "3px solid rgb(255, 255, 255)";
+                status(data.games)
+            }
+        }
+        
         function resetPlayer(playerElement, scoreElement) {
             scoreElement.style.color = "white";
             scoreElement.innerText = "0"
             playerElement.style.border = "3px solid rgb(255, 255, 255)";
             playerElement.removeAttribute('src');
             playerElement.style.visbility = 'hidden';
-            // playerElement.src = "#"
-
         }
+
         joinButton.addEventListener('click', (e) => {
             alias = aliasInput.value
             if (joinButton.innerText == "JOIN!") {
@@ -226,8 +188,6 @@ class TournamentComponent extends HTMLElement {
                     };
                     ws.send(JSON.stringify(data));
                 }
-                // aliasInput.style.display = "none"
-                // joinButton.style.display = "none"
             } else if (joinButton.innerText == "PLAY!"){
                 if (isWebSocketOpen) {
                     const data = {
@@ -237,10 +197,8 @@ class TournamentComponent extends HTMLElement {
                     };
                     ws.send(JSON.stringify(data));
                 }
-                // window.gameRoom = 
                 window.isTournament = true
                 window.location.href = "#game-online"
-                // close socket when you leave the page
             } else if (joinButton.innerText == "RESET!") {
                 console.log("reset tournament")
                 if (isWebSocketOpen) {
@@ -294,7 +252,6 @@ class TournamentComponent extends HTMLElement {
             }
         }
 
-
         function status(games) {
             const first_semis = games.first_semis
             const second_semis = games.second_semis
@@ -344,15 +301,22 @@ class TournamentComponent extends HTMLElement {
             setPlayer(final[0], finalFirstPlayer, finalFirstPlayerScore)
             setPlayer(final[1], finalSecondPlayer, finalSecondPlayerScore)
             setWinner(winner)
-
         }
-        // window.addEventListener('beforeunload', function() {
-        //     if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-        //         console.log("Closing WebSocket connection before unload");
-        //         window.ws.close(); // Optionally close the WebSocket
-        //     }
-        // });
     }
+    // disconnectedCallback() {
+    //     // Assume you have an existing WebSocket connection stored in `window.ws`
+    //     if (window.ws) {
+    //         // Check if the WebSocket is open or connecting before trying to close it
+    //         if (window.ws.readyState === WebSocket.OPEN || window.ws.readyState === WebSocket.CONNECTING) {
+    //             // Close the WebSocket with a status code and an optional reason
+    //             window.ws.close(1000);
+
+    //             // Optionally, set the WebSocket to null to ensure it can be reconnected later
+    //             window.ws = null;
+    //             console.log("WebSocket closed from the front end.");
+    //         }
+    //     }
+    // }
 }
 
 customElements.define('tournament-component', TournamentComponent);

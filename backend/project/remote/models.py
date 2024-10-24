@@ -11,6 +11,7 @@ class Game(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	room_name = models.CharField(max_length=50, unique=True, default="default")  # Add room_name here
 	type = models.CharField(max_length=30, default='game')
+	created_at = models.DateTimeField(auto_now_add=True)
 
 	# Method to determine the winner based on scores
 	def determine_winner(self):
@@ -51,21 +52,6 @@ class Game(models.Model):
 	def set_winner(self, winner):
 		setattr(self, 'winner', winner)
 
-
-
-	# def score_game(self, player_id, score1, score2):
-	# 	host_id = await sync_to_async(self.get_host_id)()
-	# 	guest_id = await sync_to_async(self.get_guest_id)()
-	# 	if self.host.id == player_id:
-	# 		self.host_score = score1
-	# 		self.guest_score = score2  # Keep guest score unchanged
-	# 	elif self.guest and self.guest.id == player_id:
-	# 		self.guest_score = score1
-	# 		self.host_score = score2  # Keep host score unchanged
-	# 	else:
-	# 		raise ValueError("Player ID is not associated with this game.")
-		
-	# 	self.save()  # Save the updated scores
 	# Method to get the host
 	def get_host(self):
 		return self.host

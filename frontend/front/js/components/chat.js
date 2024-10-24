@@ -115,23 +115,19 @@ class MessengerComponent extends HTMLElement {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': `Bearer ${access}` // Make sure 'access' is defined
+                    'Authorization': `Bearer ${access}`
                 },
                 body: `receiver_id=${id}`
             });
-    
-            // Handle non-OK responses (status outside the 200-299 range)
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(`Error ${response.status}: ${errorData.error}`);
             }
-            // const data = await response.json(); // Try parsing JSON response
-            return true; // Successfully return the parsed data
+            return true;
     
         } catch (error) {
-            // Handle network or parsing errors
-            console.error('Error:', error.message);
-            return false; // Return null or handle the error as needed
+
+            return false;
         }
     }
 
@@ -176,6 +172,7 @@ class MessengerComponent extends HTMLElement {
                         const newMessage = document.createElement('div')
                         newMessage.textContent = `you have a tournament game now!!!`
                         newMessage.classList.add ('left-para')
+                        newMessage.style.fontFamily = "bungee"
                         messageDisplay.appendChild(newMessage)
                         messageDisplay.scrollTop = messageDisplay.scrollHeight;
                     }
@@ -242,11 +239,15 @@ class MessengerComponent extends HTMLElement {
                     'rec_id': this.receiverId,
                     'room_id': this.roomData.room_id,
                 }));
+                // maybe not add it in the database but just display it now
                 window.gameRoom = invite.room_name
                 window.location.href = `#game-online`;
             } else {
                 this.socket.send(JSON.stringify({
-                    'message': "you can't send this invitation"
+                    'msg': "you can't send invitation",
+                    'snd_id': this.currentUserId,
+                    'rec_id': this.receiverId,
+                    'room_id': this.roomData.room_id,
                 }));
             }
         }
@@ -258,7 +259,10 @@ class MessengerComponent extends HTMLElement {
                 window.location.href = `#game-online`;
             } else {
                 this.socket.send(JSON.stringify({
-                    'message': "invitation not found"
+                    'msg': "invitation not found",
+                    'snd_id': this.currentUserId,
+                    'rec_id': this.receiverId,
+                    'room_id': this.roomData.room_id,
                 }));
             } 
         } else {
@@ -270,6 +274,9 @@ class MessengerComponent extends HTMLElement {
                     'room_id': this.roomData.room_id,
                 }));
                 document.getElementById('message').value = '';
+                console.log("if")
+            } else {
+                console.log("else")
             }
         }
     }
@@ -347,12 +354,5 @@ class MessengerComponent extends HTMLElement {
     }
 
 }
-// inviter 114
-// invitee 113
-
-
-
-// Define receiverId and receiverName based on your application logic
-// }
 
 customElements.define('messenger-component', MessengerComponent);
