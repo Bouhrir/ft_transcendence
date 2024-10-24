@@ -31,9 +31,7 @@ class SigninComponent extends HTMLElement {
                         </div>
                     </div>
                     <div>
-                        <form action="#dashboard">
-                            <button type="submit" class="loginbtn">Sign in</button>
-                        </form>
+                        <button type="submit" class="loginbtn">Sign in</button>
                     </div>
                     <div class="line">
                         <h2 class="or">or</h2>
@@ -49,7 +47,8 @@ class SigninComponent extends HTMLElement {
 
         const signin = document.getElementById('signin');
         const btn42 = document.getElementById('btn42');
-        btn42.addEventListener('click', () => {
+        btn42.addEventListener('click', (e) => {
+            e.preventDefault();
             window.location = 'https://localhost:81/auth/intra/';
         });
         window.addEventListener('load', () => {
@@ -57,6 +56,7 @@ class SigninComponent extends HTMLElement {
             const key = url.hash.slice(1); // This will remove the '#' character
             if (key === 'true') {
                 window.location.hash = '#dashboard';
+                this.set_online();
             }
             if (key === 'false'){
                 console.log('failed intra42 Login')
@@ -90,6 +90,7 @@ class SigninComponent extends HTMLElement {
                     document.cookie = `access=${data.access}; path=/;`;
                     document.cookie = `refresh=${data.refresh}; path=/;`;
                     window.location.hash = '#dashboard';
+                    this.set_online();
                 }
                 else
                 {
@@ -146,7 +147,20 @@ class SigninComponent extends HTMLElement {
             }
         });
     }
-
+    async set_online(){
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('https://localhost:81/auth/set_online/', {
+            method: 'GET',
+            mode:'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access}`,
+            },
+        });
+        if (response.ok){
+            console.log('set online');
+        }
+    }
     async check2FAStatus(username) {
         try {
             const response = await fetch('https://localhost:81/2fa/status/', {

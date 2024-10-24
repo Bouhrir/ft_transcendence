@@ -8,6 +8,7 @@ class UserProfile(models.Model):
     image = models.ImageField(upload_to='media/', null=True, blank=True)
     totp_secret = models.CharField(max_length=50, default=pyotp.random_base32)
     is_2fa_enabled = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=False)
     friends = models.ManyToManyField('self', blank=True)
     friend_requests = models.ManyToManyField('self', blank=True, symmetrical=False)
 

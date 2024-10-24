@@ -92,8 +92,9 @@ class GameComponentOnline extends HTMLElement {
             color: 'white'
 
         };
-        window.ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
-        // window.ws = ws
+        const ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
+        window.ws = ws;
+        // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
         window.ws.onopen = function () {
             console.log("remote WebSocket is open now.");
             isWebSocketOpen = true;
@@ -258,6 +259,8 @@ class GameComponentOnline extends HTMLElement {
             requestAnimationFrame(gameLoop)
         }
         gameLoop();
+        checkTable();
+            // Start the game loop
 
         async function fetchUserData(){
 	    	const access = getAccessTokenFromCookies('access');
@@ -299,9 +302,31 @@ class GameComponentOnline extends HTMLElement {
 	    		aiImg.src = data.image;
             }
         }
+        function checkTable(){ 
+            const ballColorInput = document.getElementById('ballColor');
+            const paddleColorInput = document.getElementById('paddleColor');
+            const tableColorInput = document.getElementById('tableColor');
+            const table = document.getElementById('pongGame');
+            
+            ballColorInput.addEventListener('input', () => {
+                ball.color = ballColorInput.value;
+                table.style.border = `5px solid ${ballColorInput.value}`;
+    
+            });
+        
+            paddleColorInput.addEventListener('input', () => {
+                player.color = paddleColorInput.value;
+                ai.color = paddleColorInput.value;
+            });
+        
+            tableColorInput.addEventListener('input', () => {
+                canvas.style.background = tableColorInput.value;
+            });
+        }
 
     
     }
+    
     disconnectedCallback() {
         // Assume you have an existing WebSocket connection stored in `window.ws`
         if (window.ws) {

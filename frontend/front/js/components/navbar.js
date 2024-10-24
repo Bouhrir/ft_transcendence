@@ -118,6 +118,7 @@ function search(){
 function logout(){
 	const logout = document.getElementById('logout');
 	logout.addEventListener('click', async () => {
+		await offline();
 		const access = getAccessTokenFromCookies('access');
 		try {
 			const loggedout = await fetch('https://localhost:81/auth/logout/', {
@@ -138,6 +139,22 @@ function logout(){
 		}
 	});
 	
+}
+async function offline(){
+	const access = getAccessTokenFromCookies('access');
+	const response = await fetch('https://localhost:81/auth/offline/', {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${access}`,
+		},
+	});
+	if (response.ok) {
+		console.log('set offline');
+	}
+	else {
+		console.error('Failed to set offline:', response.statusText);
+	}
 }
 // current profile 
 function profile(){

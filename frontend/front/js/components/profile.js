@@ -13,13 +13,15 @@ class ProfileComponent extends HTMLElement {
                 <div class="Profile1" id="profile1">
                     <img id="ProfileImg" class="ProfileImg"></img>
                     <h1 id="FullName" ></h1>
-                    <p id="UserName"></p>
+                    <div class="on">
+                        <span class="onlineUser" id="online"></span><p id="UserName"></p>
+                    </div>
 					<div id="addFriends" class="AddFriends">
 						<a class="join"> Add Friends<span class="flech">→</span></a>
-						<a href="#messenger" class="join">Message<span class="flech">→</span></a>
 					</div>
                 </div>
                 <div class="LastMatches" id="LastMatches">
+                    <div class="MatchHistory"></div>
                 </div>
             </div>
             <div class="Matche">
@@ -58,6 +60,16 @@ class ProfileComponent extends HTMLElement {
 
             fullName.textContent = data.first_name + ' ' + data.last_name;
             username.textContent = data.username;
+            this.check_online(data.id).then(online => {
+                const status = document.getElementById('online');
+                if (online){
+
+                    status.style.backgroundColor = 'rgb(11, 237, 109)';
+                }
+                else {
+                    status.style.backgroundColor = 'rgb(237, 11, 11)';
+                }
+            })
             imgProfile.src = data.image;
             if (userId === localStorage.getItem('id'))
             {
@@ -97,10 +109,28 @@ class ProfileComponent extends HTMLElement {
         if (response.ok){
             const addFriendButton = document.getElementById('addFriends');
             addFriendButton.style.display = 'none';
-            const acceptButton = document.createElement('div');
-            acceptButton.className = 'join';
-            acceptButton.textContent = 'FRIEND';
-            addFriendButton.parentNode.appendChild(acceptButton);
+            const blockButton = document.createElement('div');
+            blockButton.className = 'join';
+            blockButton.textContent = 'BLOCK';
+            addFriendButton.parentNode.appendChild(blockButton);
+            blockButton.addEventListener('click', async () => {
+                const response = await fetch('https://localhost:81/auth/block/', {
+                method: 'POST',
+                    headers:{
+                        'Authorization': `Bearer ${access}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'friend_id': userId
+                    })
+                });
+                const data = await response.json()
+                if (response.ok){
+                    blockButton.style.display = 'none';
+                }
+                else
+                    console.log(data)
+            });
             return true;
         }
         return false;
@@ -125,7 +155,7 @@ class ProfileComponent extends HTMLElement {
                 addFriendButton.style.display = 'none';
                 const pendingButton = document.createElement('div');
                 pendingButton.className = 'join';
-                pendingButton.textContent = 'Pending';
+                pendingButton.textContent = 'PENDING';
                 
                 addFriendButton.parentNode.appendChild(pendingButton);
             } else {
@@ -150,7 +180,26 @@ class ProfileComponent extends HTMLElement {
         else
             return false
     }
-    
+    async check_online(userId){
+        console.log('online user', userId)
+        const access = getAccessTokenFromCookies('access');
+        const response = await fetch('https://localhost:81/auth/check_online/', {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'id': userId
+            })
+        });
+        if (response.ok){
+            return true
+        }
+        else{
+            return false
+        }
+    }
     async LastMatches(){
         const access = getAccessTokenFromCookies('access');
         const response = await fetch('https://localhost:81/auth/get_user_games/', {
@@ -178,8 +227,8 @@ class ProfileComponent extends HTMLElement {
         data.forEach(element => {
             const matchDiv = document.createElement('div');
             matchDiv.className = 'MatchHistory';
+           
             const type = element.type
-            console.log(element)
             if (type == "host") {
                 if (element.host_score > element.guest_score){
                     matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
@@ -190,9 +239,12 @@ class ProfileComponent extends HTMLElement {
                     matchDiv.style.background = 'linear-gradient(to left,rgba(21, 255, 0, 0.200),rgba(21, 255, 0, 0.0))'
                     matchDiv.style.borderRight = 'rgb(9, 255, 0) solid 4px'
                 }
-            } 
+            }
+            const date = document.createElement('span');
+            date.className = 'Date';
+            date.textContent = element.created_at.slice(0, 10);
+            matchDiv.appendChild(date);
 
-                
             const img1 = document.createElement('img');
             img1.width = 70;
             img1.height = 70;
@@ -223,7 +275,7 @@ class ProfileComponent extends HTMLElement {
             getuser(element.guest_id, img2);
             matchDiv.appendChild(img2);
     
-            matchesContainer.appendChild(matchDiv);
+            matchesContainer.prepend(matchDiv);
         });
     }
     fillLast(data){

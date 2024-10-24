@@ -383,7 +383,6 @@ def pending(request):
         user_profile = User.objects.get(id=request.user.id)
     except UserProfile.DoesNotExist or User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-    print(friend_profile.friend_requests.all())
     if friend_profile.friend_requests.filter(user=user_profile).exists():
         return Response({'message': 'Friend request pending'}, status=status.HTTP_200_OK)
     else:
@@ -401,8 +400,50 @@ def check_friend(request):
         return Response({'message': 'This user is a friend'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)
-    
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def set_online(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    user_profile.is_online = True
+    user_profile.save()
+    return Response({'message': 'User is online'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def check_online(request):
+    friend_id = request.data.get('id')
+    user = User.objects.get(id=friend_id)
+    user_profile = UserProfile.objects.get(user=user)
+    if user_profile.is_online:
+        return Response({'message': 'This user is online'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'This user is offline'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def offline(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    user_profile.is_online = False
+    user_profile.save()
+    return Response({'message': 'User is offline'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def block(request):
+    friend_id = request.data.get('friend_id')
+    user = User.objects.get(id=friend_id)
+    friend = UserProfile.objects.get(user=user);
+    
+    user_profile = UserProfile.objects.get(user=request.user)
+    if user_profile.friends.filter(user=friend.user).exists():
+        user_profile.friends.remove(friend)
+        return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'This user is not a friend'}, status=status.HTTP_404_NOT_FOUND)
+    
 
 
 #game status
@@ -435,6 +476,7 @@ def get_user_games(request):
         'winner': game.winner.username if game.winner else None,
         'host_id': game.host.id,
         'guest_id': game.guest.id if game.guest else None,
+        'created_at': game.created_at,
         'host_score': game.host_score,
         'guest_score': game.guest_score,
         'type': game.get_player_role(user.id)
