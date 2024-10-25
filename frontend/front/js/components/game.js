@@ -37,7 +37,7 @@ class GameComponent extends HTMLElement {
 				<label for="tableColor">Table Color:</label>
 				<input type="color" id="tableColor" name="tableColor" value="#6c48c5">
 				</div>
-				<div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
+				<div id="gameCostum"><p> W up </p><p> S down </p><p> ↑ up </p><p> ↓ down</p></div>
 			</div>
 			<p style="font-size:30px">Press space to start</p>
 		</div>
@@ -122,29 +122,7 @@ class GameComponent extends HTMLElement {
 			}
 			paddle1.style.top = `${paddle1Y}%`;
 
-			if (keypress['+'])
-				ai = true;
-			if (keypress['-'])
-				ai = false;
-			if (ai)
-				moveAIPaddle();
-			else
-				MoveHumanPaddle();
-
-			if (keypress['/'])
-			{
-				ball.style.height = '1rem';
-				ball.style.width = '1rem';
-			}
-			if (keypress['*'])
-			{
-				ball.style.height = '4rem';
-				ball.style.width = '4rem';
-			}
-			if (keypress[' ']){
-				ball.style.height = '2rem';
-				ball.style.width = '2rem';
-			}
+			MoveHumanPaddle();
 
 
 		}
