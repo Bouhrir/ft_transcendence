@@ -113,7 +113,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 		self.paddle_height = 120
 		self.paddle_width = 14
 		cookie_value = self.scope['cookies'].get('access')
-		# print(cookie_value)
 		if cookie_value:
 			try:
 				payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
@@ -187,11 +186,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 			print(f"receiving data from{data['player_id']}")
 			room_name = data["room_name"]
 			if data["player_id"] == self.game_states[room_name]["players"]["player1"]["id"]:
-				# self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["player_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player2"]["ai_dy"] = data["paddle_dy"]
 			else:
-				# self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player2"]["player_dy"] = data["paddle_dy"]
 				self.game_states[room_name]["players"]["player1"]["ai_dy"] = data["paddle_dy"]
 		if data["type"] == "leave":
@@ -200,7 +197,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 	async def remove_invitation_game(self):
 		print("remove invitation")
-		# game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
 		invitation = await database_sync_to_async(Invitation.objects.get)(room_name=self.room_name)
 		invitation.status = "cancelled"
 		await database_sync_to_async(invitation.save)()
@@ -229,7 +225,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 			self.game_states[self.room_name]["players"]["player2"] = await self.check_paddle_boundaries(self.game_states[self.room_name]["players"]["player2"])
 			if self.game_states[self.room_name]["players"]["player1"]["player_score"] == 5 or self.game_states[self.room_name]["players"]["player1"]["ai_score"] == 5:
 				break
-			# await asyncio.gather()
 			await self.send_game_state_to_players(self.game_states[self.room_name])
 			await asyncio.sleep(1/60)
 		game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
@@ -257,8 +252,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 		mirrored_ball['x'] = self.canvas_width - game_state['ball']['x']
 		game_state_player2 = game_state.copy()
 		game_state_player2['ball'] = mirrored_ball
-		# game_state_player2["players"]["player2"]["player_y"] = game_state["players"]["player1"]["ai_y"]
-		# game_state_player2["players"]["player2"]["ai_y"] = game_state["players"]["player1"]["player_y"]
 		await self.channel_layer.send(
 			game_state['players']['player2']['channel_name'],
 			{

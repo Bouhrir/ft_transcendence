@@ -17,7 +17,6 @@ class SomeConsumer(JsonWebsocketConsumer):
     
     def connect(self):
         cookie_value = self.scope['cookies'].get('access')
-        # print(cookie_value)
         if cookie_value:
             try:
                 payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])

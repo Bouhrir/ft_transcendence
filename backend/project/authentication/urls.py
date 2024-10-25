@@ -46,6 +46,7 @@ urlpatterns = [
     path('set_online/', views.set_online),
     path('check_online/', views.check_online),
     path('offline/', views.offline),
+    
     #get game finished
     path('get_game_status/', views.get_game_status),
     path('get_user_games/', views.get_user_games),

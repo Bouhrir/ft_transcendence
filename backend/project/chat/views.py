@@ -144,8 +144,6 @@ def room(request):
         room = Room.objects.create(user1=user1, user2=user2)
         return Response({"room_id": room.id, "bol": False}, status=status.HTTP_201_CREATED)
 
-    # return render(request, 'chat/test.html')
-
 def post(self, request):
     return render(request, 'chat/test.html')
 

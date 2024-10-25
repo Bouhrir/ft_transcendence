@@ -27,7 +27,6 @@ class SettingComponent extends HTMLElement {
                         </div>
 
                     </div>
-                    <a class="delete" id="deluser" href="#signin">Delete Account</a>
                 </div>
                 <div class="line_"></div>
                 <div id="qrModal" class="modal" style="display: none;">
@@ -329,27 +328,6 @@ class SettingComponent extends HTMLElement {
             console.error('Error updating profile:', error);
             toast.textContent = error;
         }
-    }
-
-    async deleteuser(){
-        // const access = getAccessTokenFromCookies('access');
-        // try{
-        //     const deluser = await fetch('https://localhost:81/auth/deluser/', {
-        //         method : 'DELETE',
-        //         header:{
-        //             'Authorization': `Bearer ${access}`,
-        //             'Content-Type': 'application/json',
-        //         }
-        //     });
-        //     if (deluser.ok){
-        //         alert('userdeleted');
-        //     }
-        document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
-        document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
-        // }
-        // catch(error){
-        //     console.error('can`t delete user: ', error);
-        // }
     }
 }
 

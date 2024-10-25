@@ -17,8 +17,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 
 
-
-# global_room_user_count = 0
 class TournamentConsumer(AsyncWebsocketConsumer):
 	games = {
 		"first_semis": [],

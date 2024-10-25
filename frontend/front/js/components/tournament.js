@@ -1,10 +1,4 @@
 class TournamentComponent extends HTMLElement {
-    // constructor() {
-    //     super();
-    //     this.players = [];
-    //     this.maxPlayers = 4;
-    // }
-
     async connectedCallback() {
 
         this.innerHTML = `
@@ -343,21 +337,6 @@ class TournamentComponent extends HTMLElement {
             setWinner(winner)
         }
     }
-    // disconnectedCallback() {
-        // Assume you have an existing WebSocket connection stored in `window.ws`
-        // if (window.ws) {
-        //     // Check if the WebSocket is open or connecting before trying to close it
-        //     if (window.ws.readyState === WebSocket.OPEN || window.ws.readyState === WebSocket.CONNECTING) {
-        //         // Close the WebSocket with a status code and an optional reason
-        //         window.ws.close(1000);
-
-        //         // Optionally, set the WebSocket to null to ensure it can be reconnected later
-        //         window.ws = null;
-        //         console.log("WebSocket closed from the front end.");
-        //     }
-        // }
-        // localStorage.clear();
-    // }
 }
 
 customElements.define('tournament-component', TournamentComponent);

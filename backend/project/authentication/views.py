@@ -38,7 +38,6 @@ def register_api(request):
 
 # setup 2fa for the user
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
 def get_2fa_status(request):
     username = request.data.get('username')
     user = User.objects.get(username=username)
@@ -57,7 +56,6 @@ def setup_2fa(request):
     if not profile.is_2fa_enabled:
         totp_secret = pyotp.random_base32()
         profile.totp_secret = totp_secret
-        # profile.is_2fa_enabled = True
         profile.save()
     else:
         totp_secret = profile.totp_secret
@@ -77,7 +75,6 @@ def setup_2fa(request):
     })
 
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
 def verify_2fa(request):
     otp = request.data.get('verification_code')
     username = request.data.get('username')
@@ -214,7 +211,6 @@ def register_42(user_data):
         user = User.objects.get(email=user_data['email'])
         # User exists, retrieve or create a token for them
         token, created = Token.objects.get_or_create(user=user)
-        # return HttpResponseRedirect('http://localhost:81/#dashboard')
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
@@ -240,7 +236,6 @@ def register_42(user_data):
         
         if serializer.is_valid():
             user = serializer.save()  # Save the new user
-            # return HttpResponseRedirect('http://localhost:81/#dashboard')
 
             refresh = RefreshToken.for_user(user)
             access = refresh.access_token
