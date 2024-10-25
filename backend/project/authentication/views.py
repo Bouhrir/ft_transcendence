@@ -23,8 +23,6 @@ import requests
 from django.core.files.base import ContentFile
 
 
-
-
 @api_view(['POST'])
 def register_api(request):
     serializer = UserSerializer(data=request.data)
