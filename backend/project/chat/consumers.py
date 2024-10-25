@@ -4,36 +4,48 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync 
 from .models import Message , Room
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from rest_framework_simplejwt.exceptions import TokenError
+from jwt import decode, ExpiredSignatureError, DecodeError
+from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser
 #here we are creating a class that inherits from AsynchronousWebsocketConsumer and we are overriding the connect, disconnect and receive methods
 
 class SomeConsumer(JsonWebsocketConsumer):
     connections = []
     
-        # self.room_group_name = 'chat_%s' % self.room_group_name
     def connect(self):
+        cookie_value = self.scope['cookies'].get('access')
+        # print(cookie_value)
+        if cookie_value:
+            try:
+                payload = decode(cookie_value, settings.SECRET_KEY, algorithms=["HS256"])
+                user_id = payload.get('user_id')
+                self.scope['user'] = User.objects.get(id=user_id)
+            except (ExpiredSignatureError, DecodeError, User.DoesNotExist, TokenError):
+                self.scope['user'] = AnonymousUser()
+        else:
+            self.scope['user'] = AnonymousUser()
+
+        if self.scope['user'].is_authenticated:
+            self.accept()
+        else:
+            self.close()
+            return
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-        self.accept()
-        print("test")
-        # self.connections.append(self)
-        # user = self.scope['user']  # Assuming user is authenticated and in the session
-        # if user.is_authenticated:
-        #     self.connections.add(user.id)  # Add user id to the set of connections
         
     def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name,
-        )
-        # if self in self.connections:
-            # self.connections.remove(self)
-        # user = self.scope['user']
-        # if user.is_authenticated:
-        #     self.connections.discard(user.id)  # Remove user from connections
+        if hasattr(self, self.room_group_name):
+            async_to_sync(self.channel_layer.group_discard)(
+                self.room_group_name,
+                self.channel_name,
+            )
         
         
     def receive(self, text_data):
@@ -65,17 +77,3 @@ class SomeConsumer(JsonWebsocketConsumer):
     
     def save_message(self, sende_id, receiver_id, message, room):
         Message.objects.create(user_send=sende_id, user_receive=receiver_id, content=message, room=room)
-   
-            
-# python3 -m venv .venv  
-# source .venv/bin/activate  
-# pip3 install --upgrade pip  
-# python3 -m pip install -U channels["daphne"] ****or***** pip3 install -U "channels[daphne]"
-
-
-
-    # def get_receive_chanel_name(self, receiver):
-    #     for connection in self.connections:
-    #         if connection.scope['user'] == receiver:
-    #             return connection.channel_name
-    #     return None

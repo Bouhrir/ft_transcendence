@@ -140,6 +140,7 @@ class TournamentComponent extends HTMLElement {
         // Handle WebSocket close
         ws.onclose = function() {
             console.log("closing websocket")
+  
             isWebSocketOpen = false;
         };
 
@@ -166,7 +167,10 @@ class TournamentComponent extends HTMLElement {
                 winnerPlayer.style.color = 'white'
                 winnerPlayer.style.border = "3px solid rgb(255, 255, 255)";
                 status(data.games)
-            }
+            } 
+            // else if (data.action == "notify") {
+                // localStorage.setItem("tournamentNotification", "tournament game now");
+            // }
         }
         
         function resetPlayer(playerElement, scoreElement) {
@@ -251,7 +255,7 @@ class TournamentComponent extends HTMLElement {
                 }
             }
         }
-
+// when the user log out maybe unset his localstorage <------//////
         function status(games) {
             const first_semis = games.first_semis
             const second_semis = games.second_semis
@@ -271,8 +275,10 @@ class TournamentComponent extends HTMLElement {
                     joinButton.style.display = "block"
                     joinButton.innerText = "PLAY!"
                     aliasInput.style.display = "none"
+                    localStorage.setItem("tournamentNotification", "tournament game now");
                 } else if(player.status == "active") {
                     console.log("active")
+                    localStorage.removeItem("tournamentNotification");
                     joinButton.style.display = "none"
                     aliasInput.style.display = "none"
                 }
@@ -304,18 +310,19 @@ class TournamentComponent extends HTMLElement {
         }
     }
     // disconnectedCallback() {
-    //     // Assume you have an existing WebSocket connection stored in `window.ws`
-    //     if (window.ws) {
-    //         // Check if the WebSocket is open or connecting before trying to close it
-    //         if (window.ws.readyState === WebSocket.OPEN || window.ws.readyState === WebSocket.CONNECTING) {
-    //             // Close the WebSocket with a status code and an optional reason
-    //             window.ws.close(1000);
+        // Assume you have an existing WebSocket connection stored in `window.ws`
+        // if (window.ws) {
+        //     // Check if the WebSocket is open or connecting before trying to close it
+        //     if (window.ws.readyState === WebSocket.OPEN || window.ws.readyState === WebSocket.CONNECTING) {
+        //         // Close the WebSocket with a status code and an optional reason
+        //         window.ws.close(1000);
 
-    //             // Optionally, set the WebSocket to null to ensure it can be reconnected later
-    //             window.ws = null;
-    //             console.log("WebSocket closed from the front end.");
-    //         }
-    //     }
+        //         // Optionally, set the WebSocket to null to ensure it can be reconnected later
+        //         window.ws = null;
+        //         console.log("WebSocket closed from the front end.");
+        //     }
+        // }
+        // localStorage.clear();
     // }
 }
 

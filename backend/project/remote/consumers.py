@@ -19,7 +19,6 @@ from chat.models import Invitation
 
 class PongConsumer(AsyncWebsocketConsumer):
 	game_states = {}
-	# dimensions = {}
 	async def initialize_game_state(self, room_name, type):
 		if room_name not in self.game_states:
 			self.game_states[room_name] = {
@@ -36,11 +35,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 						"id": None,
 						"channel_name": None,
 						"connected": False,
-						"player_y": self.canvas_height / 2 - self.paddle_height / 2,
+						"player_y": 250,
 						"player_dy": 0,
 						"player_x": 0,
 						"ai_x": self.canvas_width - self.paddle_width,
-						"ai_y": self.canvas_height / 2 - self.paddle_height / 2,
+						"ai_y": 250,
 						"ai_dy": 0,
 						"player_score": 0,
 						"ai_score": 0,
@@ -49,9 +48,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 						"id": None,
 						"channel_name": None,
 						"connected": False,
-						"player_y": self.canvas_height / 2 - self.paddle_height / 2,
+						"player_y": 250,
 						"player_dy": 0,
-						"ai_y": self.canvas_height / 2 - self.paddle_height / 2,
+						"ai_y": 250,
 						"ai_dy": 0,
 					}
 				},
@@ -72,9 +71,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if (ball['y'] + self.ball_radius > self.canvas_height or ball['y'] - self.ball_radius < 0):
 			ball['dy'] *= -1
 		# ball collision with paddles
-		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height):
+		if (ball['x'] - self.ball_radius < player["player_x"] + self.paddle_width and ball['y'] > player["player_y"] and ball['y'] < player["player_y"] + self.paddle_height and ball['dx'] < 0):
 			ball['dx'] *= -1
-		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height):
+		if (ball['x'] + self.ball_radius > player["ai_x"] and ball['y'] > player["ai_y"] and ball['y'] < player["ai_y"] + self.paddle_height and ball['dx'] > 0):
 			ball['dx'] *= -1
 		# Ball goes off the screen
 		if (ball['x'] - self.ball_radius < 0):
@@ -134,15 +133,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = f"pong_{self.room_name}"
 		try:
-			# Check if the game exists in the database
 			game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
-			## i should check this again, i don't think i should check if it's cancelled, because i won't cancel it##
-			if game.status == "cancelled":
-				print("game is cancelled")
-				await self.notify_and_close('no_room')
-				return
 		except Game.DoesNotExist:
-			# If the game doesn't exist, inform the player and close the connection
 			await self.notify_and_close('no_room')
 			return
 		if self.room_name not in self.game_states:
@@ -217,12 +209,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 		await asyncio.sleep(2)
 		while True:
 			if not self.game_states[self.room_name]["players"]["player1"]["connected"]:
-				print(f'not in room: {self.game_states[self.room_name]["players"]["player1"]["id"]}')
 				self.game_states[self.room_name]["players"]["player1"]["player_score"] = 0
 				self.game_states[self.room_name]["players"]["player1"]["ai_score"] = 3
 				break
 			elif not self.game_states[self.room_name]["players"]["player2"]["connected"]:
-				print(f'not in room: {self.game_states[self.room_name]["players"]["player2"]["id"]}')
 				self.game_states[self.room_name]["players"]["player1"]["player_score"] = 3
 				self.game_states[self.room_name]["players"]["player1"]["ai_score"] = 0
 				break
@@ -245,9 +235,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 		game = await database_sync_to_async(Game.objects.get)(room_name=self.room_name)
 		await database_sync_to_async(game.set_score)(self.game_states[self.room_name]["players"]["player1"]["id"], self.game_states[self.room_name]["players"]["player1"]["player_score"], self.game_states[self.room_name]["players"]["player1"]["ai_score"])
 		await database_sync_to_async(game.determine_winner)()
-		# await database_sync_to_async(game.save)()
-		# wini = await database_sync_to_async(lambda: game.winner)()
-		# print(f"winner: {wini}")
 		await self.channel_layer.group_send(
 			self.room_group_name,
 			{
@@ -285,7 +272,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 	async def game(self, event):
 		await self.send(text_data=json.dumps({
 			'action': "game_state",
-			# 'player_id': event['player_id'],
 			'game_state': event['game_state']
 		}))
 

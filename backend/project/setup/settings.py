@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nprb69my43^nmo)#id^%9_gsw7d#2=i&-*yyc16ge--f!bg@*x'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '10.12.6.5', '10.12.6.8', '10.11.5.9']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost',]
 
 ASGI_APPLICATION = 'setup.asgi.application'
 
@@ -57,9 +57,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
 }
 
 SIMPLE_JWT = {
@@ -131,27 +128,15 @@ CHANNEL_LAYERS = {
     },
 }
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('redis', 6379)],  # Redis server location
-#         },
-#     },
-# }
-
-# WSGI_APPLICATION = 'setup.wsgi.application'
-
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db',
-        'USER': 'oussama',
-        'PASSWORD': 'password',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),  # Fetch from environment
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': 'db',  # or the service name in your docker-compose file
         'PORT': '5432',
     }
@@ -207,8 +192,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SOCIALACCOUNT_PROVIDERS = {
     'intra': {
         'APP': {
-            'client_id': 'u-s4t2ud-82649c71bbe7f51574fa53213b20b08f6f6f5f3599154a87c432e0de1071b36b',
-            'secret': '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',
+            'client_id': os.environ.get('CLIENT_ID'),
+            'secret': os.environ.get('SECRET'),
             'key': '',
             'redirect_uris': 'https://localhost:81/auth/callback/',
         },

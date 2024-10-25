@@ -92,9 +92,8 @@ class GameComponentOnline extends HTMLElement {
             color: 'white'
 
         };
-        const ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
-        window.ws = ws;
-        // const ws = new WebSocket(`ws://localhost:81/ws/pong/123/`);
+        window.ws = new WebSocket(`wss://localhost:81/ws/pong/${window.gameRoom}/`);
+        // window.ws = ws
         window.ws.onopen = function () {
             console.log("remote WebSocket is open now.");
             isWebSocketOpen = true;
@@ -259,8 +258,6 @@ class GameComponentOnline extends HTMLElement {
             requestAnimationFrame(gameLoop)
         }
         gameLoop();
-        checkTable();
-            // Start the game loop
 
         async function fetchUserData(){
 	    	const access = getAccessTokenFromCookies('access');
@@ -275,7 +272,11 @@ class GameComponentOnline extends HTMLElement {
             });
 	    	if (response.ok){
 	    		const data = await response.json();
-	    		playerName.textContent = data.username;
+                if (window.playerAlias) {
+                    playerName.textContent = window.playerAlias
+                } else {
+                    playerName.textContent = data.username;
+                }
 	    		playerImg.src = data.image;
 	    	}
 	    	else
@@ -298,35 +299,18 @@ class GameComponentOnline extends HTMLElement {
             });
             if (response.ok){
                 const data = await response.json();
-	    		aiName.textContent = data.username;
+                if (window.aiAlias) {
+                    aiName.textContent = window.aiAlias
+                } else {
+                    aiName.textContent = data.username;
+
+                }
 	    		aiImg.src = data.image;
             }
-        }
-        function checkTable(){ 
-            const ballColorInput = document.getElementById('ballColor');
-            const paddleColorInput = document.getElementById('paddleColor');
-            const tableColorInput = document.getElementById('tableColor');
-            const table = document.getElementById('pongGame');
-            
-            ballColorInput.addEventListener('input', () => {
-                ball.color = ballColorInput.value;
-                table.style.border = `5px solid ${ballColorInput.value}`;
-    
-            });
-        
-            paddleColorInput.addEventListener('input', () => {
-                player.color = paddleColorInput.value;
-                ai.color = paddleColorInput.value;
-            });
-        
-            tableColorInput.addEventListener('input', () => {
-                canvas.style.background = tableColorInput.value;
-            });
         }
 
     
     }
-    
     disconnectedCallback() {
         // Assume you have an existing WebSocket connection stored in `window.ws`
         if (window.ws) {
@@ -340,8 +324,9 @@ class GameComponentOnline extends HTMLElement {
                 console.log("WebSocket closed from the front end.");
             }
         }
+        window.playerAlias = null
+        window.aiAlias = null
     }
 }
 
 customElements.define('game-component-online', GameComponentOnline);
-

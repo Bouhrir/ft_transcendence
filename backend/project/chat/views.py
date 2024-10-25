@@ -15,6 +15,27 @@ from django.contrib.auth.models import User
 from .models import Invitation
 import uuid
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def available_invitation(request):
+	invitee_id = request.user.id  # Get the invitee's ID from the authenticated user
+	inviter_id = request.data.get('inviter_id')  # Get the inviter's username
+	
+	try:
+		inviter = User.objects.get(id=inviter_id)
+		invitee = User.objects.get(id=invitee_id)
+		existing_invitation = Invitation.objects.filter(
+			inviter=inviter,
+			invitee=invitee,
+			status='pending'
+		).first()
+
+		if existing_invitation:
+			return Response({'status': 'success'}, status=status.HTTP_200_OK)
+		return Response({'status': 'failure'}, status=status.HTTP_404_NOT_FOUND)
+	except User.DoesNotExist:
+		print("user doesn't exist")
+		return Response({'error': 'Inviter not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

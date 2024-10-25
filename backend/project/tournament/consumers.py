@@ -18,6 +18,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 
+# global_room_user_count = 0
 class TournamentConsumer(AsyncWebsocketConsumer):
 	games = {
 		"first_semis": [],
@@ -30,6 +31,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	players = {
 		"channel_name": None,
 		"room_name": None,
+		"connected": False,
 		"id": None,
 		"alias": None,
 		"status": "waiting", #ready #active(ongoing) #finished
@@ -43,6 +45,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			for player in self.games[round_name]:
 				if player['id'] == self.player_id:
 					player['channel_name'] = self.channel_name
+					player['connected'] = True
 					return
 
 	async def connect(self):
@@ -67,6 +70,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			"global_room",
 			self.channel_name
 		)
+		# global_room_user_count += 1
 		await self.is_already_in_tournament()
 		await self.send(text_data=json.dumps({
 			"action": "new_connection",
@@ -85,6 +89,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			if len(self.games["first_semis"]) < 2 or len(self.games["second_semis"]) < 2:
 				await self.match_games({
 					"channel_name": self.channel_name,
+					"connected": True,
 					"id": data["player_id"],
 					"alias": data["alias"],
 					"status": "waiting",
@@ -209,20 +214,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			self.games["second_semis"][1]["score"] = await database_sync_to_async(semis2.get_player_score)(self.games["second_semis"][1]["id"])
 		
 		await self.notify_game_status()
-	
-	async def check_if_joined(self, round, room_name):
-		print(f"check timeout for {round}")
-		if self.games[round][0]["status"] == "waiting" and self.games[round][1]["status"] == "waiting":
-			print("match_timeout: both_didnt_join")
-			await self.channel_layer.group_send(
-				round,
-				{
-					"type": "cancelled",
-				}
-			)
-			game = await database_sync_to_async(Game.objects.get)(room_name=room_name)
-			game.status = "cancelled"
-			await database_sync_to_async(game.save)()
 
 	async def check_semis_status(self, room_name1, room_name2):
 		while True:

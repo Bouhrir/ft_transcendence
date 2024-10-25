@@ -49,7 +49,10 @@ class MessengerComponent extends HTMLElement {
         }
         await this.fetchFriendsData()
 
-        document.getElementById('chat').addEventListener('click', async () => this.sendMessage()); 
+        document.getElementById('chat').addEventListener('click', async (e) => {
+            e.preventDefault()
+            this.sendMessage()
+        }); 
 
     }
 
@@ -108,16 +111,16 @@ class MessengerComponent extends HTMLElement {
         }
     }
 
-    async isTournamentGameAvailable(id) {
+    async availableInvitation(id) {
         try {
             const access = getAccessTokenFromCookies('access');
-            const response = await fetch('/remote/get-game/', {
+            const response = await fetch('/chat/available-invitation/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Authorization': `Bearer ${access}`
                 },
-                body: `receiver_id=${id}`
+                body: `inviter_id=${id}`
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -126,7 +129,6 @@ class MessengerComponent extends HTMLElement {
             return true;
     
         } catch (error) {
-
             return false;
         }
     }
@@ -167,21 +169,28 @@ class MessengerComponent extends HTMLElement {
                     messageDisplay.appendChild(newMessage)
                     messageDisplay.scrollTop = messageDisplay.scrollHeight;
                 }
-                this.isTournamentGameAvailable(this.receiverId).then(tournamentGame => {
-                    if (tournamentGame) {
+                this.availableInvitation(this.receiverId).then(invitation => {
+                    if (invitation) {
                         const newMessage = document.createElement('div')
-                        newMessage.textContent = `you have a tournament game now!!!`
+                        newMessage.textContent = `do you want to play against me?`
                         newMessage.classList.add ('left-para')
                         newMessage.style.fontFamily = "bungee"
                         messageDisplay.appendChild(newMessage)
                         messageDisplay.scrollTop = messageDisplay.scrollHeight;
                     }
-                })           
-                this.intialws();
+                })
+                const notification = localStorage.getItem("tournamentNotification");
+                if (notification) {
+                    console.log("testing")
+                    const newMessage = document.createElement('div')
+                    newMessage.textContent = `you have a tournament game now!!!`
+                    newMessage.classList.add ('left-para')
+                    newMessage.style.fontFamily = "bungee"
+                    messageDisplay.appendChild(newMessage)
+                    messageDisplay.scrollTop = messageDisplay.scrollHeight;
+                } 
             }
-            else{
-                this.intialws();
-            }
+            this.intialws();
         }
         else{
             console.log("Error fetching room");
@@ -209,17 +218,11 @@ class MessengerComponent extends HTMLElement {
             if (data.snd_id === this.currentUserId) {
                 newMessage.classList.add ('right-para')
                 newMessage.textContent = `${data.msg}`;
-                // if (data.msg === "do you want to play against me?") {
-                //     newMessage.style.fontFamily = "bungee";
-                // }
             }
             else{
                 newMessage.classList.add ('left-para')
                 newMessage.textContent = `${data.msg}`;
                 console.log("data-msg:", data.msg)
-                // if (data.msg === "do you want to play against me?") {
-                //     newMessage.style.fontFamily = "bungee";
-                // }
             }
             messageDisplay.appendChild(newMessage);
             messageDisplay.scrollTop = messageDisplay.scrollHeight;
@@ -228,18 +231,10 @@ class MessengerComponent extends HTMLElement {
 
     async sendMessage() {
         const message = document.getElementById('message').value;
-        // console.log(message)
+
         if (message === "/invite") {
             let invite = await this.sendInvitation(this.receiverId)
             if (invite) {
-                console.log("invitation sent:", invite)
-                this.socket.send(JSON.stringify({
-                    'msg': "do you want to play against me?",
-                    'snd_id': this.currentUserId,
-                    'rec_id': this.receiverId,
-                    'room_id': this.roomData.room_id,
-                }));
-                // maybe not add it in the database but just display it now
                 window.gameRoom = invite.room_name
                 window.location.href = `#game-online`;
             } else {
