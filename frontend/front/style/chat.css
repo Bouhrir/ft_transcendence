@@ -51,8 +51,14 @@
     width: 100%;
     height: 85%;
     padding: 10px;
-
+    overflow: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
+#archive::-webkit-scrollbar {
+    display: none;
+}
+
 
 /* #archive p{
 } */

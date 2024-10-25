@@ -51,7 +51,7 @@ class SigninComponent extends HTMLElement {
             e.preventDefault();
             window.location = 'https://localhost:81/auth/intra/';
         });
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
             const url = new URL(window.location.href);
             const key = url.hash.slice(1); // This will remove the '#' character
             if (key === 'true') {

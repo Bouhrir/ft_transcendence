@@ -227,7 +227,7 @@ class GameComponent extends HTMLElement {
 			const table = document.getElementById('subping');
 			
 			ballColorInput.addEventListener('input', () => {
-				ball.style.border = `5px solid ${ballColorInput.value}`;
+				ball.style.backgroundColor = ballColorInput.value;
 				table.style.border = `5px solid ${ballColorInput.value}`;
 
 			});

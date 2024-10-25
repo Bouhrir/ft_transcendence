@@ -258,6 +258,7 @@ class GameComponentOnline extends HTMLElement {
             requestAnimationFrame(gameLoop)
         }
         gameLoop();
+        checkTable();
 
         async function fetchUserData(){
 	    	const access = getAccessTokenFromCookies('access');
@@ -307,6 +308,27 @@ class GameComponentOnline extends HTMLElement {
                 }
 	    		aiImg.src = data.image;
             }
+        }
+        function checkTable(){ 
+            const ballColorInput = document.getElementById('ballColor');
+            const paddleColorInput = document.getElementById('paddleColor');
+            const tableColorInput = document.getElementById('tableColor');
+            const table = document.getElementById('pongGame');
+            
+            ballColorInput.addEventListener('input', () => {
+                ball.color = ballColorInput.value;
+                table.style.border = `5px solid ${ballColorInput.value}`;
+    
+            });
+        
+            paddleColorInput.addEventListener('input', () => {
+                player.color = paddleColorInput.value;
+                ai.color = paddleColorInput.value;
+            });
+        
+            tableColorInput.addEventListener('input', () => {
+                canvas.style.background = tableColorInput.value;
+            });
         }
 
     

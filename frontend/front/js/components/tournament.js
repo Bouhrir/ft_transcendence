@@ -92,7 +92,8 @@ class TournamentComponent extends HTMLElement {
         const aliasInput = document.getElementById('aliasInput');
         let isWebSocketOpen = false;
         let player_id;
-        let alias;
+        let alias = null;
+        let games;
         const semisFirstPlayer = document.getElementById("semis-first-player")
         const semisSecondPlayer = document.getElementById("semis-second-player")
         const semisThirdPlayer = document.getElementById("semis-third-player")
@@ -151,6 +152,7 @@ class TournamentComponent extends HTMLElement {
                 console.log("new tournament connection: ", player_id)
             }
             else if (data.action == "status") {
+                games = data.games
                 status(data.games)
             }
             else if (data.action == "reset") {
@@ -202,6 +204,8 @@ class TournamentComponent extends HTMLElement {
                     ws.send(JSON.stringify(data));
                 }
                 window.isTournament = true
+                let round = getRound(games, player_id)
+                window.aiAlias = getAiAlias(round, games, player_id)
                 window.location.href = "#game-online"
             } else if (joinButton.innerText == "RESET!") {
                 console.log("reset tournament")
@@ -213,6 +217,35 @@ class TournamentComponent extends HTMLElement {
                 }
             }
         });
+
+        function getAiAlias(round, games, id) {
+            if (games[round][0]["id"] !== id) {
+                return games[round][0]["alias"]
+            } else {
+                return games[round][1]["alias"]
+            }
+            // console.log("alias not found")
+            // return null
+        }
+
+        function getRound(games, id) {
+            for (let player of games["final"]) {
+                if (player.id === id) {
+                    return "final";
+                }
+            }
+            for (let player of games["first_semis"]) {
+                if (player.id === id) {
+                    return "first_semis";
+                }
+            }
+            for (let player of games["second_semis"]) {
+                if (player.id === id) {
+                    return "second_semis";
+                }
+            }
+            return null
+        }
 
         async function setPlayer(player, playerElement, scoreElement) {
             if (!playerElement || !scoreElement || !player) {
@@ -275,6 +308,7 @@ class TournamentComponent extends HTMLElement {
                     joinButton.style.display = "block"
                     joinButton.innerText = "PLAY!"
                     aliasInput.style.display = "none"
+                    window.playerAlias = player["alias"]
                     localStorage.setItem("tournamentNotification", "tournament game now");
                 } else if(player.status == "active") {
                     console.log("active")

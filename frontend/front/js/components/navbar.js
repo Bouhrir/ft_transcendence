@@ -129,6 +129,7 @@ function logout(){
 				}
 			});
 			if (loggedout.ok) {
+				window.location.href = '#signin';
 				document.cookie = 'access=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				document.cookie = 'refresh=; expires=Thu, 01 Jan 2002 00:00:00 UTC; path=/;';
 				location.reload();
