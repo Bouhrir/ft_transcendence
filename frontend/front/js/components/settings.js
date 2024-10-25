@@ -116,7 +116,6 @@ class SettingComponent extends HTMLElement {
         document.getElementById('2faButton').addEventListener('click', this.handle2FAToggle.bind(this));
         document.getElementById('verifyButton').addEventListener('click', this.handleVerification.bind(this));
         document.getElementById('save').addEventListener('click', this.handleSave.bind(this));
-        document.getElementById('deluser').addEventListener('click', this.deleteuser.bind(this));
         document.getElementById('Profile').addEventListener('click',  ()=>{window.location.hash = `#profile/${this.userData.id}`});
     }
     setValues() {

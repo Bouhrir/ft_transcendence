@@ -3,6 +3,7 @@ class SigninComponent extends HTMLElement {
     constructor() {
         super();
         this.is2FAEnabled = false;
+        this.name = '';
     }
     async connectedCallback() {
         const navbar = document.querySelector('.navbar');
@@ -55,8 +56,50 @@ class SigninComponent extends HTMLElement {
             const url = new URL(window.location.href);
             const key = url.hash.slice(1); // This will remove the '#' character
             if (key === 'true') {
-                window.location.hash = '#dashboard';
+                console.log('sucess intra42 Login')
                 this.set_online();
+
+                this.checkIntra2Fa().then( check => {
+                    if (check){
+                        const signin = document.getElementById('signin');
+                        signin.style.display = 'none';
+    
+                        const twofaVerifyTab = document.createElement('div');
+                        twofaVerifyTab.className = 'sign2FA';
+                        twofaVerifyTab.innerHTML = `
+                            <h3>TWO FA VERIFICATION</h3>
+                            <input id="twofaCode" type="text" placeholder="Enter your 2FA code" >
+                            <button type="submit" id="twofa-verify-btn">Verify</button>
+                            `;
+                        document.body.append(twofaVerifyTab);
+                        document.getElementById('twofa-verify-btn').addEventListener('click', async () => {
+                            const verificationCode = document.getElementById('twofaCode').value;
+    
+                            console.log(verificationCode);
+                            const response = await fetch('https://localhost:81/2fa/verify/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    username:this.name,
+                                    "verification_code":verificationCode
+                                })
+                            });
+                            if (response.ok){
+                                twofaVerifyTab.style.display = 'none';
+                                twofaVerifyTab.remove();
+                                window.location.hash = '#dashboard';
+                            }
+                            else{
+                                errorMessage.textContent = 'failed verification!';
+                                errorMessage.style.color = 'red';
+                            }
+                        });
+                    }
+                    else
+                        window.location.hash = '#dashboard';
+                })
             }
             if (key === 'false'){
                 console.log('failed intra42 Login')
@@ -85,7 +128,6 @@ class SigninComponent extends HTMLElement {
             const data = await response.json();
             if (response.ok) {
                 await this.check2FAStatus(username);
-                console.log(this.is2FAEnabled)
                 if (!this.is2FAEnabled){
                     document.cookie = `access=${data.access}; path=/;`;
                     document.cookie = `refresh=${data.refresh}; path=/;`;
@@ -130,7 +172,6 @@ class SigninComponent extends HTMLElement {
                             this.set_online();
                         }
                         else{
-                            // twofaVerifyTab.remove();
                             errorMessage.textContent = 'failed verification!';
                             errorMessage.style.color = 'red';
                         }
@@ -161,6 +202,39 @@ class SigninComponent extends HTMLElement {
         if (response.ok){
             console.log('set online');
         }
+    }
+    async checkIntra2Fa(){
+        let username;
+
+        console.log('me', getAccessTokenFromCookies('access'));
+        const response = await fetch('https://localhost:81/auth/me/', {
+            method: 'GET',
+            mode:'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAccessTokenFromCookies('access')}`,
+            },
+        });
+        if (response.ok){
+            const data = await response.json();
+            username = data.username;
+            this.name = data.username;
+        }
+        const response2 = await fetch('https://localhost:81/2fa/status/', {
+            method: 'POST',
+            mode:'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({
+                username:username
+            })
+        });
+        if (response2.ok){
+            const data = await response2.json();
+            return data.is_2fa_enabled;
+        }
+        
     }
     async check2FAStatus(username) {
         try {
