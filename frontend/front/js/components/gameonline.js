@@ -31,7 +31,7 @@ class GameComponentOnline extends HTMLElement {
                 <label for="tableColor">Table Color:</label>
                 <input type="color" id="tableColor" name="tableColor" value="#6c48c5">
                 </div>
-                <div id="gameCostum"><p> + ai </p><p> - !ai </p><p> * x2 </p><p> / x0.5</p></div>
+                <div id="gameCostum"><p> ↑ up </p><p> ↓ down</p></div>
             </div>
             <p style="font-size:30px">Press space to start</p>
         </div>

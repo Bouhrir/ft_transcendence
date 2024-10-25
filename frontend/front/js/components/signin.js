@@ -127,6 +127,7 @@ class SigninComponent extends HTMLElement {
                             twofaVerifyTab.style.display = 'none';
                             twofaVerifyTab.remove();
                             window.location.hash = '#dashboard';
+                            this.set_online();
                         }
                         else{
                             // twofaVerifyTab.remove();
