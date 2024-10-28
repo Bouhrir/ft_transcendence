@@ -20,7 +20,7 @@ services:
     build: ./backend
     container_name: backend
     env_file:
-      - .env
+      - .env.test
     volumes:
       - ./backend/project:/project
     restart: on-failure
@@ -31,7 +31,7 @@ services:
     image: postgres:latest
     container_name: postgres
     env_file:
-      - .env
+      - .env.test
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
