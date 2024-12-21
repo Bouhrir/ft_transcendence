@@ -2,6 +2,8 @@
 
 ## Overview
 
+### [Ping Pong Game](https://www.youtube.com/watch?v=OMCP8KNT1Rg)
+
 **ft_transcendence** is a web application built with Docker that allows users to register, log in, and play a ping pong game 🏓. Users can invite friends, block them, and engage in games with friends. The application features profile management with avatars, two-factor authentication (2FA), and secure JSON Web Token (JWT) authentication.
 
 ## Architecture
