@@ -1,4 +1,5 @@
 # ft_transcendence
+<img width="1446" alt="Screen Shot 2024-12-21 at 1 54 10 PM" src="https://github.com/user-attachments/assets/49fb1b31-5226-4c64-992a-c40f38b53a0f" />
 
 ## Overview
 
@@ -80,4 +81,10 @@ The project is composed of three main Docker containers:
 ### Contact
   - For questions or feedback, please contact:
     - Oussama Bouhrir
-    - Email: obouhrir@gmail.com
+    - Email: bouhrir26@gmail.com
+
+### App Daemon
+<img width="1445" alt="Screen Shot 2024-12-21 at 2 38 22 PM" src="https://github.com/user-attachments/assets/bcb4cf2b-e563-4b41-b5a8-9dd6f9239ff9" />
+<img width="1445" alt="Screen Shot 2024-12-21 at 1 54 36 PM" src="https://github.com/user-attachments/assets/97c6b99b-9a0b-446f-ab0c-2ab254089d4d" />
+
+
